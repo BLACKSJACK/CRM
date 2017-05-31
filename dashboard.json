@@ -4,24 +4,79 @@
     "values":[
       {
         "name":"Расчет",
-        "url":"asdad"
+        "url":"asdad",
+        "type":"text"
+
       },
       {
         "name":"Клиента",
-        "url":"qwe"
+        "url":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Полис",
+        "url":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Счет",
+        "url":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Запись в дневнике",
+        "url":"qwe",
+        "type":"text"
       }
     ]
   },
   {
-    "name:":"Создать",
+    "name":"Новый",
     "values":[
       {
         "name":"Расчет",
-        "url":"asdad2"
+        "url":"asdad1",
+        "type":"text"
       },
       {
-        "name":"Клиента",
-        "url":"qwe1"
+        "name":"Контакт",
+        "url":"qwe1",
+        "type":"text"
+      }
+    ]
+  },
+  {
+    "name":"Создать Документ",
+    "values":[
+      {
+        "name":"Полис",
+        "url":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Счет",
+        "url":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Дополнение",
+        "url":"qwe",
+        "type":"text"
+      }
+    ]
+  },
+  {
+    "name":"Дневник",
+    "values":[
+      {
+        "name":"Сотрудник",
+        "url":"asdad1",
+        "type":"text"
+      },
+      {
+        "name":"Клиент",
+        "url":"qwe1",
+        "type":"text"
       }
     ]
   }
