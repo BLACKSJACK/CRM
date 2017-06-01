@@ -23,25 +23,29 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
             $scope.currObj=response.data;
             var string=100/$scope.currObj.length+"%";
             $scope.navStyle={width:string};
-            console.log($scope.navStyle);
+
 
         },function error (response){
             console.log(response);
         }
     );
-    $scope.selPar=function(val){
-      console.log(val);
+    $scope.relocate=function(url){
+        for(i=0; i<$scope.currObj.length;i++){
+
+            if($scope.currObj[i]['url']===url){
+                console.log($scope.currObj[i]);
+                $scope.currParam=$scope.currObj.indexOf($scope.currObj[i]);
+            }
+        }
     };
+
     $scope.currentUl=function(index){
       if(index===$scope.currParam) return true;
     };
     $scope.selectParam=function (index) {
         $scope.currParam=index;
     };
-    $scope.bla=function(val){
-      $scope.config=val;
 
-    };
     $scope.configuration=function(value){
         if(value===1){
             if($scope.config==='navigation'){
@@ -51,6 +55,6 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
             else return false;
         }
     };
-    console.log($scope.configuration(1));
+
 
 });

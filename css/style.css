@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Tenor+Sans);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,900);
 @media (min-width: 1300px) and (max-width: 3600px) {
     div.mi_slider{
         width:1600px;
@@ -23,13 +24,15 @@ input[placeholder]          {text-overflow:ellipsis;}
 input::-moz-placeholder     {text-overflow:ellipsis;}
 input:-moz-placeholder      {text-overflow:ellipsis;}
 input:-ms-input-placeholder {text-overflow:ellipsis;}
-.mi_slider>div.dashboard_container>div>.ul>tbody>tr>td{
-    text-align: center;
-    height: 100%;
-    background: rgb(230, 230, 230);
 
+.mi_slider>div.dashboard_container>div>.ul>div>div>a{
+    width: 100%;
+    height: 100%;
 }
-.mi_slider>div.dashboard_container>div>.ul>tbody>tr>td>input{
+div.ul>div,div.nav>div{
+    display: table-row;
+}
+.mi_slider>div.dashboard_container>div>.ul>div>div>input{
     width:100%;
     height: 100%;
     outline: none;
@@ -41,37 +44,46 @@ input:-ms-input-placeholder {text-overflow:ellipsis;}
 }
 .ul_container{
     height: 50%;
-    position: relative;
+
 }
 div.dashboard_container{
     width: 100%;
     height:100%;
 }
 body{
+    font-family: 'Lato', Calibri, Arial, sans-serif;
     width: 100%;
     height:100%;
-    position: absolute;
-}
 
+}
+.properties{
+    background: rgb(230, 230, 230);
+    text-align: center;
+}
 
 .ul{
     width: 100%;
-    position: absolute;
+
     height: 100%;
     table-layout: fixed;
+    display: table;
 }
 .mi_slider>div.dashboard_container>.nav{
     width:100%;
     border-top: 5px solid rgb(146, 167, 205);
     height: 50%;
     table-layout: fixed;
+    display: table;
 }
-.mi_slider>div.dashboard_container>.nav>tbody>tr>td{
+.mi_slider>div.dashboard_container>.nav>div>div,.mi_slider>div.dashboard_container>div>.ul>div>div{
     background: rgb(230, 230, 230);
     text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+    border:1px solid white;
 }
-.mi_slider>div.dashboard_container>.nav>tbody>tr>td:hover,
-.mi_slider>div.dashboard_container>div>.ul>tbody>tr>td:hover{
+.mi_slider>div.dashboard_container>.nav>div>div:hover,
+.mi_slider>div.dashboard_container>div>.ul>div>div:hover{
     color: white;
     background: #35bfff;
 }
@@ -163,62 +175,62 @@ body{
 }
 /* moveFromRight */
 
-.mi_moveFromRight td {
+.mi_moveFromRight div {
     -webkit-animation: moveFromRight 350ms ease-in-out both;
     animation: moveFromRight 350ms ease-in-out both;
 }
 
 /* moveFromLeft */
 
-.mi_moveFromLeft td {
+.mi_moveFromLeft div {
     -webkit-animation: moveFromLeft 350ms ease-in-out both;
     animation: moveFromLeft 350ms ease-in-out both;
 }
 
 /* moveToRight */
 
-.mi_moveToRight td {
+.mi_moveToRight div {
     -webkit-animation: moveToRight 350ms ease-in-out both;
     animation: moveToRight 350ms ease-in-out both;
 }
 
 /* moveToLeft */
 
-.mi_moveToLeft td {
+.mi_moveToLeft div {
     -webkit-animation: moveToLeft 350ms ease-in-out both;
     animation: moveToLeft 350ms ease-in-out both;
 }
 
 /* Animation Delays */
 
-.mi_moveToLeft td:first-child,
-.mi_moveFromRight td:first-child,
-.mi_moveToRight td:nth-child(4),
-.mi_moveFromLeft td:nth-child(4) {
+.mi_moveToLeft div:first-child,
+.mi_moveFromRight div:first-child,
+.mi_moveToRight div:nth-child(4),
+.mi_moveFromLeft div:nth-child(4) {
     -webkit-animation-delay: 0ms;
     animation-delay: 0ms;
 }
 
-.mi_moveToLeft td:nth-child(2),
-.mi_moveFromRight td:nth-child(2),
-.mi_moveToRight td:nth-child(3),
-.mi_moveFromLeft td:nth-child(3) {
+.mi_moveToLeft div:nth-child(2),
+.mi_moveFromRight div:nth-child(2),
+.mi_moveToRight div:nth-child(3),
+.mi_moveFromLeft div:nth-child(3) {
     -webkit-animation-delay: 90ms;
     animation-delay: 90ms;
 }
 
-.mi_moveToLeft td:nth-child(3),
-.mi_moveFromRight td:nth-child(3),
-.mi_moveToRight td:nth-child(2),
-.mi_moveFromLeft td:nth-child(2) {
+.mi_moveToLeft div:nth-child(3),
+.mi_moveFromRight div:nth-child(3),
+.mi_moveToRight div:nth-child(2),
+.mi_moveFromLeft div:nth-child(2) {
     -webkit-animation-delay: 180ms;
     animation-delay: 180ms;
 }
 
-.mi_moveToLeft td:nth-child(4),
-.mi_moveFromRight td:nth-child(4),
-.mi_moveToRight td:first-child,
-.mi_moveFromLeft td:first-child  {
+.mi_moveToLeft div:nth-child(4),
+.mi_moveFromRight div:nth-child(4),
+.mi_moveToRight div:first-child,
+.mi_moveFromLeft div:first-child  {
     -webkit-animation-delay: 270ms;
     animation-delay: 270ms;
 }

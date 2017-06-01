@@ -1,4 +1,4 @@
-<!--
+<!-- версия 1.0.0
     <ul ng-repeat="param in currObj" ng-show="currentUl($index)" >
         <li ng-repeat="value in param.values">{{value.name}}</li>
     </ul>
@@ -6,14 +6,16 @@
         <a ng-repeat="param in currObj" ng-click="selectParam($index)" ng-style="navStyle">{{param.name}}</a>
     </nav>
 -->
+<!-- версия 1.0.1
 <div class="dashboard_container">
     <div class="ul_container">
         <table ng-repeat="param in currObj" class="ul" ng-class="[{mi_current: currentUl($index)}, {mi_moveFromRight: currentUl($index)},{ mi_moveToRight: !currentUl($index)}]" ng-show="currentUl($index)" >
             <tbody>
                 <tr>
-                    <td ng-repeat="value in param.values" ng-switch on="value.type">
-                        <a ng-switch-when="text">{{value.name}}</a>
-                        <input ng-switch-when="input" type="text" placeholder="{{value.name}}">
+                    <td ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocate(value.urlTo): null">
+                        {{value.type == "text" || value.type == "relocate_here" ? value.name : ""}}
+                        <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
+                        <input ng-if="value.type == 'date'" type="date">
                     </td>
                 </tr>
             </tbody>
@@ -21,9 +23,30 @@
     </div>
     <table class="nav">
         <tbody>
-        <tr>
-            <td ng-repeat="param in currObj" ng-click="selectParam($index)">{{param.name}}</td>
-        </tr>
+            <tr>
+                <td ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name">{{param.name}}</td>
+            </tr>
         </tbody>
     </table>
+</div>
+-->
+
+<!-- версия 1.0.2 -->
+<div class="dashboard_container">
+    <div class="ul_container">
+        <div ng-repeat="param in currObj" class="ul" ng-class="[{mi_current: currentUl($index)}, {mi_moveFromRight: currentUl($index)},{ mi_moveToRight: !currentUl($index)}]" ng-show="currentUl($index)" >
+            <div>
+                <div ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocate(value.urlTo): null">
+                    {{value.type == "text" || value.type == "relocate_here" ? value.name : ""}}
+                    <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
+                    <input ng-if="value.type == 'date'" type="date">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav">
+        <div>
+            <div ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name">{{param.name}}</div>
+        </div>
+    </div>
 </div>

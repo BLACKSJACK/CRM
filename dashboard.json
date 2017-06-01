@@ -4,28 +4,27 @@
     "values":[
       {
         "name":"Расчет",
-        "url":"asdad",
-        "type":"text"
-
+        "urlTo":"find_calculation",
+        "type":"relocate_here"
       },
       {
         "name":"Клиента",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       },
       {
         "name":"Полис",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       },
       {
         "name":"Счет",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       },
       {
         "name":"Запись в дневнике",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       }
     ]
@@ -35,12 +34,12 @@
     "values":[
       {
         "name":"Расчет",
-        "url":"asdad1",
+        "urlTo":"asdad1",
         "type":"text"
       },
       {
         "name":"Контакт",
-        "url":"qwe1",
+        "urlTo":"qwe1",
         "type":"text"
       }
     ]
@@ -50,17 +49,17 @@
     "values":[
       {
         "name":"Полис",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       },
       {
         "name":"Счет",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       },
       {
         "name":"Дополнение",
-        "url":"qwe",
+        "urlTo":"qwe",
         "type":"text"
       }
     ]
@@ -70,13 +69,34 @@
     "values":[
       {
         "name":"Сотрудник",
-        "url":"asdad1",
+        "urlTo":"asdad1",
         "type":"text"
       },
       {
         "name":"Клиент",
-        "url":"qwe1",
+        "urlTo":"qwe1",
         "type":"text"
+      }
+    ]
+  },
+  {
+    "url":"find_calculation",
+    "values":[
+      {
+        "name":"Название",
+        "type":"input"
+      },{
+        "name":"Премия",
+        "type":"input"
+      },{
+        "name":"Лимит",
+        "type":"input"
+      },{
+        "name":"Объем",
+        "type":"input"
+      },{
+        "name":"Дата",
+        "type":"date"
       }
     ]
   }
