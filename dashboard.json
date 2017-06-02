@@ -9,13 +9,13 @@
       },
       {
         "name":"Клиента",
-        "urlTo":"qwe",
-        "type":"text"
+        "urlTo":"find_client",
+        "type":"relocate_here"
       },
       {
         "name":"Полис",
-        "urlTo":"qwe",
-        "type":"text"
+        "urlTo":"find_polis",
+        "type":"relocate_here"
       },
       {
         "name":"Счет",
@@ -33,14 +33,24 @@
     "name":"Новый",
     "values":[
       {
-        "name":"Расчет",
-        "urlTo":"asdad1",
-        "type":"text"
+        "name":"Перевозчик",
+        "urlTo":"https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project4.2.php",
+        "type":"relocatePage"
       },
       {
         "name":"Контакт",
-        "urlTo":"qwe1",
-        "type":"text"
+        "urlTo":"new_contact",
+        "type":"relocatePage"
+      },
+      {
+        "name":"Грузовладелец",
+        "urlTo":"https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/new_check.php",
+        "type":"relocatePage"
+      },
+      {
+        "name":"Экспедитор",
+        "urlTo":"https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project4.2.php",
+        "type":"relocatePage"
       }
     ]
   },
@@ -84,15 +94,86 @@
     "values":[
       {
         "name":"Название",
-        "type":"input"
+        "type":"input_search",
+        "model":"find_calc_name"
+      },{
+        "name":"Лимит",
+        "type":"input_search",
+        "model":"find_calc_limit"
       },{
         "name":"Премия",
+        "type":"input_search",
+        "model":"find_calc_price"
+      },{
+        "name":"Объем",
+        "type":"input_search",
+        "model":"find_calc_amount"
+      },{
+        "name":"Дата",
+        "type":"date_search",
+        "model":"find_calc_date"
+      }
+    ]
+  },
+  {
+    "url":"find_client",
+    "values":[
+      {
+        "name":"Наименование организации",
+        "type":"input"
+      },{
+        "name":"Контактное лицо",
+        "type":"input"
+      }
+    ]
+  },
+  {
+    "url":"find_polis",
+    "values":[
+      {
+        "name":"Наименование организации",
+        "type":"input"
+      },{
+        "name":"Номер полиса",
         "type":"input"
       },{
         "name":"Лимит",
         "type":"input"
       },{
-        "name":"Объем",
+        "name":"Дата",
+        "type":"date"
+      }
+    ]
+  },
+  {
+    "url":"new_contact",
+    "values":[
+      {
+        "name":"Клиент",
+        "type":"input"
+      },{
+        "name":"Агент",
+        "type":"input"
+      },{
+        "name":"Перестраховщик",
+        "type":"input"
+      },{
+        "name":"Дата",
+        "type":"date"
+      }
+    ]
+  },
+  {
+    "url":"new_calc",
+    "values":[
+      {
+        "name":"Наименование организации",
+        "type":"input"
+      },{
+        "name":"Номер полиса",
+        "type":"input"
+      },{
+        "name":"Лимит",
         "type":"input"
       },{
         "name":"Дата",

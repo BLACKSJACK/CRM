@@ -36,8 +36,8 @@
     <div class="ul_container">
         <div ng-repeat="param in currObj" class="ul" ng-class="[{mi_current: currentUl($index)}, {mi_moveFromRight: currentUl($index)},{ mi_moveToRight: !currentUl($index)}]" ng-show="currentUl($index)" >
             <div>
-                <div ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocate(value.urlTo): null">
-                    {{value.type == "text" || value.type == "relocate_here" ? value.name : ""}}
+                <div ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocateHere(value.urlTo): value.type=='relocatePage'? relocatePage(value.urlTo):''">
+                    {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" ? value.name : ""}}
                     <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
                     <input ng-if="value.type == 'date'" type="date">
                 </div>

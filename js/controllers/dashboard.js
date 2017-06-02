@@ -29,7 +29,10 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
             console.log(response);
         }
     );
-    $scope.relocate=function(url){
+    $scope.relocatePage=function(url){
+        location.href = url;
+    };
+    $scope.relocateHere=function(url){//переход в углубление вверху каретки
         for(i=0; i<$scope.currObj.length;i++){
 
             if($scope.currObj[i]['url']===url){
@@ -39,10 +42,10 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
         }
     };
 
-    $scope.currentUl=function(index){
+    $scope.currentUl=function(index){//функция проверки для анимации и переключения между ul
       if(index===$scope.currParam) return true;
     };
-    $scope.selectParam=function (index) {
+    $scope.selectParam=function (index) { // нажатии на nav
         $scope.currParam=index;
     };
 
