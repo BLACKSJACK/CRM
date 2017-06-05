@@ -2,6 +2,16 @@
  * Created by RoGGeR on 30.05.17.
  */
 app.controller('dashboardCtrl',function($scope,$rootScope,$http){
+    $scope.search_params=[];
+    $scope.search = function( value ) {
+        if(value.val.length>2){
+            for(i=0; i< $scope.search_params.length; i++){
+                if($scope.search_params[i]['name']==value.name) delete $scope.search_params[i];
+            }
+            //if() $scope.search_params.push(values);
+        }
+    };
+
     $scope.reload_carret=function(string){
         $http.post(string).then(function success (response) {
                 $scope.currObj=response.data;

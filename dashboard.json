@@ -8,8 +8,8 @@
         "type":"relocate_here"
       },
       {
-        "name":"Клиента",
-        "urlTo":"find_client",
+        "name":"Юр. лицо",
+        "urlTo":"find_company",
         "type":"relocate_here"
       },
       {
@@ -19,6 +19,11 @@
       },
       {
         "name":"Счет",
+        "urlTo":"qwe",
+        "type":"text"
+      },
+      {
+        "name":"Физ. лицо",
         "urlTo":"qwe",
         "type":"text"
       },
@@ -116,11 +121,12 @@
     ]
   },
   {
-    "url":"find_client",
+    "url":"find_company",
     "values":[
       {
         "name":"Наименование организации",
-        "type":"input"
+        "type":"input_search",
+        "model":"name"
       },{
         "name":"Контактное лицо",
         "type":"input"
