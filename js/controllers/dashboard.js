@@ -4,12 +4,13 @@
 app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
     $scope.search = function( value ) {
-        if(value.val.length>2){
-            for(i=0; i< $scope.search_params.length; i++){
-                if($scope.search_params[i]['name']==value.name) delete $scope.search_params[i];
+       // console.log(value);
+        $http.post("search.php", value).then(function success (response) {
+                console.log(response.data);
+            },function error (response){
+                console.log(response.data);
             }
-            //if() $scope.search_params.push(values);
-        }
+        );
     };
 
     $scope.reload_carret=function(string){
@@ -19,6 +20,7 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
 
             },function error (response){
                 console.log(response);
+
             }
         );
     };

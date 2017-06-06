@@ -40,7 +40,7 @@
                     {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" ? value.name : ""}}
                     <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
                     <input ng-if="value.type == 'date'" type="date">
-                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val"  ng-keyup="search(value)" type="text" placeholder="{{value.name}}">
+                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val"  ng-keyup="search(param.values)" type="text" placeholder="{{value.name}}">
                 </div>
             </div>
         </div>
@@ -51,4 +51,3 @@
         </div>
     </div>
 </div>
-

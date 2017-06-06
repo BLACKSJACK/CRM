@@ -31,6 +31,11 @@
         "name":"Запись в дневнике",
         "urlTo":"qwe",
         "type":"text"
+      },
+      {
+        "name":"Убыток",
+        "urlTo":"qwe",
+        "type":"text"
       }
     ]
   },
@@ -129,7 +134,22 @@
         "model":"name"
       },{
         "name":"Контактное лицо",
-        "type":"input"
+        "type":"input",
+        "db":"contacts"
+      },
+      {
+        "name":"Телефон",
+        "type":"input_search",
+        "mask":"",
+        "model":"phone",
+        "":""
+      },
+      {
+        "name":"Юр. адрес",
+        "type":"input_search",
+        "mask":"",
+        "model":"phone",
+        "":""
       }
     ]
   },

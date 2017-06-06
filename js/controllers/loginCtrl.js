@@ -7,6 +7,7 @@ app.controller('loginCtrl', function($scope, $location, $rootScope,$http){
         data.login=$scope.username;
         data.pwd=$scope.password;
         $http.post("authorization.php", data).then(function success (response) {
+            console.log(response);
                 if(response.data==="permission denied"){
                     $scope.username='';
                     $scope.password='';
@@ -17,6 +18,7 @@ app.controller('loginCtrl', function($scope, $location, $rootScope,$http){
                     $location.path('/dashboard');
 
                     $rootScope.name=response.data['name'];
+                    console.log($rootScope.name);
 
                 }
 
