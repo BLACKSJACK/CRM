@@ -5,37 +5,44 @@
       {
         "name":"Расчет",
         "urlTo":"find_calculation",
-        "type":"relocate_here"
+        "type":"relocate_here",
+        "search":"true"
       },
       {
         "name":"Юр. лицо",
         "urlTo":"find_company",
-        "type":"relocate_here"
+        "type":"relocate_here",
+        "search":"true"
       },
       {
         "name":"Полис",
         "urlTo":"find_polis",
-        "type":"relocate_here"
+        "type":"relocate_here",
+        "search":"true"
       },
       {
         "name":"Счет",
         "urlTo":"qwe",
-        "type":"text"
+        "type":"text",
+        "search":"true"
       },
       {
         "name":"Физ. лицо",
         "urlTo":"qwe",
-        "type":"text"
+        "type":"text",
+        "search":"true"
       },
       {
         "name":"Запись в дневнике",
         "urlTo":"qwe",
-        "type":"text"
+        "type":"text",
+        "search":"true"
       },
       {
         "name":"Убыток",
         "urlTo":"qwe",
-        "type":"text"
+        "type":"text",
+        "search":"true"
       }
     ]
   },
@@ -129,26 +136,35 @@
     "url":"find_company",
     "values":[
       {
-        "name":"Наименование организации",
+        "name":"Наименование",
         "type":"input_search",
-        "model":"name"
+        "model":"name",
+        "db":"companies"
       },{
         "name":"Контактное лицо",
-        "type":"input",
+        "type":"input_search",
         "db":"contacts"
       },
       {
         "name":"Телефон",
         "type":"input_search",
         "mask":"",
-        "model":"phone",
-        "":""
+        "model":"company_phone",
+        "db":"companies"
       },
       {
         "name":"Юр. адрес",
         "type":"input_search",
         "mask":"",
-        "model":"phone",
+        "model":"Legal_address",
+        "db":"addresses"
+      },
+      {
+        "name":"Полис",
+        "type":"input_search",
+        "mask":"",
+        "model":"polis",
+        "db":"polis",
         "":""
       }
     ]

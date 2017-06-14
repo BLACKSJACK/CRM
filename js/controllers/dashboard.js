@@ -3,15 +3,7 @@
  */
 app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
-    $scope.search = function( value ) {
-       // console.log(value);
-        $http.post("search.php", value).then(function success (response) {
-                console.log(response.data);
-            },function error (response){
-                console.log(response.data);
-            }
-        );
-    };
+
 
     $scope.reload_carret=function(string){
         $http.post(string).then(function success (response) {
@@ -31,17 +23,16 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
         }
     );
     $scope.config=1;
-    $http.post("dashboard.json").then(function success (response) {
+    $http.post("dashboard.json").then(function success (response) {//уста
             $scope.currObj=response.data;
-            var string=100/$scope.currObj.length+"%";
-            $scope.navStyle={width:string};
+
 
 
         },function error (response){
             console.log(response);
         }
     );
-    $scope.relocatePage=function(url){
+    $scope.relocatePage=function(url){//переход на другую страницу(как в случае с калькулятором который не написан)
         location.href = url;
     };
     $scope.relocateHere=function(url){//переход в углубление вверху каретки

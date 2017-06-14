@@ -38,3 +38,4 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
         'http://myapp.example.com/clickThru**'
     ]);
 });
+

@@ -40,7 +40,7 @@
                     {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" ? value.name : ""}}
                     <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
                     <input ng-if="value.type == 'date'" type="date">
-                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val"  ng-keyup="search(param.values)" type="text" placeholder="{{value.name}}">
+                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl"  ng-keyup="search(param.values, param.url)" type="text" placeholder="{{value.name}}">
                 </div>
             </div>
         </div>
@@ -48,6 +48,15 @@
     <div class="nav">
         <div>
             <div ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name">{{param.name}}</div>
+        </div>
+    </div>
+</div>
+<div class="matrix_container">
+    <div class="matrix">
+        <div ng-repeat="row in search_result">
+            <div class="properties">{{row.name}}</div>
+            <div class="properties">{{row.company_phone}}</div>
+            <div class="properties">{{row.Legal_address}}</div>
         </div>
     </div>
 </div>

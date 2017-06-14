@@ -7,6 +7,14 @@
         font-size: 14pt;
         margin:10%;
     }
+    div.matrix_container{
+        width:1600px;
+        font-size: 14pt;
+
+    }
+    .matrix>div{
+        height: 80px;
+    }
 
 }
 @media (min-width: 400px) and (max-width: 1299px){
@@ -15,7 +23,26 @@
         height: 120px;
         margin:10%;
     }
+    div.matrix_container{
+        width:1000px;
+        font-size: 14pt;
+
+    }
+    .matrix>div{
+        height: 60px;
+    }
 }
+div.matrix{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 10%;
+}
+div.matrix>div{
+    display: table-row;
+    background: rgb(230, 230, 230);
+}
+
 ::-webkit-input-placeholder {text-align: center;}
 ::-moz-placeholder          {text-align: center;}/* Firefox 19+ */
 :-moz-placeholder           {text-align: center;}/* Firefox 18- */
@@ -56,9 +83,12 @@ body{
     height:100%;
 
 }
-.properties{
-    background: rgb(230, 230, 230);
+div.matrix>div>.properties{
+
     text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    border:1px solid white;
 }
 
 .ul{
@@ -83,7 +113,7 @@ body{
     border:1px solid white;
 }
 .mi_slider>div.dashboard_container>.nav>div>div:hover,
-.mi_slider>div.dashboard_container>div>.ul>div>div:hover{
+.mi_slider>div.dashboard_container>div>.ul>div>div:hover,div.matrix>div:hover{
     color: white;
     background: #35bfff;
 }

@@ -12,11 +12,11 @@
             if($row['LOGIN']===$data['login'] && $row['PWD']===$data['pwd']){
                 $answer['name']= $row['NAME'];
                 $answer['options']=$row['OPTIONS'];
-
+                $answer['loggin']=true;
 
             }
         }
-        if(!isset($answer))  $answer="permission denied";
+        if(!isset($answer))  $answer['loggin']=false;
     }
     echo json_encode($answer);
 
