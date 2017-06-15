@@ -23,7 +23,7 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
         }
     );
     $scope.config=1;
-    $http.post("dashboard.json").then(function success (response) {//уста
+    $http.post("dashboard.json").then(function success (response) {//устанавливаем каретку управления и заполняем ее из файла dashboard.json
             $scope.currObj=response.data;
 
 

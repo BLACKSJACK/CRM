@@ -7,6 +7,8 @@
 
 	$data = json_decode(file_get_contents('php://input'), true);
 	if($data['type']=="find_company"){
+
+
 	    $query="SELECT * FROM Companies WHERE ";
 	    $index=0;
 	    foreach ($data['values'] as $value){
@@ -16,21 +18,41 @@
 	            $index++;
 	            $companies=true;
 	        }
-	        else if(isset($value["val"]) && $value["val"]!="" && $value["db"]=="addresses"){
-	            $addresses=true;
-	            $query_addresses="SELECT * FROM addresses WHERE LOWER(Street) RLIKE LOWER('".$value["val"]."') OR LOWER(City) RLIKE LOWER('".$value["val"]."')OR LOWER(Region) RLIKE LOWER('".$value["val"]."') OR LOWER(Country) RLIKE LOWER('".$value["val"]."')";
-	        }
 	    }
-	    if($companies)$result = mysql_query($query) or die();
-	    if($companies && $addresses){
-
-	    }
+        $result = mysql_query($query) or die();
         $resultJson = array();
+        $query="SELECT * FROM addresses WHERE id in (";
+        $index=0;
         while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-           $resultJson[] = $row;
+            if($index>0) $query.=", ";
+            $query.=$row['Legal_address'];
+            $index++;
+            $resultJson[] = $row;
         }
-        echo json_encode($resultJson);
+        $query.=")";
+
+        $result1=mysql_query($query) or die();
+        $addresses=array();
+        while($row=mysql_fetch_array($result1, MYSQL_ASSOC)){
+           $addresses[$row['id']] = $row['City'].", ".$row['Street'];
+
+        }
+        $result=[];
+        foreach($resultJson as $row){
+
+            $id=$row['Legal_address'];
+            $row['Legal_address']=$addresses[$id];
+            //echo $row['Legal_address'];
+            $result[]=$row;
+
+        }
+
+        echo json_encode($result);
 	}
+
+
+
+
 	/*foreach ($data as $mass_item) {
         if($mass_item['name']=="Наименование" && isset($mass_item['val'])) $exp=$mass_item['val'];
 	}
