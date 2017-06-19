@@ -1,4 +1,4 @@
-<?
+<?//рабочий вариант
 
     //ini_set('display_errors',1);
 	//error_reporting(E_ALL);
@@ -9,62 +9,40 @@
 	if($data['type']=="find_company"){
 
 
-	    $query="SELECT * FROM Companies WHERE ";
+	    $query="SELECT com.name, ctx.LastName, ctx.FirstName, com.company_phone,addr.City, addr.Street ";
+	    $query.="FROM Connections as con ";
+	    $query.="LEFT JOIN Companies as com on con.company_id = com.id ";
+	    $query.="LEFT JOIN Contacts as ctx on con.contact_id = ctx.id ";
+	    $query.="LEFT JOIN addresses as addr on addr.id = com.Legal_address ";
+	    $query.="WHERE ";
 	    $index=0;
 	    foreach ($data['values'] as $value){
 	        if(isset($value["val"]) && $value["val"]!="" && $value["db"]=="companies"){
 	            if($index>0) $query.=" AND ";
-	            $query.="LOWER(".$value['model'].") RLIKE LOWER('".$value['val']."')";
+	            $query.="LOWER(com.".$value['model'].") RLIKE LOWER('".$value['val']."')";
 	            $index++;
 	            $companies=true;
 	        }
 	    }
-        $result = mysql_query($query) or die();
+        //echo $query;
+        $result = mysql_query($query) or die(mysql_error());
         $resultJson = array();
-        $query="SELECT * FROM addresses WHERE id in (";
-        $index=0;
+
         while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-            if($index>0) $query.=", ";
-            $query.=$row['Legal_address'];
-            $index++;
-            $resultJson[] = $row;
-        }
-        $query.=")";
+           //$addresses[$row['id']] = $row['City'].", ".$row['Street'];
+           $resultJson[]=$row;
 
-        $result1=mysql_query($query) or die();
-        $addresses=array();
-        while($row=mysql_fetch_array($result1, MYSQL_ASSOC)){
-           $addresses[$row['id']] = $row['City'].", ".$row['Street'];
-
-        }
-        $result=[];
-        foreach($resultJson as $row){
-
-            $id=$row['Legal_address'];
-            $row['Legal_address']=$addresses[$id];
-            //echo $row['Legal_address'];
-            $result[]=$row;
 
         }
 
-        echo json_encode($result);
+        echo json_encode($resultJson);
+
+
 	}
 
 
 
 
-	/*foreach ($data as $mass_item) {
-        if($mass_item['name']=="Наименование" && isset($mass_item['val'])) $exp=$mass_item['val'];
-	}
-	$query = "SELECT * FROM Companies WHERE LOWER(name) RLIKE LOWER('".$exp."') ";
-    $result = mysql_query($query) or die();
-    $resultJson = array();
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-        //var_dump($row);
-       $resultJson[] = $row;
-    }
-    echo json_encode($resultJson);
-*/
 
 
 

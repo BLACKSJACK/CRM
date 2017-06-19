@@ -6,7 +6,7 @@ app.controller('searchCtrl', function($scope,$rootScope,$http){
         var data={};
         data.values=values;
         data.type=type;
-
+        console.log(data);
         $http.post("search.php", data).then(function success (response) {
                 console.log(response.data);
                 $rootScope.search_result=response.data;
