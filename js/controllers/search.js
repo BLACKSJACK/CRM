@@ -1,17 +1,21 @@
 /**
  * Created by RoGGeR on 14.06.17.
  */
-app.controller('searchCtrl', function($scope,$rootScope,$http){
+app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
+
     $scope.search = function( values , type) {
+        if($scope.abort) {
+            $scope.abort.resolve();
+        }
+        $scope.abort = $q.defer();
         var data={};
         data.values=values;
         data.type=type;
-        console.log(data);
-        $http.post("search.php", data).then(function success (response) {
+        $http.post("search.php", data,{timeout:$scope.abort.promise}).then(function success (response) {
                 console.log(response.data);
                 $rootScope.search_result=response.data;
             },function error (response){
-                console.log(response.data);
+                console.log("Request cancelled");
             }
         );
     };
