@@ -40,7 +40,7 @@
                     {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" ? value.name : ""}}
                     <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
                     <input ng-if="value.type == 'date'" type="date">
-                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl" ng-change="search(param.values, param.url)" type="text" placeholder="{{value.name}}">
+                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl" ng-change="isEmptyQuery(param.values) ? isEmptyObject(template) ? search(param.values, param.url) : checkTemplate(param.values) ? searchFilter(param.values) : search(param.values, param.url) : clean()" type="text" placeholder="{{value.name}}">
                 </div>
             </div>
         </div>
@@ -53,11 +53,12 @@
 </div>
 <div class="matrix_container">
     <div class="matrix">
-        <div ng-repeat="row in search_result track by $index">
+
+        <div ng-repeat="row in search_result | filter:cacheTemplate track by $index">
             <div class="properties">{{row.name}}</div>
-            <div class="properties">{{row.FirstName+" "+row.LastName}}</div>
+            <div class="properties">{{row.contact}}</div>
             <div class="properties">{{row.company_phone}}</div>
-            <div class="properties">{{row.City+" "+row.Street}}</div>
+            <div class="properties">{{row.Legal_address}}</div>
 
         </div>
     </div>
