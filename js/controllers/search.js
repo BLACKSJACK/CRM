@@ -53,7 +53,7 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
 
                 $rootScope.search_result=response.data;
             },function error (response){
-                console.log("Request cancelled");
+                console.log(response);
             }
         );
     };

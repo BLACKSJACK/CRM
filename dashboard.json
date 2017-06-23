@@ -184,7 +184,7 @@
         "type":"input"
       },{
         "name":"Дата",
-        "type":"date"
+        "type":"date_search"
       }
     ]
   },

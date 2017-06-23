@@ -12,7 +12,7 @@
         font-size: 14pt;
 
     }
-    .matrix>div{
+    .matrix_row{
         height: 80px;
     }
 
@@ -28,7 +28,7 @@
         font-size: 14pt;
 
     }
-    .matrix>div{
+    .matrix_row{
         height: 60px;
     }
 }
@@ -41,6 +41,10 @@ div.matrix{
 div.matrix>div{
     display: table-row;
     background: rgb(230, 230, 230);
+}
+.multi_cell:hover{
+    background: white;
+    color: rgb(0, 111, 167);
 }
 
 ::-webkit-input-placeholder {text-align: center;}

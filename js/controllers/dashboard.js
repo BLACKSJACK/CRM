@@ -3,8 +3,16 @@
  */
 app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
-
-
+    $scope.isArray = angular.isArray;
+    $scope.checkMulti=function(row){
+      if(!row.show)  row.show=true;
+      else row.show=false;
+    };
+    $scope.multiHeight=function(contacts){
+        var height=100/contacts.length;
+        height="{height:"+height+"%;}";
+        return height;
+    };
     $scope.reload_carret=function(string){
         $http.post(string).then(function success (response) {
                 $scope.currObj=response.data;

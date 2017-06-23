@@ -39,8 +39,8 @@
                 <div ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocateHere(value.urlTo): value.type=='relocatePage'? relocatePage(value.urlTo):''">
                     {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" ? value.name : ""}}
                     <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
-                    <input ng-if="value.type == 'date'" type="date">
                     <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl" ng-change="isEmptyQuery(param.values) ? isEmptyObject(template) ? search(param.values, param.url) : checkTemplate(param.values) ? searchFilter(param.values) : search(param.values, param.url) : clean()" type="text" placeholder="{{value.name}}">
+                    <input ng-if="value.type == 'date_search'" type="date">
                 </div>
             </div>
         </div>
@@ -54,12 +54,31 @@
 <div class="matrix_container">
     <div class="matrix">
 
-        <div ng-repeat="row in search_result | filter:cacheTemplate track by $index">
+        <div ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
             <div class="properties">{{row.name}}</div>
-            <div class="properties">{{row.contact}}</div>
-            <div class="properties">{{row.company_phone}}</div>
-            <div class="properties">{{row.Legal_address}}</div>
 
+
+
+
+            <div class="properties" ng-if="isArray(row.contact)" ng-click="checkMulti(row)" >
+                <div ng-show="!row.show">{{row.contact.length}}</div>
+                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3;" ng-show="row.show">{{ctx}}</div>
+            </div>
+            <div class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</div>
+
+
+
+
+            <div class="properties" ng-if="isArray(row.company_phone)" ng-click="checkMulti(row)" >
+                <div ng-show="!row.show">{{row.company_phone.length}}</div>
+                <div ng-repeat="phone in row.company_phone track by $index" class="multi_cell" ng-style="MultiHeight(row.contact)" ng-show="row.show" style="line-height: 3;">{{phone}}</div>
+            </div>
+            <div class="properties" ng-if="!isArray(row.company_phone)">{{row.company_phone}}</div>
+
+
+
+
+            <div class="properties">{{row.Legal_address}}</div>
         </div>
     </div>
 </div>
