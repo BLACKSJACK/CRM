@@ -5,8 +5,18 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
     $scope.isArray = angular.isArray;
     $scope.checkMulti=function(row){
-      if(!row.show)  row.show=true;
-      else row.show=false;
+        if(row.contact.length>1){
+            if(!row.show)  row.show=true;
+            else row.show=false;
+        }
+        else return false;
+    };
+    $scope.isValue=function(ctx){
+        var val = ctx.phone;
+        return val!="" && val!=undefined && val!=null && val!=NaN && !angular.equals("", val)
+    };
+    $scope.isMulti=function(row){
+        return row.contact.length>1;
     };
     $scope.multiHeight=function(contacts){
         var height=100/contacts.length;

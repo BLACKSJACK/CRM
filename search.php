@@ -10,7 +10,7 @@
 	if($data['type']=="find_company"){
 
 
-	    $query="SELECT com.id, com.name, ctx.LastName, ctx.FirstName, com.company_phone, addr.City, addr.Street ";
+	    $query="SELECT con.phone, com.id, com.name, ctx.LastName, ctx.FirstName, com.company_phone, addr.City, addr.Street ";
 	    $query.="FROM Connections as con ";
 	    $query.="LEFT JOIN Companies as com on con.company_id = com.id ";
 	    $query.="LEFT JOIN Contacts as ctx on con.contact_id = ctx.id ";
@@ -40,7 +40,12 @@
         foreach($resultJson as $item){
             if(!isset($array[$item['id']])){
                 $array[$item['id']]=$item;
-                if(isset($item['company_phone'])){
+                $array[$item['id']]['contact']=[];
+                $ctx=[];
+                $ctx['name']=$item['contact'];
+                if(isset($item['phone'])) $ctx['phone']=$item['phone'];
+                $array[$item['id']]['contact'][]=$ctx;
+                /*if(isset($item['company_phone'])){
                     $mass=explode(";", $item['company_phone']);
                     $array[$item['id']]['company_phone']=[];
                     foreach($mass as $mass_item){
@@ -48,14 +53,14 @@
                     }
                 }
                 if(count($array[$item['id']]['company_phone'])==0) $array[$item['id']]['company_phone']="";
-                else if(count($array[$item['id']]['company_phone'])==1) $array[$item['id']]['company_phone']=$array[$item['id']]['company_phone'][0];
+                else if(count($array[$item['id']]['company_phone'])==1) $array[$item['id']]['company_phone']=$array[$item['id']]['company_phone'][0];*/
             }
             else{
-                if(is_array($array[$item['id']]['contact'])) $array[$item['id']]['contact'][]=$item['contact'];
-                else{
-                    $array[$item['id']]['contact']=[$array[$item['id']]['contact']];
-                    $array[$item['id']]['contact'][]=$item['contact'];;
-                }
+                $ctx=[];
+                $ctx['name']=$item['contact'];
+                if(isset($item['phone'])) $ctx['phone']=$item['phone'];
+                $array[$item['id']]['contact'][]=$ctx;
+
             }
 
         }

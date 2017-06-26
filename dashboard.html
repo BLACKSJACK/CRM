@@ -52,33 +52,29 @@
     </div>
 </div>
 <div class="matrix_container">
-    <div class="matrix">
-
-        <div ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
-            <div class="properties">{{row.name}}</div>
-
-
-
-
-            <div class="properties" ng-if="isArray(row.contact)" ng-click="checkMulti(row)" >
-                <div ng-show="!row.show">{{row.contact.length}}</div>
-                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3;" ng-show="row.show">{{ctx}}</div>
-            </div>
-            <div class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</div>
+    <table class="matrix">
+        <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
+            <td class="properties" ng-click="checkMulti(row)">{{row.name}}</td>
 
 
 
 
-            <div class="properties" ng-if="isArray(row.company_phone)" ng-click="checkMulti(row)" >
-                <div ng-show="!row.show">{{row.company_phone.length}}</div>
-                <div ng-repeat="phone in row.company_phone track by $index" class="multi_cell" ng-style="MultiHeight(row.contact)" ng-show="row.show" style="line-height: 3;">{{phone}}</div>
-            </div>
-            <div class="properties" ng-if="!isArray(row.company_phone)">{{row.company_phone}}</div>
+            <td class="properties" ng-if="isArray(row.contact)" ng-click="checkMulti(row)" colspan="{{row.show ? 2 : 1}}">
+                <div ng-show="!row.show" ng-class="{multi_close : isMulti(row)}">{{row.contact[0].name}}</div>
+                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%" ng-show="row.show" >
+                    <div style="display: inline-block; width: 49%;">{{ctx.name}}</div>
+                    <div style="display: inline-block; width: 49%;">{{ctx.phone ? ctx.phone : row.company_phone ? row.company_phone : row.contact[0].phone}}</div>
+                </div>
+            </td>
+            <td class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</td>
+
+
+            <td class="properties"  ng-show="!row.show">{{row.company_phone ? row.company_phone : row.contact[0].phone}}</td>
 
 
 
 
-            <div class="properties">{{row.Legal_address}}</div>
-        </div>
-    </div>
+            <td class="properties" ng-click="checkMulti(row)">{{row.Legal_address}}</td>
+        </tr>
+    </table>
 </div>

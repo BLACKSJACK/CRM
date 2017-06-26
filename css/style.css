@@ -5,12 +5,13 @@
         width:1600px;
         height: 160px;
         font-size: 14pt;
-        margin:10%;
+        margin:5% 10% 10% 10%;
+
     }
     div.matrix_container{
-        width:1600px;
+        width:1620px;
         font-size: 14pt;
-
+        height:800px;
     }
     .matrix_row{
         height: 80px;
@@ -21,24 +22,37 @@
     div.mi_slider{
         width:1000px;
         height: 120px;
-        margin:10%;
+        margin:5% 10% 10% 10%;
     }
     div.matrix_container{
-        width:1000px;
+        width:1020px;
         font-size: 14pt;
-
+        height:600px;
     }
     .matrix_row{
         height: 60px;
     }
 }
-div.matrix{
+.element::-webkit-scrollbar { width: 0; }
+
+/* ie 10+ */
+.element { -ms-overflow-style: none; }
+
+/* фф (свойство больше не работает, других способов тоже нет)*/
+.element { overflow: -moz-scrollbars-none; }
+.matrix_container{
+    margin-top: 10%;
+    overflow: auto;
+}
+table.matrix{
     display: table;
     width: 100%;
     table-layout: fixed;
-    margin-top: 10%;
+
+
+
 }
-div.matrix>div{
+table.matrix>tbody>tr{
     display: table-row;
     background: rgb(230, 230, 230);
 }
@@ -75,7 +89,9 @@ div.ul>div,div.nav>div{
 }
 .ul_container{
     height: 50%;
-
+}
+.multi_close{
+    color:rgb(0, 111, 167);
 }
 div.dashboard_container{
     width: 100%;
@@ -87,12 +103,12 @@ body{
     height:100%;
 
 }
-div.matrix>div>.properties{
+table.matrix>tbody>tr>.properties{
 
     text-align: center;
     display: table-cell;
     vertical-align: middle;
-    border:1px solid white;
+
 }
 
 .ul{
@@ -117,7 +133,7 @@ div.matrix>div>.properties{
     border:1px solid white;
 }
 .mi_slider>div.dashboard_container>.nav>div>div:hover,
-.mi_slider>div.dashboard_container>div>.ul>div>div:hover,div.matrix>div:hover{
+.mi_slider>div.dashboard_container>div>.ul>div>div:hover,table.matrix>tbody>tr:hover{
     color: white;
     background: #35bfff;
 }
