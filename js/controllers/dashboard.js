@@ -4,12 +4,23 @@
 app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
     $scope.isArray = angular.isArray;
+    $scope.checkMult=function(row){
+       console.log(row.show);
+       row.show=false;
+       console.log(row.show);
+       console.log(row.show);
+       console.log(row);
+    };
     $scope.checkMulti=function(row){
         if(row.contact.length>1){
             if(!row.show)  row.show=true;
             else row.show=false;
         }
         else return false;
+    };
+    $scope.alert=function(val){
+
+        alert(val);
     };
     $scope.isValue=function(ctx){
         var val = ctx.phone;

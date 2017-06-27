@@ -33,6 +33,31 @@
         height: 60px;
     }
 }
+.block {
+
+    content: '';
+    position: absolute; /* Абсолютное позиционирование */
+    left: 48%; bottom: 0px; /* Положение треугольника */
+    border: 10px solid transparent; /* Прозрачные границы */
+    border-bottom: 10px solid rgb(0, 111, 167); /* Добавляем треугольник */
+}
+
+
+.animation { -webkit-transition: 0.5s; }
+
+.animation.ng-enter-stagger,
+.animation.ng-leave-stagger{
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+    -webkit-transition-duration:0;
+    transition-duration:0;
+}
+
+.animation.ng-leave { opacity: 1; }
+.animation.ng-leave.ng-leave-active { opacity: 0; }
+
+.animation.ng-enter { opacity: 0; }
+.animation.ng-enter.ng-enter-active { opacity: 1; }
 .element::-webkit-scrollbar { width: 0; }
 
 /* ie 10+ */
@@ -228,6 +253,7 @@ table.matrix>tbody>tr>.properties{
 .mi_moveFromRight div {
     -webkit-animation: moveFromRight 350ms ease-in-out both;
     animation: moveFromRight 350ms ease-in-out both;
+
 }
 
 /* moveFromLeft */

@@ -53,18 +53,20 @@
 </div>
 <div class="matrix_container">
     <table class="matrix">
-        <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
+        <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" class="animation" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
             <td class="properties" ng-click="checkMulti(row)">{{row.name}}</td>
 
 
 
 
-            <td class="properties" ng-if="isArray(row.contact)" ng-click="checkMulti(row)" colspan="{{row.show ? 2 : 1}}">
+            <td class="properties" ng-if="isArray(row.contact)" ng-click="row.close!='disable' ? row.show ? alert('загрузка контакта'): row.show=true : null" colspan="{{row.show ? 2 : 1}}">
                 <div ng-show="!row.show" ng-class="{multi_close : isMulti(row)}">{{row.contact[0].name}}</div>
-                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%" ng-show="row.show" >
+                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%; position: relative;" ng-show="row.show" >
                     <div style="display: inline-block; width: 49%;">{{ctx.name}}</div>
                     <div style="display: inline-block; width: 49%;">{{ctx.phone ? ctx.phone : row.company_phone ? row.company_phone : row.contact[0].phone}}</div>
+                    <div class="block" ng-if="$index==row.contact.length-1" ng-mouseover="row.close='disable'" ng-mouseleave="row.close='enable'" ng-click="row.close!='enable'? row.show=false : null"></div>
                 </div>
+
             </td>
             <td class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</td>
 
