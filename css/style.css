@@ -143,6 +143,10 @@ table.matrix>tbody>tr>.properties{
     table-layout: fixed;
     display: table;
 }
+.mi_selected{
+    color: white;
+    background: #35bfff!important;
+}
 .mi_slider>div.dashboard_container>.nav{
     width:100%;
     border-top: 5px solid rgb(146, 167, 205);

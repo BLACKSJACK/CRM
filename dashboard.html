@@ -47,14 +47,14 @@
     </div>
     <div class="nav">
         <div>
-            <div ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name">{{param.name}}</div>
+            <div ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name" ng-class="{mi_selected: currentUl($index)}">{{param.name}}</div>
         </div>
     </div>
 </div>
 <div class="matrix_container">
     <table class="matrix">
         <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" class="animation" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
-            <td class="properties" ng-click="checkMulti(row)">{{row.name}}</td>
+            <td class="properties">{{row.name}}</td>
 
 
 
@@ -76,7 +76,7 @@
 
 
 
-            <td class="properties" ng-click="checkMulti(row)">{{row.Legal_address}}</td>
+            <td class="properties">{{row.Legal_address}}</td>
         </tr>
     </table>
 </div>
