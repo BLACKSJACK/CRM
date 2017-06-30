@@ -1,11 +1,12 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
-app.controller('loginCtrl', function($scope, $location, $rootScope,$http){
+app.controller('loginCtrl', function($scope, $location, $rootScope,$http, $cookies){
     $scope.username = '';
     $scope.password = '';
+    //$rootScope.loggedIn=$cookies.get('loggedIn');
+    //$rootScope.name=$cookies.get('username');
     $scope.enter=function(){
-        console.log($scope.username+" "+$scope.password);
         if ($scope.username!="" && ($scope.password=="" || $scope.password==undefined)) document.getElementById("password").focus();
         else if($scope.password!="" && ($scope.username=="" || $scope.username==undefined)) document.getElementById("username").focus();
         else if($scope.password!="" && $scope.username!="") $scope.submit();
@@ -20,6 +21,8 @@ app.controller('loginCtrl', function($scope, $location, $rootScope,$http){
                 $rootScope.loggedIn = true;
                 $location.path('/dashboard');
                 $rootScope.name = response.data['name'];
+                //$cookies.put('loggedIn', response.data['loggin']);
+                //$cookies.put('username', response.data['name']);
             }
             else {
                 $scope.username = '';

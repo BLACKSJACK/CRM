@@ -1,7 +1,7 @@
 /**
  * Created by RoGGeR on 25.05.17.
  */
-var app=angular.module('mainApp', ['ngRoute']);
+var app=angular.module('mainApp', ['ngRoute','ngCookies']);
 app.config(function($routeProvider,$sceDelegateProvider){//с помощью .config мы определяем маршруты приложения. Для конфигурации маршрутов используется объект $routeProvider.
     /*
     Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
@@ -10,6 +10,7 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
     */
     $routeProvider
         .when('/',{
+
             templateUrl: 'login.html'
         })
         .when('/dashboard',{
