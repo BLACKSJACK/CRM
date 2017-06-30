@@ -5,11 +5,11 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.search_params=[];
     $scope.isArray = angular.isArray;
     $scope.checkMult=function(row){
-       console.log(row.show);
-       row.show=false;
-       console.log(row.show);
-       console.log(row.show);
-       console.log(row);
+        console.log(row.show);
+        row.show=false;
+        console.log(row.show);
+        console.log(row.show);
+        console.log(row);
     };
     $scope.checkMulti=function(row){
         if(row.contact.length>1){
@@ -75,10 +75,11 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     };
 
     $scope.currentUl=function(index){//функция проверки для анимации и переключения между ul
-      if(index===$scope.currParam) return true;
+        if(index===$scope.currParam) return true;
     };
     $scope.selectParam=function (index) { // нажатии на nav
         $scope.currParam=index;
+        $rootScope.search_result=[];
     };
 
     $scope.configuration=function(value){

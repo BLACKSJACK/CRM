@@ -51,32 +51,31 @@
         </div>
     </div>
 </div>
-<div class="matrix_container">
-    <table class="matrix">
+<div class="matrix_container" ng-controller="searchCtrl">
+    <table class="matrix" ng-if="search_result_type=='find_company'">
         <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" class="animation" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
             <td class="properties">{{row.name}}</td>
-
-
-
-
-            <td class="properties" ng-if="isArray(row.contact)" ng-click="row.close!='disable' ? row.show ? alert('загрузка контакта'): row.show=true : null" colspan="{{row.show ? 2 : 1}}">
+            <td class="properties" ng-if="isArray(row.contact)" ng-click="row.close!='disable' && row.show!=true ? row.show=true : null" colspan="{{row.show ? 2 : 1}}">
                 <div ng-show="!row.show" ng-class="{multi_close : isMulti(row)}">{{row.contact[0].name}}</div>
-                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%; position: relative;" ng-show="row.show" >
+                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%; position: relative;" ng-show="row.show" ng-click="row.close!='disable' ? alert('загрузка контакта '+ ctx.name) : null">
                     <div style="display: inline-block; width: 49%;">{{ctx.name}}</div>
-                    <div style="display: inline-block; width: 49%;">{{ctx.phone ? ctx.phone : row.company_phone ? row.company_phone : row.contact[0].phone}}</div>
+                    <div style="display: inline-block; width: 49%;">{{ctx.phone}}</div>
                     <div class="block" ng-if="$index==row.contact.length-1" ng-mouseover="row.close='disable'" ng-mouseleave="row.close='enable'" ng-click="row.close!='enable'? row.show=false : null"></div>
                 </div>
 
             </td>
             <td class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</td>
-
-
-            <td class="properties"  ng-show="!row.show">{{row.company_phone ? row.company_phone : row.contact[0].phone}}</td>
-
-
-
-
+            <td class="properties"  ng-show="!row.show">{{row.company_phone}}</td>
             <td class="properties">{{row.Legal_address}}</td>
+        </tr>
+    </table>
+    <table class="matrix" ng-if="search_result_type=='find_calculation'">
+        <tr ng-class="{matrix_row: !row.show}" class="animation" ng-click="loadCalculation(row.id)" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
+            <td class="properties">{{row.name}}</td>
+            <td class="properties">{{row.a_limit | currency:'RUB '}}</td>
+            <td class="properties">{{row.total_price | currency:'RUB '}}</td>
+            <td class="properties">{{row.amount}}</td>
+            <td class="properties">{{row.date}}</td>
         </tr>
     </table>
 </div>

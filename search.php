@@ -8,8 +8,6 @@
 	$data = json_decode(file_get_contents('php://input'), true);
 	$value=$data['value'];
 	if($data['type']=="find_company"){
-
-
 	    $query="SELECT con.phone, com.id, com.name, ctx.LastName, ctx.FirstName, com.company_phone, addr.City, addr.Street ";
 	    $query.="FROM Connections as con ";
 	    $query.="LEFT JOIN Companies as com on con.company_id = com.id ";
@@ -42,8 +40,10 @@
                 $array[$item['id']]=$item;
                 $array[$item['id']]['contact']=[];
                 $ctx=[];
+                if( ( !isset($item['company_phone']) || $item['company_phone']=="") && isset($item['phone']) && $item['phone']!=""  ) $array[$item['id']]['company_phone']=$array[$item['id']]['phone'];
                 $ctx['name']=$item['contact'];
-                if(isset($item['phone'])) $ctx['phone']=$item['phone'];
+                if(isset($item['phone']) && $item['phone']!="") $ctx['phone']=$item['phone'];
+                else $ctx['phone']=$item['company_phone'];
                 $array[$item['id']]['contact'][]=$ctx;
                 /*if(isset($item['company_phone'])){
                     $mass=explode(";", $item['company_phone']);
@@ -58,7 +58,8 @@
             else{
                 $ctx=[];
                 $ctx['name']=$item['contact'];
-                if(isset($item['phone'])) $ctx['phone']=$item['phone'];
+                if(isset($item['phone']) && $item['phone']!="") $ctx['phone']=$item['phone'];
+                else $ctx['phone']=$item['company_phone'];
                 $array[$item['id']]['contact'][]=$ctx;
 
             }
@@ -72,4 +73,14 @@
         //echo json_encode($array);
 
 
+	}
+	else if($data['type']=="find_calculation"){
+	    $query="SELECT id, name, a_limit, total_price, amount, date FROM saved WHERE LOWER(".$value['model'].") RLIKE LOWER('".$value['val']."')";
+        $result = mysql_query($query) or die(mysql_error());
+        $resultJson = array();
+
+        while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+           $resultJson[]=$row;
+        }
+        echo json_encode($resultJson);
 	}

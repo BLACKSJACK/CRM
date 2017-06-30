@@ -112,23 +112,23 @@
       {
         "name":"Название",
         "type":"input_search",
-        "model":"find_calc_name"
+        "model":"name"
       },{
         "name":"Лимит",
         "type":"input_search",
-        "model":"find_calc_limit"
+        "model":"a_limit"
       },{
         "name":"Премия",
         "type":"input_search",
-        "model":"find_calc_price"
+        "model":"total_price"
       },{
         "name":"Объем",
         "type":"input_search",
-        "model":"find_calc_amount"
+        "model":"_amount"
       },{
         "name":"Дата",
         "type":"date_search",
-        "model":"find_calc_date"
+        "model":"date"
       }
     ]
   },

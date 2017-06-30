@@ -36,6 +36,7 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
         var data={};
 
         data.type=type;
+
         if($scope.abort){
             $scope.abort.resolve();
         }
@@ -50,6 +51,7 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
         $http.post("search.php", data,{timeout:$scope.abort.promise}).then(function success (response) {
 
                 console.log(response.data);
+                $rootScope.search_result_type=type;
 
                 $rootScope.search_result=response.data;
             },function error (response){
@@ -70,5 +72,7 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
         });
         return flag;
     }
-
+    $scope.loadCalculation= function(id){
+        location.href = "https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
+    };
 });
