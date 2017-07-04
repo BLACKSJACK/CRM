@@ -10,22 +10,55 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
     */
     $routeProvider
         .when('/',{
-
+            resolve:{
+                "check": function($location,$cookies,$rootScope){
+                    if(!$cookies.get('loggedIn')){
+                        $location.path('/login');
+                    }
+                    if($cookies.get('loggedIn')){
+                        $rootScope.loggedIn=$cookies.get('loggedIn');
+                        $rootScope.name=$cookies.get('username');
+                        $location.path('/dashboard');
+                    }
+                }
+            },
+            templateUrl: 'dashboard.html'
+        })
+        .when('/login',{
+            resolve:{
+                "check": function($location,$cookies,$rootScope){
+                    if($cookies.get('loggedIn')){
+                        $rootScope.loggedIn=$cookies.get('loggedIn');
+                        $rootScope.name=$cookies.get('username');
+                        $location.path('/dashboard');
+                    }
+                }
+            },
             templateUrl: 'login.html'
         })
         .when('/dashboard',{
             resolve:{
-                "check": function($location,$rootScope){
-                    if(!$rootScope.loggedIn){
-                        $location.path('/');
+                "check": function($location,$cookies,$rootScope){
+                    if(!$cookies.get('loggedIn')){
+                        $location.path('/login');
+                    }
+                    if($cookies.get('loggedIn')){
+                        $rootScope.loggedIn=$cookies.get('loggedIn');
+                        $rootScope.name=$cookies.get('username');
+
                     }
                 }
             },
             templateUrl: 'dashboard.html',
             controller: 'dashboardCtrl'
         })
+        .when('/calc',{
+
+            templateUrl: '2412/project10.php'
+
+        })
         .otherwise({
-            redirectTo: '/'
+            redirectTo: '/login'
         });
     $sceDelegateProvider.resourceUrlWhitelist([
         // Allow same origin resource loads.
@@ -38,5 +71,9 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
     $sceDelegateProvider.resourceUrlBlacklist([
         'http://myapp.example.com/clickThru**'
     ]);
+});
+app.controller('mainCtrl',function($cookies, $rootScope){
+
+    console.log($rootScope.loggedIn);
 });
 

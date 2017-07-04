@@ -1,7 +1,7 @@
 /**
  * Created by RoGGeR on 14.06.17.
  */
-app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
+app.controller('searchCtrl', function($scope,$rootScope,$http,$q,$location,$sce){
     $rootScope.cacheTemplate={};
     $scope.isEmptyObject = function(obj) {//функция проверки объекта на пустоту
         for (var i in obj) {
@@ -71,8 +71,12 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q){
             return element.val != '' && element.val!=undefined && element.val.length>1
         });
         return flag;
-    }
+    };
     $scope.loadCalculation= function(id){
-        location.href = "https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
+        //$location.path('/calc');
+        var url="https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
+        $rootScope.srcqwe=$sce.trustAsResourceUrl(url);
+
+        //location.href = "https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
     };
 });

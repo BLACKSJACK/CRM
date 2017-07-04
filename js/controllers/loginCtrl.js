@@ -4,8 +4,9 @@
 app.controller('loginCtrl', function($scope, $location, $rootScope,$http, $cookies){
     $scope.username = '';
     $scope.password = '';
-    //$rootScope.loggedIn=$cookies.get('loggedIn');
-    //$rootScope.name=$cookies.get('username');
+
+    $rootScope.loggedIn=$cookies.get('loggedIn');
+    $rootScope.name=$cookies.get('username');
     $scope.enter=function(){
         if ($scope.username!="" && ($scope.password=="" || $scope.password==undefined)) document.getElementById("password").focus();
         else if($scope.password!="" && ($scope.username=="" || $scope.username==undefined)) document.getElementById("username").focus();
@@ -21,8 +22,8 @@ app.controller('loginCtrl', function($scope, $location, $rootScope,$http, $cooki
                 $rootScope.loggedIn = true;
                 $location.path('/dashboard');
                 $rootScope.name = response.data['name'];
-                //$cookies.put('loggedIn', response.data['loggin']);
-                //$cookies.put('username', response.data['name']);
+                $cookies.put('loggedIn', response.data['loggin']);
+                $cookies.put('username', response.data['name']);
             }
             else {
                 $scope.username = '';

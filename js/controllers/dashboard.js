@@ -1,15 +1,14 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
-app.controller('dashboardCtrl',function($scope,$rootScope,$http){
+app.controller('dashboardCtrl',function($scope,$rootScope,$http,$cookies){
+
     $scope.search_params=[];
     $scope.isArray = angular.isArray;
     $scope.checkMult=function(row){
-        console.log(row.show);
+
         row.show=false;
-        console.log(row.show);
-        console.log(row.show);
-        console.log(row);
+
     };
     $scope.checkMulti=function(row){
         if(row.contact.length>1){
@@ -54,7 +53,10 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http){
     $scope.config=1;
     $http.post("dashboard.json").then(function success (response) {//устанавливаем каретку управления и заполняем ее из файла dashboard.json
             $scope.currObj=response.data;
-
+            if($cookies.get('currentObj')){
+                $scope.currObj=$cookies.get('currentObj');
+                $cookies.remove('currentObj');
+            }
 
 
         },function error (response){
