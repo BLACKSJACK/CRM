@@ -51,8 +51,8 @@
     "values":[
       {
         "name":"Перевозчик",
-        "urlTo":"https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project4.2.php",
-        "type":"relocatePage"
+        "json":"transportation_calc.json",
+        "type":"reloadDashboard"
       },
       {
         "name":"Контакт",

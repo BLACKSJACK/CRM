@@ -33,24 +33,19 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http,$cookies){
         height="{height:"+height+"%;}";
         return height;
     };
-    $scope.reload_carret=function(string){
+    $scope.reloadDashboard=function(string){
         $http.post(string).then(function success (response) {
                 $scope.currObj=response.data;
                 $scope.navStyle="width:"+100/$scope.currObj.length+"%;";
-
+                $scope.currParam=0;
+                $scope.config=string;
             },function error (response){
                 console.log(response);
 
             }
         );
     };
-    $http.post("dashboardConfig.json").then(function success (response) {
-            $scope.config=response.data;
-        },function error (response){
-
-        }
-    );
-    $scope.config=1;
+    $scope.config="dashboard.json";
     $http.post("dashboard.json").then(function success (response) {//устанавливаем каретку управления и заполняем ее из файла dashboard.json
             $scope.currObj=response.data;
             if($cookies.get('currentObj')){
@@ -86,11 +81,7 @@ app.controller('dashboardCtrl',function($scope,$rootScope,$http,$cookies){
 
     $scope.configuration=function(value){
         if(value===1){
-            if($scope.config==='navigation'){
-                return true;
-
-            }
-            else return false;
+            return $scope.config==='navigation';
         }
     };
 

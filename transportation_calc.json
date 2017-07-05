@@ -1,0 +1,119 @@
+[
+  {
+    "name": "Стоимость груза",
+    "model": "cost",
+    "values":[
+      {
+        "name":"currency",
+        "type":"text"
+      },
+      {
+        "name":"input",
+        "type":"text"
+      },
+      {
+        "name":1000000,
+        "type":"text"
+      },
+      {
+        "name":2000000,
+        "type":"text"
+      },
+      {
+        "name":3000000,
+        "type":"text"
+      },
+      {
+        "name":5000000,
+        "type":"text"
+      },
+      {
+        "name":7000000,
+        "type":"text"
+      },
+      {
+        "name":10000000,
+        "type":"text"
+      }
+    ]
+
+  },
+  {
+    "name": "Объем перевозок",
+    "model": "amount",
+    "values":[
+      {
+        "name":"Тягачей",
+        "type":"text"
+      },
+      {
+        "name":"input",
+        "type":"text"
+      },
+      {
+        "name":1,
+        "type":"text"
+      },
+      {
+        "name":3,
+        "type":"text"
+      },
+      {
+        "name":5,
+        "type":"text"
+      },
+      {
+        "name":10,
+        "type":"text"
+      },
+      {
+        "name":15,
+        "type":"text"
+      },
+      {
+        "name":20,
+        "type":"text"
+      },
+      {
+        "name":30,
+        "type":"text"
+      }
+    ]
+  },
+  {
+    "name": "Тип грузового отсека",
+    "model": "transportation",
+    "values": [
+      {
+        "name": "Контейнер/Фургон/Реф",
+        "type":"text"
+      },
+      {
+        "name": "Тент",
+        "type":"text"
+      },
+      {
+        "name": "Автовоз",
+        "type":"text"
+      },
+      {
+        "name": "Цистерна/Танк",
+        "type":"text"
+      },
+      {
+        "name": "Открытый",
+        "type":"text"
+      }
+    ]
+  },
+  {
+    "name": "Риски"
+  },
+  {
+    "name": "Лимит по случаю"
+  },
+  {
+    "name": "Франшиза по случаю"
+  }
+]
+

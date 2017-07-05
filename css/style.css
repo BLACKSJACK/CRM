@@ -160,6 +160,8 @@ table.matrix>tbody>tr>.properties{
     vertical-align: middle;
     display: table-cell;
     border:1px solid white;
+    font-weight: 400;
+    font-size: 15px;
 }
 .mi_slider>div.dashboard_container>.nav>div>div:hover,
 .mi_slider>div.dashboard_container>div>.ul>div>div:hover,table.matrix>tbody>tr:hover{
