@@ -84,3 +84,9 @@
         }
         echo json_encode($resultJson);
 	}
+	else if($data['type']=="load_calculation"){
+	    $query="SELECT * FROM saved WHERE id=".$data['id'];
+	    $result = mysql_query($query) or die(mysql_error());
+	    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+	    echo json_encode($row);
+	}

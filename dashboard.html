@@ -1,56 +1,4 @@
-<!-- версия 1.0.0
-    <ul ng-repeat="param in currObj" ng-show="currentUl($index)" >
-        <li ng-repeat="value in param.values">{{value.name}}</li>
-    </ul>
-    <nav>
-        <a ng-repeat="param in currObj" ng-click="selectParam($index)" ng-style="navStyle">{{param.name}}</a>
-    </nav>
--->
-<!-- версия 1.0.1
-<div class="dashboard_container">
-    <div class="ul_container">
-        <table ng-repeat="param in currObj" class="ul" ng-class="[{mi_current: currentUl($index)}, {mi_moveFromRight: currentUl($index)},{ mi_moveToRight: !currentUl($index)}]" ng-show="currentUl($index)" >
-            <tbody>
-                <tr>
-                    <td ng-repeat="value in param.values" ng-click="value.type=='relocate_here'? relocate(value.urlTo): null">
-                        {{value.type == "text" || value.type == "relocate_here" ? value.name : ""}}
-                        <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
-                        <input ng-if="value.type == 'date'" type="date">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <table class="nav">
-        <tbody>
-            <tr>
-                <td ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name">{{param.name}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
--->
-
-<!-- версия 1.0.2 -->
-<div class="dashboard_container">
-    <div class="ul_container">
-        <div ng-repeat="param in currObj" class="ul" ng-class="[{mi_current: currentUl($index)}, {mi_moveFromRight: currentUl($index)},{ mi_moveToRight: !currentUl($index)}]" ng-show="currentUl($index)" >
-            <div>
-                <div ng-repeat="value in param.values" ng-click="value.type=='relocate_here' ? relocateHere(value.urlTo) : value.type=='relocatePage' ? relocatePage(value.urlTo) : value.type=='reloadDashboard' ? reloadDashboard(value.json) : ''">
-                    {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" || value.type=="reloadDashboard" ? value.name : ""}}
-                    <input ng-if="value.type == 'input'" type="text" placeholder="{{value.name}}">
-                    <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl" ng-change="isEmptyQuery(param.values) ? isEmptyObject(template) ? search(param.values, param.url) : checkTemplate(param.values) ? searchFilter(param.values) : search(param.values, param.url) : clean()" type="text" placeholder="{{value.name}}">
-                    <input ng-if="value.type == 'date_search'" type="date">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="nav">
-        <div>
-            <div ng-repeat="param in currObj" ng-click="selectParam($index)" ng-if="param.name" ng-class="{mi_selected: currentUl($index)}">{{param.name}}</div>
-        </div>
-    </div>
-</div>
+<div class="dashboard_container" karetka></div>
 <div id="tooltip_box" ng-show="config!='dashboard.json'" ng-click="reloadDashboard('dashboard.json')">
     <table style="text-align: center; width:100%; height:100%; ">
         <tbody>
@@ -71,7 +19,6 @@
                     <div style="display: inline-block; width: 49%;">{{ctx.phone}}</div>
                     <div class="block" ng-if="$index==row.contact.length-1" ng-mouseover="row.close='disable'" ng-mouseleave="row.close='enable'" ng-click="row.close!='enable'? row.show=false : null"></div>
                 </div>
-
             </td>
             <td class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</td>
             <td class="properties"  ng-show="!row.show">{{row.company_phone}}</td>
@@ -87,4 +34,33 @@
             <td class="properties">{{row.date}}</td>
         </tr>
     </table>
+    <div ng-if="search_result_type=='load_calculation'">
+        <table class="matrix" ng-repeat="park in parks track by $index" ng-init="parentIndex = $index">
+            <tbody>
+                <tr ng-repeat="process in processes | filter : { park: parentIndex } track by $index">
+                    <td class="properties">{{process[1]}}</td>
+                    <td class="properties">{{process[2]}}</td>
+                    <td class="properties">{{process[3]}}</td>
+                    <td class="properties">{{process[4]}}</td>
+                    <td class="properties">{{process[5]}}</td>
+                    <td class="properties">{{process[6]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <table class="matrix">
+            <tbody>
+            <tr>
+                <td class="properties">Премия</td>
+                <td class="properties" style="color:red;">{{total_price}}</td>
+                <td class="properties">P</td>
+                <td class="properties">{{total_amount}}</td>
+                <td class="properties">Агрегатный лимит</td>
+                <td class="properties">{{a_limit}}</td>
+                <td class="properties">Этапов:</td>
+                <td class="properties">{{payment}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

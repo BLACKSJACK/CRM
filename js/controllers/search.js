@@ -72,11 +72,35 @@ app.controller('searchCtrl', function($scope,$rootScope,$http,$q,$location,$sce)
         });
         return flag;
     };
-    $scope.loadCalculation= function(id){
+    $scope.loadCalculation= function(id){ //нажимаем на строку расчета в результате поиска
+        var data ={};
+        data.type="load_calculation";
+        data.id=id;
+        $http.post("search.php", data).then(function success(response){
+            console.log(response.data);
+            $rootScope.search_result_type="load_calculation";
+            $scope.parks=JSON.parse(response.data.parks);
+            $scope.processes=[];
+            var mass=JSON.parse(response.data.processes);
+            for(var key in mass){
+                $scope.processes[key]=mass[key];
+            }
+            console.log($scope.processes);
+            $scope.payment=response.data.payment;
+            $scope.total_price=response.data.total_price;
+            $scope.total_amout=response.data.amount;
+
+        },function error(response){
+            console.log(response)
+        });
+
         //$location.path('/calc');
-        var url="https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
-        $rootScope.srcqwe=$sce.trustAsResourceUrl(url);
+        //var url="https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
+        //$rootScope.srcqwe=$sce.trustAsResourceUrl(url);
 
         //location.href = "https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
+
+
+
     };
 });

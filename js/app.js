@@ -76,4 +76,10 @@ app.controller('mainCtrl',function($cookies, $rootScope){
 
     console.log($rootScope.loggedIn);
 });
+app.directive('karetka', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/karetka.html'
+    };
+});
 
