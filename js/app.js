@@ -50,7 +50,7 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
                 }
             },
             templateUrl: 'dashboard.html',
-            controller: 'dashboardCtrl'
+            controller: 'dashboardCtrl as dashboardCtrl'
         })
         .when('/calc',{
 
@@ -72,9 +72,13 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
         'http://myapp.example.com/clickThru**'
     ]);
 });
-app.controller('mainCtrl',function($cookies, $rootScope){
+app.factory('myFactory', function($http){
+   return{
+       urlJSON: "dashboard.json",
+       changeJSON: function(url){
 
-    console.log($rootScope.loggedIn);
+       }
+   }
 });
 app.directive('karetka', function(){
     return{
@@ -82,4 +86,25 @@ app.directive('karetka', function(){
         templateUrl: 'templates/karetka.html'
     };
 });
+app.directive('findCompany', function () {
+        return{
+            restrict: 'A',
+            templateUrl: 'templates/matrix/find_company.html',
+            link: function(scope, elements, attrs, ctrl){
 
+            }
+        }
+
+});
+app.directive('findCalculation', function () {
+   return{
+       restrict: 'A',
+       templateUrl: 'templates/matrix/find_calculation.html'
+   }
+});
+app.directive('calculation', function(){
+   return{
+       restrict: 'A',
+       templateUrl: 'templates/matrix/calculation.html'
+   }
+});

@@ -1,5 +1,5 @@
 <div class="dashboard_container" karetka></div>
-<div id="tooltip_box" ng-show="config!='dashboard.json'" ng-click="reloadDashboard('dashboard.json')">
+<div id="tooltip_box" ng-show="dashboardCtrl.config!='dashboard.json'" ng-click="reloadDashboard('dashboard.json')">
     <table style="text-align: center; width:100%; height:100%; ">
         <tbody>
         <tr>
@@ -8,59 +8,27 @@
         </tbody>
     </table>
 </div>
-<div class="matrix_container" ng-controller="searchCtrl">
-    <table class="matrix" ng-if="search_result_type=='find_company'">
-        <tr ng-class="{matrix_row: !row.show}" ng-style="multiStyle(row, this)" class="animation" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
-            <td class="properties">{{row.name}}</td>
-            <td class="properties" ng-if="isArray(row.contact)" ng-click="row.close!='disable' && row.show!=true ? row.show=true : null" colspan="{{row.show ? 2 : 1}}">
-                <div ng-show="!row.show" ng-class="{multi_close : isMulti(row)}">{{row.contact[0].name}}</div>
-                <div ng-repeat="ctx in row.contact track by $index" class="matrix_row multi_cell" style="line-height: 3; width: 100%; position: relative;" ng-show="row.show" ng-click="row.close!='disable' ? alert('загрузка контакта '+ ctx.name) : null">
-                    <div style="display: inline-block; width: 49%;">{{ctx.name}}</div>
-                    <div style="display: inline-block; width: 49%;">{{ctx.phone}}</div>
-                    <div class="block" ng-if="$index==row.contact.length-1" ng-mouseover="row.close='disable'" ng-mouseleave="row.close='enable'" ng-click="row.close!='enable'? row.show=false : null"></div>
-                </div>
-            </td>
-            <td class="properties" ng-if="!isArray(row.contact)">{{row.contact}}</td>
-            <td class="properties"  ng-show="!row.show">{{row.company_phone}}</td>
-            <td class="properties">{{row.Legal_address}}</td>
-        </tr>
-    </table>
-    <table class="matrix" ng-if="search_result_type=='find_calculation'">
-        <tr ng-class="{matrix_row: !row.show}" class="animation" ng-click="loadCalculation(row.id)" ng-style="multiStyle(row, this)" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
-            <td class="properties">{{row.name}}</td>
-            <td class="properties">{{row.a_limit | currency:'RUB '}}</td>
-            <td class="properties">{{row.total_price | currency:'RUB '}}</td>
-            <td class="properties">{{row.amount}}</td>
-            <td class="properties">{{row.date}}</td>
-        </tr>
-    </table>
-    <div ng-if="search_result_type=='load_calculation'">
-        <table class="matrix" ng-repeat="park in parks track by $index" ng-init="parentIndex = $index">
-            <tbody>
-                <tr ng-repeat="process in processes | filter : { park: parentIndex } track by $index">
-                    <td class="properties">{{process[1]}}</td>
-                    <td class="properties">{{process[2]}}</td>
-                    <td class="properties">{{process[3]}}</td>
-                    <td class="properties">{{process[4]}}</td>
-                    <td class="properties">{{process[5]}}</td>
-                    <td class="properties">{{process[6]}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <table class="matrix">
-            <tbody>
-            <tr>
-                <td class="properties">Премия</td>
-                <td class="properties" style="color:red;">{{total_price}}</td>
-                <td class="properties">P</td>
-                <td class="properties">{{total_amount}}</td>
-                <td class="properties">Агрегатный лимит</td>
-                <td class="properties">{{a_limit}}</td>
-                <td class="properties">Этапов:</td>
-                <td class="properties">{{payment}}</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="matrix_container" ng-controller="matrixCtrl as matrixCtrl">
+    <table class="matrix" ng-if="search_result_type=='find_company'" find-company></table>
+    <table class="matrix" ng-if="search_result_type=='find_calculation'" find-calculation></table>
+    <div ng-if="search_result_type=='load_calculation'" calculation></div>
+
+    <!--
+
+    <table class="matrix">
+    <tbody>
+    <tr class="matrix">
+        <td class="properties">Премия</td>
+        <td class="properties" style="color:red;">{{total_price}}</td>
+        <td class="properties">P</td>
+        <td class="properties">{{total_amount}}</td>
+        <td class="properties">Агрегатный лимит</td>
+        <td class="properties">{{a_limit}}</td>
+        <td class="properties">Этапов:</td>
+        <td class="properties">{{payment}}</td>
+    </tr>
+    </tbody>
+</table>
+
+-->
 </div>

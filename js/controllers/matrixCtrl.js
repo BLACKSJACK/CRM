@@ -1,9 +1,8 @@
 /**
  * Created by RoGGeR on 14.06.17.
  */
-app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
+app.controller('matrixCtrl', function($rootScope,$http,$q, myFactory){
     $rootScope.cacheTemplate={};
-    var scope=this;
     this.isEmptyObject = function(obj) {//функция проверки объекта на пустоту
         for (var i in obj) {
             if (obj.hasOwnProperty(i)) {
@@ -24,13 +23,13 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
     this.checkTemplate=function(values){
         var obj;
         for(var i=0;i<values.length;i++){
-            if(values[i].model===scope.template.model){
+            if(values[i].model===this.template.model){
 
                 obj=values[i];
                 i=values.length;
             }
         }
-        if(obj) return obj.val.search(scope.template.txt)==0;
+        if(obj) return obj.val.search(this.template.txt)==0;
         else return false;
     };
     this.search = function( values , type) {
@@ -38,18 +37,18 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
 
         data.type=type;
 
-        if(scope.abort){
-            scope.abort.resolve();
+        if(this.abort){
+            this.abort.resolve();
         }
-        scope.abort = $q.defer();
+        this.abort = $q.defer();
         var flag = values.find(function(element){// функция проверяет введено ли хоть в одно поле поиска значение, если нет - обнуляется массив
             return element.val != '' && element.val!=undefined && element.val.length>1
         });
         data.value=flag;
         console.log(data);
-        scope.template.txt=flag.val;
-        scope.template.model=flag.model;
-        $http.post("search.php", data,{timeout:scope.abort.promise}).then(function success (response) {
+        this.template.txt=flag.val;
+        this.template.model=flag.model;
+        $http.post("search.php", data,{timeout:this.abort.promise}).then(function success (response) {
 
                 console.log(response.data);
                 $rootScope.search_result_type=type;
@@ -62,7 +61,7 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
     };
     this.clean=function(){//очищаем все результаты поиска
         $rootScope.search_result=[];//<==== обнуляется массив
-        scope.template={};
+        this.template={};
     };
     this.isEmptyQuery=function(values){
 
@@ -75,23 +74,27 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
     };
 
     this.loadCalculation= function(id){ //нажимаем на строку расчета в результате поиска
+        console.log(id);
         var data ={};
         data.type="load_calculation";
         data.id=id;
+        var scope=this;
+        myFactory.urlJSON="transortation_cals.json";
         $http.post("search.php", data).then(function success(response){
             console.log(response.data);
             $rootScope.search_result_type="load_calculation";
             scope.parks=JSON.parse(response.data.parks);
+
             scope.processes=[];
             var mass=JSON.parse(response.data.processes);
             for(var key in mass){
                 scope.processes[key]=mass[key];
             }
-            console.log(scope.processes);
+
             scope.payment=response.data.payment;
             scope.total_price=response.data.total_price;
             scope.total_amout=response.data.amount;
-            console.log(scope.parks);
+            console.log(this.parks);
         },function error(response){
             console.log(response)
         });

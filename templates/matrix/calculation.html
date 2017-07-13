@@ -1,0 +1,13 @@
+<table class="matrix" ng-repeat="park in matrixCtrl.parks track by $index" ng-init="parentIndex = $index">
+    <tbody>
+    <tr class="matrix_row" ng-repeat="process in matrixCtrl.processes | filter : { park: parentIndex } track by $index">
+        <td class="properties">{{process[1]}}</td>
+        <td class="properties">{{process[2]}}</td>
+        <td class="properties">{{process[3]}}</td>
+        <td class="properties">{{process[4]}}</td>
+        <td class="properties">{{process[5]}}</td>
+        <td class="properties">{{process[6]}}</td>
+    </tr>
+    </tbody>
+</table>
+{{consolelog(matrixCtrl)}}

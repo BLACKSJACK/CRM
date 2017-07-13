@@ -1,0 +1,7 @@
+<tr ng-class="{matrix_row: !matrixCtrl.row.show}" class="animation" ng-click="matrixCtrl.loadCalculation(row.id); dashboardCtrl.reloadDashboard('transportation_calc.json')" ng-repeat="row in search_result | filter:cacheTemplate track by $index">
+    <td class="properties">{{row.name}}</td>
+    <td class="properties">{{row.a_limit | currency:'RUB '}}</td>
+    <td class="properties">{{row.total_price | currency:'RUB '}}</td>
+    <td class="properties">{{row.amount}}</td>
+    <td class="properties">{{row.date}}</td>
+</tr>
