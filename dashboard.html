@@ -1,9 +1,9 @@
 <div class="dashboard_container" karetka></div>
-<div id="tooltip_box" ng-show="dashboardCtrl.config!='dashboard.json'" ng-click="reloadDashboard('dashboard.json')">
-    <table style="text-align: center; width:100%; height:100%; ">
+<div id="tooltip_box"  ng-click="dashboardCtrl.reloadDashboard('dashboard.json')">
+    <table style="text-align: center; width:100%; height:100px ">
         <tbody>
         <tr>
-            <td id="tooltip_box_td" style="color:rgb(230, 230, 230); font-size:30pt;">Вернуться</td>
+            <td id="tooltip_box_td" style="color:rgb(230, 230, 230); font-size:30pt;" ng-show="dashboardCtrl.config!='dashboard.json'">Вернуться</td>
         </tr>
         </tbody>
     </table>
@@ -11,7 +11,7 @@
 <div class="matrix_container" ng-controller="matrixCtrl as matrixCtrl">
     <table class="matrix" ng-if="search_result_type=='find_company'" find-company></table>
     <table class="matrix" ng-if="search_result_type=='find_calculation'" find-calculation></table>
-    <div ng-if="search_result_type=='load_calculation'" calculation></div>
+    <div ng-if="search_result_type=='calculation'" calculation ng-controller="tCalcCtrl as tCalcCtrl"></div>
 
     <!--
 
