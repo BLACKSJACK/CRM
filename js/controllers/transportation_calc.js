@@ -20,7 +20,6 @@ app.controller("tCalcCtrl", function ($http) {
             else if(ar[i]['number']*1==2) Points.cost.push([ar[i]['x']*1,ar[i]['y']*1]);
             else if(ar[i]['number']*1==3) Points.risk.push([ar[i]['x']*1,ar[i]['y']*1]);
             else if(ar[i]['number']*1==4) koef_pow=ar[i]['x']*1;
-
         }
 
         SplineKoeff(0, Points.amount);
@@ -30,6 +29,7 @@ app.controller("tCalcCtrl", function ($http) {
 
 
     }, function error(response) {
+        console.log(response.data);
         console.log(response.data);
     });
 
