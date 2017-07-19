@@ -107,13 +107,122 @@
     ]
   },
   {
-    "name": "Риски"
+    "name": "Риски",
+    "model": "risk",
+    "values": [
+      {
+        "name": "Пакеты",
+        "type": "text"
+      },
+      {
+        "name": "Базовые риски",
+        "type": "text"
+      },
+      {
+        "name": "Противоправные действия",
+        "type": "text"
+      },
+      {
+        "name": "Таможенные платежи",
+        "type": "text"
+      },
+      {
+        "name": "Повреждение контейнера",
+        "type": "text"
+      },
+      {
+        "name": "Погрузка, разгрузка",
+        "type": "text"
+      },
+      {
+        "name": "Поломка реф. установки",
+        "type": "text"
+      },
+      {
+        "name": "Стихийные бедствия",
+        "type": "text"
+      },
+      {
+        "name": "Повреждение товарных автомобилей",
+        "type": "text"
+      }
+    ]
   },
   {
-    "name": "Лимит по случаю"
+    "name": "Лимит по случаю",
+    "model": "limit",
+    "values":[
+      {
+        "name":"currency",
+        "type":"text"
+      },
+      {
+        "name":"input",
+        "type":"text"
+      },
+      {
+        "name":1000000,
+        "type":"text"
+      },
+      {
+        "name":2000000,
+        "type":"text"
+      },
+      {
+        "name":3000000,
+        "type":"text"
+      },
+      {
+        "name":5000000,
+        "type":"text"
+      },
+      {
+        "name":7000000,
+        "type":"text"
+      },
+      {
+        "name":10000000,
+        "type":"text"
+      }
+    ]
   },
   {
-    "name": "Франшиза по случаю"
+    "name": "Франшиза по случаю",
+    "model": "franchise",
+    "values":[
+      {
+        "name":"currency",
+        "type":"text"
+      },
+      {
+        "name":"input",
+        "type":"text"
+      },
+      {
+        "name":0,
+        "type":"text"
+      },
+      {
+        "name":5000,
+        "type":"text"
+      },
+      {
+        "name":10000,
+        "type":"text"
+      },
+      {
+        "name":20000,
+        "type":"text"
+      },
+      {
+        "name":50000,
+        "type":"text"
+      },
+      {
+        "name":100000,
+        "type":"text"
+      }
+    ]
   }
 ]
 
