@@ -36,7 +36,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies){
         height="{height:"+height+"%;}";
         return height;
     };
-    this.reloadDashboard=function(string){
+    this.reloadDashboard=function(string, type){
+        if(typeof type !="undefined") $rootScope.search_result_type=type;
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";

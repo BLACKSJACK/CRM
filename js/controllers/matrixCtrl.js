@@ -13,7 +13,7 @@ app.controller('matrixCtrl', function($rootScope,$http,$q, myFactory){
         myFactory.urlJSON="transortation_cals.json";
         $http.post("search.php", data).then(function success(response){
             console.log(response.data);
-            $rootScope.search_result_type="calculation";
+            $rootScope.search_result_type="transoprtCalculation";
             scope.parks=JSON.parse(response.data.parks);
 
             scope.processes=[];

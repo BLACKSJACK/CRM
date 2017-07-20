@@ -20,18 +20,26 @@ app.controller("tCalcCtrl", function ($http) {
         this.limit=limit;
         this.franchise=franchise;
     };
-    this.Process.prototype.calculate=function(){//расчет
+    this.Process.prototype.calculateBase=function(){//расчет
         this.amount=this.cost*this.park;
         var spline = Spline(this.cost, Points.cost, 1);
         var spline1 = Spline(parks.amount, Points.amount, 0);    // park заменили на dop_park
         var price = spline*(1+spline1/100);
+        var spline2 = Spline(4, Points.risk, 2);
         price *= Franchise(this.cost, this.franchise);
         if(this.cost>=this.limit){
             price*=Limit(this.limit*parks.amount*(1+((this.cost-this.limit)/this.limit)), this.limit);// park заменили на dop_park
         }
         else price*=Limit(this.cost*parks.amount*(1+((this.limit-this.cost)/this.limit)), this.limit);// park заменили на dop_park
-        this.stavka=price;
-        this.premia=this.amount*price/100;
+        this.baseStavka=price;
+        this.basePremia=this.amount*price/100;
+        price *= 1 + spline2 / 100;
+        this.riskStavka=price;
+        this.riskPremia=this.amount*price/100;
+        this.totalStavka=this.amount*(this.riskStavka-this.baseStavka)/100;
+        this.totalPremia=this.riskPremia-this.basePremia;
+        this.proto
+
     };
     $http.post("loadPoints.php").then(function success(response){
         console.log(response.data);
@@ -48,7 +56,7 @@ app.controller("tCalcCtrl", function ($http) {
         SplineKoeff(2, Points.risk); //продолжаем интерполировать как жОские пацаны
         SplineKoeff(3, Points.payment);
         var proc1=new scope.Process(5000000,120,0,0,5000000,0);
-        proc1.calculate();
+        proc1.calculateBase();
         console.log(proc1);
 
     }, function error(response) {
