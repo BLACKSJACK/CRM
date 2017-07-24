@@ -10,8 +10,6 @@ app.controller("tCalcCtrl", function ($http) {
         risk:[],
         payment: [[0,100],[100000, 70],[500000,30],[50000000, 0]]
     };
-    var koef_pow;
-    console.log(Points);
     this.Process=function(cost, park, wrapping, risk, limit, franchise){//конструктор процессов
         this.cost=cost;
         this.park=park;
@@ -20,6 +18,7 @@ app.controller("tCalcCtrl", function ($http) {
         this.limit=limit;
         this.franchise=franchise;
     };
+
     this.Process.prototype.calculateBase=function(){//расчет
         this.amount=this.cost*this.park;
         var spline = Spline(this.cost, Points.cost, 1);
@@ -38,7 +37,7 @@ app.controller("tCalcCtrl", function ($http) {
         this.riskPremia=this.amount*price/100;
         this.totalStavka=this.amount*(this.riskStavka-this.baseStavka)/100;
         this.totalPremia=this.riskPremia-this.basePremia;
-        this.proto
+
 
     };
     $http.post("loadPoints.php").then(function success(response){
@@ -66,6 +65,14 @@ app.controller("tCalcCtrl", function ($http) {
 
     var parks={};
     parks.amount=120;
+    this.park=function(){};
+    this.park.prototype.setBase=function(number){//установка в каком процессе мы учли базовую ставку
+        var arr=processes.filter(function (obj) {
+            return obj['park']===number;
+        });
+
+
+    }
 
 
 

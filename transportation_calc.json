@@ -9,7 +9,7 @@
       },
       {
         "name":"input",
-        "type":"text"
+        "type":"input"
       },
       {
         "name":1000000,
@@ -48,7 +48,7 @@
       },
       {
         "name":"input",
-        "type":"text"
+        "type":"input"
       },
       {
         "name":1,
@@ -158,7 +158,7 @@
       },
       {
         "name":"input",
-        "type":"text"
+        "type":"input"
       },
       {
         "name":1000000,
@@ -196,7 +196,7 @@
       },
       {
         "name":"input",
-        "type":"text"
+        "type":"input"
       },
       {
         "name":0,

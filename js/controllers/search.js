@@ -1,7 +1,9 @@
 /**
  * Created by RoGGeR on 14.06.17.
  */
-app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
+app.controller('searchCtrl', function($rootScope,$http,$q,$location,myFactory){
+    this.myFactory=myFactory;
+
     $rootScope.cacheTemplate={};
     var scope=this;
     this.isEmptyObject = function(obj) {//функция проверки объекта на пустоту
@@ -50,10 +52,13 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,$sce){
         console.log(data);
         scope.template.txt=flag.val;
         scope.template.model=flag.model;
-        $http.post("search.php", data,{timeout:scope.abort.promise}).then(function success (response) {
+        scope.var=123;
+        $http.post("search.php", data,{timeout:scope.abort.promise}).then(function success (response, myFactory) {
 
-                console.log(response.data);
-                $rootScope.search_result_type=type;
+                console.log(scope.var);
+                //scope.myFactory.matrixType=type;
+
+
 
                 $rootScope.search_result=response.data;
             },function error (response){

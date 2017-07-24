@@ -72,13 +72,11 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
         'http://myapp.example.com/clickThru**'
     ]);
 });
-app.factory('myFactory', function($http){
-   return{
-       urlJSON: "dashboard.json",
-       changeJSON: function(url){
-
-       }
-   }
+app.factory('myFactory', function(){
+    return{
+       matrixType: "find"
+       
+    }
 });
 app.directive('karetka', function(){
     return{

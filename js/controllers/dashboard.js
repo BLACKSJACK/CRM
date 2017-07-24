@@ -1,7 +1,8 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
-app.controller('dashboardCtrl',function($rootScope,$http,$cookies){
+app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory){
+    this.myFactory=myFactory;
     var scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
@@ -37,7 +38,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies){
         return height;
     };
     this.reloadDashboard=function(string, type){
-        if(typeof type !="undefined") $rootScope.search_result_type=type;
+        if(typeof type !="undefined") myFactory.matrixType=type;
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";
@@ -78,9 +79,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies){
     this.currentUl=function(index){//функция проверки для анимации и переключения между ul
         if(index===scope.currParam) return true;
     };
+    this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
         scope.currParam=index;
         $rootScope.search_result=[];
+
     };
 
     this.configuration=function(value){

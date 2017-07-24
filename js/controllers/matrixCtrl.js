@@ -3,7 +3,7 @@
  */
 app.controller('matrixCtrl', function($rootScope,$http,$q, myFactory){
     $rootScope.cacheTemplate={};
-
+    this.myFactory=myFactory;
     this.loadCalculation= function(id){ //нажимаем на строку расчета в результате поиска
         console.log(id);
         var data ={};
@@ -13,7 +13,7 @@ app.controller('matrixCtrl', function($rootScope,$http,$q, myFactory){
         myFactory.urlJSON="transortation_cals.json";
         $http.post("search.php", data).then(function success(response){
             console.log(response.data);
-            $rootScope.search_result_type="transoprtCalculation";
+            myFactory.matrixType="transoprtCalculation";
             scope.parks=JSON.parse(response.data.parks);
 
             scope.processes=[];
@@ -24,11 +24,11 @@ app.controller('matrixCtrl', function($rootScope,$http,$q, myFactory){
 
             scope.payment=response.data.payment;
             scope.total_price=response.data.total_price;
-            scope.total_amout=response.data.amount;
             console.log(scope.parks);
         },function error(response){
             console.log(response)
         });
+
 
         //$location.path('/calc');
         //var url="https://capitalpolis.ru/corp_clients/cargo_insurance_transport_operators/kalkulyatortest/2412/project10.php?id="+id;
