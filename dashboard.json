@@ -125,7 +125,7 @@
       },{
         "name":"Объем",
         "type":"input_search",
-        "model":"_amount"
+        "model":"amount"
       },{
         "name":"Дата",
         "type":"date_search",
