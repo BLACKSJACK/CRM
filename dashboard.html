@@ -1,6 +1,5 @@
-<input type="text" ng-model="myFactory.matrixType">
 <div class="dashboard_container" karetka></div>
-<div id="tooltip_box"  ng-click="dashboardCtrl.reloadDashboard('dashboard.json'); myFactory.matrixType='find'">
+<div id="tooltip_box"  ng-click="dashboardCtrl.reloadDashboard('dashboard.json'); dashboardCtrl.myFactory.matrixType=null">
     <table style="text-align: center; width:100%; height:100px ">
         <tbody>
         <tr>
@@ -10,10 +9,10 @@
     </table>
 </div>
 <div class="matrix_container" ng-controller="matrixCtrl as matrixCtrl">
-    <table class="matrix" ng-if="myFactory.matrixType=='find_company'" find-company></table>
-    <table class="matrix" ng-if="myFactory.matrixType=='find_calculation'" find-calculation></table>
-    <div ng-if="myFactory.matrixType=='transoprtCalculation'" calculation ng-controller="tCalcCtrl as tCalcCtrl"></div>
-    <div ng-if="myFactory.matrixType=='find'" ><input type="button" ng-click="dashboardCtrl.consolelog(myFactory.matrixType)"></div>
+    <table class="matrix" ng-if="matrixCtrl.myFactory.matrixType=='find_company'" find-company></table>
+    <table class="matrix" ng-if="matrixCtrl.myFactory.matrixType=='find_calculation'" find-calculation></table>
+    <div ng-if="matrixCtrl.myFactory.matrixType=='transoprtCalculation'" calculation ng-controller="tCalcCtrl as tCalcCtrl"></div>
+
 
     <!--
 

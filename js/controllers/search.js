@@ -49,14 +49,15 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,myFactory){
             return element.val != '' && element.val!=undefined && element.val.length>1
         });
         data.value=flag;
-        console.log(data);
+
         scope.template.txt=flag.val;
         scope.template.model=flag.model;
-        scope.var=123;
-        $http.post("search.php", data,{timeout:scope.abort.promise}).then(function success (response, myFactory) {
+        console.log(data);
+        $http.post("search.php", data,{timeout:scope.abort.promise}).then(function success (response) {
 
-                console.log(scope.var);
-                //scope.myFactory.matrixType=type;
+
+
+                scope.myFactory.matrixType=type;
 
 
 
