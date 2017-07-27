@@ -1,7 +1,7 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
-app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory){
+app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter){
     this.myFactory=myFactory;
     var scope=this;
     this.search_params=[];
@@ -91,6 +91,60 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory){
             return scope.config==='navigation';
         }
     };
+    function get_value(text){// функция получения из "100 500 рублей" значения "100500"
+        text=text.split(' ');
+        var result="";
+        for (var i = 0; i < text.length; i++) {
+            if(!isNaN(text[i])) result+=text[i];
+        }
+        return result*1;
+    }
+    this.showValue = function(value){
+        if(value.type=="currency"){
+            return $filter(value.type)(value.name, 'RUB ');
+        }
+        else return value.name;
+    };
+    this.loadProcess=function(process){
+        for(var i=0;i<scope.currObj.length;i++){
+            for(var j=0;j<scope.currObj[i].values.length;j++){
 
+                    delete scope.currObj[i].values[j].selected;
+
+
+            }
+        }
+        myFactory.process=process;
+        for(var key in process){
+            if(myFactory.transportProp.indexOf(key)!=-1){
+                if(key=='cost'|| key=='amount'||key=='limit'||key=='franchise'){
+                    var karetkaParam=scope.currObj.filter(function(obj){
+                        return obj['model']==key;
+                    });
+                    karetkaParam=karetkaParam[0];
+                    for(var i=0;i<karetkaParam.values.length;i++){
+                        if(karetkaParam.values[i].name=="input") karetkaParam.values[i].selected=get_value(process[key]);
+                        if(karetkaParam.values[i].name==get_value(process[key])){
+                            karetkaParam.values[i].selected=true;
+                            break;
+                        }
+
+                    }
+                }
+                else{
+                    for(var i=0;i<scope.currObj.length;i++){
+                        for(var j=0;j<scope.currObj[i].values.length;j++){
+                            if(scope.currObj[i].values[j].name==process[key]){
+                                scope.currObj[i].values[j].selected=true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        console.log(scope.currObj);
+    }
 
 });

@@ -13,7 +13,7 @@
       },
       {
         "name":1000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":2000000,
@@ -82,7 +82,7 @@
   },
   {
     "name": "Тип грузового отсека",
-    "model": "transportation",
+    "model": "wrapping",
     "values": [
       {
         "name": "Контейнер/Фургон/Реф",

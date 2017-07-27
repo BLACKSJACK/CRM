@@ -9,6 +9,10 @@
 
 
     }
+    div.red{
+        background: red!important;
+        color: red;
+    }
     div.matrix_container{
         width:1600px;
         font-size: 16pt;

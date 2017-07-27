@@ -72,12 +72,7 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
         'http://myapp.example.com/clickThru**'
     ]);
 });
-app.factory('myFactory', function(){
-    return{
-       matrixType: "find"
-       
-    }
-});
+
 app.directive('karetka', function(){
     return{
         restrict: 'A',
@@ -105,4 +100,14 @@ app.directive('calculation', function(){
        restrict: 'A',
        templateUrl: 'templates/matrix/calculation.html'
    }
+});
+
+
+app.factory('myFactory', function(){
+    return{
+        matrixType: "find",
+        process: {},
+        transportProp:["cost","amount","wrapping","risk","limit","franchise"]
+
+    }
 });
