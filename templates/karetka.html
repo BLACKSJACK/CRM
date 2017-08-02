@@ -2,8 +2,8 @@
 <div class="ul_container">
     <div ng-repeat="param in dashboardCtrl.currObj" class="ul" ng-class="[{mi_current: dashboardCtrl.currentUl($index)}, {mi_moveFromRight: dashboardCtrl.currentUl($index)},{ mi_moveToRight: !dashboardCtrl.currentUl($index)}]" ng-show="dashboardCtrl.currentUl($index)" >
         <div>
-            <div ng-class="{mi_selected: value.selected}" ng-repeat="value in param.values" ng-click="value.type=='relocate_here' ? dashboardCtrl.relocateHere(value.urlTo) : value.type=='relocatePage' ? dashboardCtrl.relocatePage(value.urlTo) : value.type=='reloadDashboard' ? dashboardCtrl.reloadDashboard(value.json,value.matrix) : ''">
-                {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" || value.type=="reloadDashboard" ? dashboardCtrl.showValue(value) : ""}}
+            <div ng-class="{mi_selected: value.selected}" ng-repeat="value in param.values" ng-click="value.type=='relocate_here' ? dashboardCtrl.relocateHere(value.urlTo) : value.type=='relocatePage' ? dashboardCtrl.relocatePage(value.urlTo) : value.type=='reloadDashboard' ? dashboardCtrl.reloadDashboard(value.json,value.matrix) : value.type=='text' || value.type=='currency' ? dashboardCtrl.calc.clicked(param.model, value) : '' ">
+                {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" || value.type=="reloadDashboard" ? value.name : value.type=="currency" ? dashboardCtrl.currencyFilter(value) : ""}}
 
                 <input ng-if="value.type == 'input'" type="text" ng-value="value.selected" placeholder="{{value.name}}">
                 <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl as searchCtrl" ng-change="searchCtrl.isEmptyQuery(param.values) ? searchCtrl.isEmptyObject(searchCtrl.template) ? searchCtrl.search(param.values, param.url) : searchCtrl.checkTemplate(param.values) ? searchCtrl.searchFilter(param.values) : searchCtrl.search(param.values, param.url) : searchCtrl.clean()" type="text" placeholder="{{value.name}}">
@@ -14,6 +14,6 @@
 </div>
 <div class="nav">
     <div>
-        <div ng-repeat="param in dashboardCtrl.currObj" ng-click="dashboardCtrl.selectParam($index)" ng-if="param.name" ng-class="{mi_selected: dashboardCtrl.currentUl($index)}">{{param.name}}</div>
+        <div ng-repeat="param in dashboardCtrl.currObj" ng-click="dashboardCtrl.selectParam($index)" ng-if="param.name" ng-class="[{mi_selected: dashboardCtrl.currentUl($index)}, {alreadySelected : dashboardCtrl.alreadySelected(param.model)}]">{{param.name}}</div>
     </div>
 </div>

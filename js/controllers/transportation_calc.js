@@ -1,8 +1,15 @@
 /**
  * Created by RoGGeR on 17.07.17.
  */
-app.controller("tCalcCtrl", function ($http, myFactory) {
+app.controller("tCalcCtrl", function ($http, myFactory, $rootScope, $scope) {
+
     this.myFactory=myFactory;
+    $scope.$on('$destroy', function() {
+        myFactory.cleanProcess();
+        $rootScope.mode="";
+    });
+
+    $rootScope.mode="calc";
     var scope=this;
     function Limit(cost, limit){return Math.pow(limit/cost, 1/koef_pow)};
     this.matrixDisplays=["cost","amount","wrapping","risk","limit","franchise"];//для того чтобы не перечислять эти значения в HTML

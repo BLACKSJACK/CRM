@@ -23,25 +23,21 @@
       {
         "name":"Счет",
         "urlTo":"qwe",
-        "type":"text",
         "search":"true"
       },
       {
         "name":"Физ. лицо",
         "urlTo":"qwe",
-        "type":"text",
         "search":"true"
       },
       {
         "name":"Запись в дневнике",
         "urlTo":"qwe",
-        "type":"text",
         "search":"true"
       },
       {
         "name":"Убыток",
         "urlTo":"qwe",
-        "type":"text",
         "search":"true"
       }
     ]

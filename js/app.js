@@ -106,8 +106,20 @@ app.directive('calculation', function(){
 app.factory('myFactory', function(){
     return{
         matrixType: "find",
-        process: {},
-        transportProp:["cost","amount","wrapping","risk","limit","franchise"]
+        process: {
+            cost:"",
+            amount:"",
+            wrapping:"",
+            risk:"",
+            limit:"",
+            franchise:""
+        },
+        transportProp:["cost","amount","wrapping","risk","limit","franchise"],
+        cleanProcess: function(){
+            this.process={};
+            for(var i=0;i<this.transportProp.length;i++) this.process[this.transportProp[i]]=""
+
+        }
 
     }
 });

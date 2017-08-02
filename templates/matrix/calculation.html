@@ -1,7 +1,7 @@
 <table class="matrix" ng-repeat="park in matrixCtrl.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
     <tr class="matrix_row" ng-repeat="process in matrixCtrl.processes | filter : { park: parentIndex } track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="tCalcCtrl.myFactory.transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=tCalcCtrl.myFactory.transportProp.indexOf(key);dashboardCtrl.loadProcess(process)">{{value}}</td>
+        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="tCalcCtrl.myFactory.transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=tCalcCtrl.myFactory.transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{value}}</td>
         <!--<td class="properties" ng-click="dashboardCtrl.currParam=0; dashboardCtrl.currentProcess=process">{{process[1]}}</td>
         <td class="properties" ng-click="dashboardCtrl.currParam=1; dashboardCtrl.currentProcess=process">{{process[2]}}</td>
         <td class="properties" ng-click="dashboardCtrl.currParam=2; dashboardCtrl.currentProcess=process">{{process[3]}}</td>

@@ -59,6 +59,10 @@
         font-size:12pt;
     }
 }
+.alreadySelected {
+    background: rgb(0, 111, 167)!important;
+    color: white;
+}
 .block {
 
     content: '';

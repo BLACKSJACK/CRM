@@ -81,7 +81,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     };
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
-        scope.currParam=index;
+        this.currParam=index;
         $rootScope.search_result=[];
 
     };
@@ -99,11 +99,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
         return result*1;
     }
-    this.showValue = function(value){
-        if(value.type=="currency"){
-            return $filter(value.type)(value.name, 'RUB ');
-        }
-        else return value.name;
+    this.currencyFilter = function(value){
+        return $filter(value.type)(value.name, '', 0);
     };
     this.loadProcess=function(process){
         for(var i=0;i<scope.currObj.length;i++){
@@ -145,6 +142,32 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
         }
         console.log(scope.currObj);
+    };
+    this.alreadySelected = function(model){
+        if($rootScope.mode=="calc")
+        return myFactory.process[model]!="";
+        else return false;
+    };
+    this.calc={
+        mode:"making new process",
+        clicked: function(model, value){
+            myFactory.process[model]=value.name;
+            if(this.mode=="making new process"){
+                var i=0;
+                for(var key in myFactory.process){
+                    if(myFactory.process[key]==""){
+                        scope.currParam=i;
+                        return false;
+                    }
+                    i++;
+                }
+                //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
+                //поднянуть так сказать писю так сказать к носу
+            }
+        },
+        loadProcessInKaretka: function(){
+
+        }
     }
 
 });

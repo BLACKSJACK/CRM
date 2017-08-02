@@ -17,23 +17,23 @@
       },
       {
         "name":2000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":3000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":5000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":7000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":10000000,
-        "type":"text"
+        "type":"currency"
       }
     ]
 
@@ -162,27 +162,27 @@
       },
       {
         "name":1000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":2000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":3000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":5000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":7000000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":10000000,
-        "type":"text"
+        "type":"currency"
       }
     ]
   },
@@ -200,29 +200,28 @@
       },
       {
         "name":0,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":5000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":10000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":20000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":50000,
-        "type":"text"
+        "type":"currency"
       },
       {
         "name":100000,
-        "type":"text"
+        "type":"currency"
       }
     ]
   }
 ]
-
