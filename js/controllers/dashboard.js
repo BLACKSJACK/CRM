@@ -164,6 +164,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 //поднянуть так сказать писю так сказать к носу
             }
+            if(this.mode=="changing process"){
+
+            }
         },
         loadProcessInKaretka: function(){
 
