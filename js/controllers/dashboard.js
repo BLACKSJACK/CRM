@@ -44,6 +44,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";
                 scope.currParam=0;
                 scope.config=string;
+                scope.myFactory.currObj=response.data;
             },function error (response){
                 console.log(response);
 
@@ -99,8 +100,22 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
         return result*1;
     }
-    this.currencyFilter = function(value){
-        return $filter(value.type)(value.name, '', 0);
+    this.applyFilter = function(value, key){
+        if(typeof key == "undefined"){
+            if(value.type=="currency") return $filter(value.type)(value.name, '', 0);
+            else if(value.type=="amount"){
+                if(this.myFactory.amountType=="Тягачи") return $filter("currency")(value.name/24, '', 0);
+                else if(this.myFactory.amountType=="Рейсы") return $filter("currency")(value.name, '', 0);
+            }
+        }
+        else{
+            if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value, '', 0);
+            else if(key=="amount"){
+                if(this.myFactory.amountType=="Тягачи") return $filter("currency")(value/24, '', 0);
+                else if(this.myFactory.amountType=="Рейсы") return $filter("currency")(value, '', 0);
+            }
+        }
+
     };
     this.loadProcess=function(process){
         for(var i=0;i<scope.currObj.length;i++){
@@ -113,7 +128,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
         myFactory.process=process;
         for(var key in process){
-            if(myFactory.transportProp.indexOf(key)!=-1){
+            if(transportProp.indexOf(key)!=-1){
                 if(key=='cost'|| key=='amount'||key=='limit'||key=='franchise'){
                     var karetkaParam=scope.currObj.filter(function(obj){
                         return obj['model']==key;
@@ -160,9 +175,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         return false;
                     }
                     i++;
+
                 }
                 //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 //поднянуть так сказать писю так сказать к носу
+                myFactory.addNewProcess();
             }
             if(this.mode=="changing process"){
 

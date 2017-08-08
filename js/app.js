@@ -102,7 +102,6 @@ app.directive('calculation', function(){
    }
 });
 
-
 app.factory('myFactory', function(){
     return{
         matrixType: "find",
@@ -114,12 +113,32 @@ app.factory('myFactory', function(){
             limit:"",
             franchise:""
         },
-        transportProp:["cost","amount","wrapping","risk","limit","franchise"],
         cleanProcess: function(){
             this.process={};
-            for(var i=0;i<this.transportProp.length;i++) this.process[this.transportProp[i]]=""
+            for(var i=0;i<transportProp.length;i++) this.process[transportProp[i]]=""
 
+        },
+        amountType: "Тягачи",
+        changeAmountType: function(){
+            if(this.amountType=="Тягачи") this.amountType="Рейсы";
+            else this.amountType="Тягачи";
+        },
+        parks: [],
+        addNewProcess: function(){
+            if(this.parks.length==0){
+                this.parks.push(new Park(new Process(this.process)));
+            }
+            else if(this.parks[this.parks.length-1].risks.indexOf(this.process.risk)!=-1){
+                this.parks.push(new Park(new Process(this.process)));
+            }
+            else{
+                console.log(this.parks[this.parks.length-1]);
+                this.parks[this.parks.length-1].processes.push(new Process(this.process));
+            }
+            console.log(this.parks);
+            this.cleanProcess();
         }
+
 
     }
 });

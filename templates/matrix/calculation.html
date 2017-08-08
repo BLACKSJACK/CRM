@@ -1,13 +1,16 @@
-<table class="matrix" ng-repeat="park in matrixCtrl.parks track by $index" ng-init="parentIndex = $index">
+<!--
+<table class="matrix" ng-repeat="park in HIP.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
-    <tr class="matrix_row" ng-repeat="process in matrixCtrl.processes | filter : { park: parentIndex } track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="tCalcCtrl.myFactory.transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=tCalcCtrl.myFactory.transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{value}}</td>
-        <!--<td class="properties" ng-click="dashboardCtrl.currParam=0; dashboardCtrl.currentProcess=process">{{process[1]}}</td>
-        <td class="properties" ng-click="dashboardCtrl.currParam=1; dashboardCtrl.currentProcess=process">{{process[2]}}</td>
-        <td class="properties" ng-click="dashboardCtrl.currParam=2; dashboardCtrl.currentProcess=process">{{process[3]}}</td>
-        <td class="properties" ng-click="dashboardCtrl.currParam=3; dashboardCtrl.currentProcess=process">{{process[4]}}</td>
-        <td class="properties" ng-click="dashboardCtrl.currParam=4; dashboardCtrl.currentProcess=process">{{process[5]}}</td>
-        <td class="properties" ng-click="dashboardCtrl.currParam=5; dashboardCtrl.currentProcess=process">{{process[6]}}</td>-->
+    <tr class="matrix_row" ng-repeat="process in HIP.processes | filter : { park: parentIndex } track by $index">
+        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="HIP.myFactory.transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=HIP.myFactory.transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{value}}</td>
+    </tr>
+    </tbody>
+</table>
+-->
+<table class="matrix" ng-repeat="park in HIP.parks track by $index" ng-init="parentIndex = $index">
+    <tbody>
+    <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
+        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{key=="wrapping" || key=="risk" ? value : dashboardCtrl.applyFilter(value, key) }}</td>
     </tr>
     </tbody>
 </table>

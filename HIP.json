@@ -44,39 +44,39 @@
     "values":[
       {
         "name":"Тягачей",
-        "type":"text"
+        "type":"amountType"
       },
       {
         "name":"input",
         "type":"input"
       },
       {
-        "name":1,
-        "type":"text"
+        "name":24,
+        "type":"amount"
       },
       {
-        "name":3,
-        "type":"text"
+        "name":72,
+        "type":"amount"
       },
       {
-        "name":5,
-        "type":"text"
+        "name":120,
+        "type":"amount"
       },
       {
-        "name":10,
-        "type":"text"
+        "name":240,
+        "type":"amount"
       },
       {
-        "name":15,
-        "type":"text"
+        "name":360,
+        "type":"amount"
       },
       {
-        "name":20,
-        "type":"text"
+        "name":480,
+        "type":"amount"
       },
       {
-        "name":30,
-        "type":"text"
+        "name":720,
+        "type":"amount"
       }
     ]
   },
@@ -86,23 +86,28 @@
     "values": [
       {
         "name": "Контейнер/Фургон/Реф",
-        "type":"text"
+        "type":"risk",
+        "value":0
       },
       {
         "name": "Тент",
-        "type":"text"
+        "type":"risk",
+        "value":1.2
       },
       {
         "name": "Автовоз",
-        "type":"text"
+        "type":"risk",
+        "value":3.5
       },
       {
         "name": "Цистерна/Танк",
-        "type":"text"
+        "type":"risk",
+        "value":5
       },
       {
         "name": "Открытый",
-        "type":"text"
+        "type":"risk",
+        "value":4
       }
     ]
   },
@@ -112,39 +117,48 @@
     "values": [
       {
         "name": "Пакеты",
-        "type": "text"
+        "type": "relocate_here",
+        "urlTo":"Пакеты"
       },
       {
         "name": "Базовые риски",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Противоправные действия",
-        "type": "text"
+        "type": "relocate_here",
+        "urlTo": "Противоправные действия"
       },
       {
         "name": "Таможенные платежи",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Повреждение контейнера",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Погрузка, разгрузка",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Поломка реф. установки",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Стихийные бедствия",
-        "type": "text"
+        "type": "risk",
+        "value":1
       },
       {
         "name": "Повреждение товарных автомобилей",
-        "type": "text"
+        "type": "risk",
+        "value":1
       }
     ]
   },
@@ -221,6 +235,42 @@
       {
         "name":100000,
         "type":"currency"
+      }
+    ]
+  },
+  {
+    "url": "Противоправные действия",
+    "values":[
+      {
+        "name": "Выбрать все",
+        "type": "action",
+        "value":1
+      },
+      {
+        "name": "Противоправные действия третьих лиц",
+        "type": "risk",
+        "value":2
+      },
+      {
+        "name": "Промежуточное хранение",
+        "type": "risk",
+        "value":1.5
+      },
+      {
+        "name": "Неохраняемая стоянка",
+        "type": "risk",
+        "value":2
+      }
+    ]
+  },
+  {
+    "url": "Пакеты",
+    "values":[
+      {
+        "name":1
+      },
+      {
+        "name":2
       }
     ]
   }

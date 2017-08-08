@@ -9,9 +9,9 @@
     </table>
 </div>
 <div class="matrix_container" ng-controller="matrixCtrl as matrixCtrl">
-    <table class="matrix" ng-if="matrixCtrl.myFactory.matrixType=='find_company'" find-company></table>
-    <table class="matrix" ng-if="matrixCtrl.myFactory.matrixType=='find_calculation'" find-calculation></table>
-    <div ng-if="matrixCtrl.myFactory.matrixType=='transoprtCalculation'" calculation ng-controller="tCalcCtrl as tCalcCtrl"></div>
+    <table class="matrix" ng-if="dashboardCtrl.myFactory.matrixType=='find_company'" find-company></table>
+    <table class="matrix" ng-if="dashboardCtrl.myFactory.matrixType=='find_calculation'" find-calculation></table>
+    <div ng-if="dashboardCtrl.myFactory.matrixType=='HIP'" calculation ng-controller="HIP as HIP"></div>
 
 
     <!--

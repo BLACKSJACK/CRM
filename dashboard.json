@@ -47,9 +47,9 @@
     "values":[
       {
         "name":"Перевозчик",
-        "json":"transportation_calc.json",
+        "json":"HIP.json",
         "type":"reloadDashboard",
-        "matrix":"transoprtCalculation"
+        "matrix":"HIP"
       },
       {
         "name":"Контакт",

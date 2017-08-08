@@ -188,4 +188,4 @@ function BubbleSort(mass)       // A - массив, который нужно
 }
 
 
-//function Limit - перенесена в transportation_calc.js из-за плавающего коэффициента
+//function Limit - перенесена в HIP.js из-за плавающего коэффициента
