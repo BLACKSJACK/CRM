@@ -10,7 +10,7 @@
 <table class="matrix" ng-repeat="park in HIP.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
     <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{key=="wrapping" || key=="risk" ? value : dashboardCtrl.applyFilter(value, key) }}</td>
+        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="dashboardCtrl.checkTransportProp(key)!=-1" ng-click="dashboardCtrl.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboardCtrl.applyFilter(value, key) }}</td>
     </tr>
     </tbody>
 </table>

@@ -1,16 +1,27 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
-app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter){
+app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout){
+
     this.myFactory=myFactory;
     var scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
     this.checkMult=function(row){
-
         row.show=false;
-
     };
+
+    //*************
+    this.ConfirmRefresh=false;//для кнопки "вернуться"
+    this.Confirm=function(){
+        this.ConfirmRefresh=true;
+
+        $timeout(function () {
+            scope.ConfirmRefresh=false
+        },4000);
+    };
+    //**************
+
     this.checkMulti=function(row){
         if(row.contact.length>1){
             if(!row.show)  row.show=true;
@@ -21,6 +32,10 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.consolelog=function (val) {
         console.log(val);
     };
+    this.clean=function(){
+        this.currParam="";
+        myFactory.cleanProcess();
+    }
     this.alert=function(val){
 
         alert(val);
@@ -80,13 +95,18 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.currentUl=function(index){//функция проверки для анимации и переключения между ul
         if(index===scope.currParam) return true;
     };
+    this.setCurrentUl=function(key){
+        return transportProp.indexOf(key);
+    };
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
         this.currParam=index;
         $rootScope.search_result=[];
 
     };
-
+    this.checkTransportProp=function (key) {
+        return transportProp.indexOf(key);
+    };
     this.configuration=function(value){
         if(value===1){
             return scope.config==='navigation';
@@ -104,28 +124,26 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         if(typeof key == "undefined"){
             if(value.type=="currency") return $filter(value.type)(value.name, '', 0);
             else if(value.type=="amount"){
-                if(this.myFactory.amountType=="Тягачи") return $filter("currency")(value.name/24, '', 0);
-                else if(this.myFactory.amountType=="Рейсы") return $filter("currency")(value.name, '', 0);
+                if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value.name/24, '', 0);
+                else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value.name, '', 0);
             }
         }
         else{
-            if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value, '', 0);
+            if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value, '', 0) + " Р";
             else if(key=="amount"){
-                if(this.myFactory.amountType=="Тягачи") return $filter("currency")(value/24, '', 0);
-                else if(this.myFactory.amountType=="Рейсы") return $filter("currency")(value, '', 0);
+                if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value/24, '', 0)+" "+myFactory.amountType;
+                else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value, '', 0)+" "+myFactory.amountType;
             }
         }
 
     };
-    this.loadProcess=function(process){
-        for(var i=0;i<scope.currObj.length;i++){
-            for(var j=0;j<scope.currObj[i].values.length;j++){
-
-                    delete scope.currObj[i].values[j].selected;
+    this.loadProcess=function(process,key){
+        this.calc.mode="changing process";
+        for(var i=0;i<scope.currObj.length;i++) for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
 
-            }
-        }
+        this.currParam = transportProp.indexOf(key);
+
         myFactory.process=process;
         for(var key in process){
             if(transportProp.indexOf(key)!=-1){
@@ -135,8 +153,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     });
                     karetkaParam=karetkaParam[0];
                     for(var i=0;i<karetkaParam.values.length;i++){
-                        if(karetkaParam.values[i].name=="input") karetkaParam.values[i].selected=get_value(process[key]);
-                        if(karetkaParam.values[i].name==get_value(process[key])){
+                        if(karetkaParam.values[i].name=="input") karetkaParam.values[i].selected=process[key];
+                        if(karetkaParam.values[i].name==process[key]){
                             karetkaParam.values[i].selected=true;
                             break;
                         }
@@ -159,8 +177,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         console.log(scope.currObj);
     };
     this.alreadySelected = function(model){
-        if($rootScope.mode=="calc")
-        return myFactory.process[model]!="";
+        if($rootScope.mode=="calc") return !(myFactory.process[model]==="");
         else return false;
     };
     this.calc={
@@ -170,7 +187,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             if(this.mode=="making new process"){
                 var i=0;
                 for(var key in myFactory.process){
-                    if(myFactory.process[key]==""){
+                    if(myFactory.process[key]===""){
                         scope.currParam=i;
                         return false;
                     }
@@ -180,14 +197,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 //поднянуть так сказать писю так сказать к носу
                 myFactory.addNewProcess();
+                scope.clean();
             }
             if(this.mode=="changing process"){
-
+                scope.clean();
             }
         },
-        loadProcessInKaretka: function(){
-
-        }
     }
 
 });

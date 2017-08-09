@@ -1,7 +1,7 @@
 /**
  * Created by RoGGeR on 08.08.17.
  */
-var transportProp=["cost","amount","wrapping","risk","limit","franchise"];
+const transportProp=["cost","amount","wrapping","risk","limit","franchise"];
 
 function Park(process){//создание нового парка
     this.processes=[process];

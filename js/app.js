@@ -118,10 +118,10 @@ app.factory('myFactory', function(){
             for(var i=0;i<transportProp.length;i++) this.process[transportProp[i]]=""
 
         },
-        amountType: "Тягачи",
+        amountType: "Тягачей",
         changeAmountType: function(){
-            if(this.amountType=="Тягачи") this.amountType="Рейсы";
-            else this.amountType="Тягачи";
+            if(this.amountType=="Тягачей") this.amountType="Рейсов";
+            else this.amountType="Тягачей";
         },
         parks: [],
         addNewProcess: function(){
@@ -137,6 +137,9 @@ app.factory('myFactory', function(){
             }
             console.log(this.parks);
             this.cleanProcess();
+        }
+        finalCalc: function(){
+
         }
 
 
