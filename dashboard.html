@@ -1,11 +1,11 @@
 <div class="dashboard_container" karetka></div>
 <div id="tooltip_box">
-    <table style="text-align: center; width:100%; height:100px ">
+    <table style="text-align: center; width:100%; height:100px; ">
         <tbody>
         <tr ng-click="dashboardCtrl.Confirm()"  ng-show="dashboardCtrl.config!='dashboard.json' && !dashboardCtrl.ConfirmRefresh">
             <td id="tooltip_box_td" style="color:rgb(230, 230, 230); font-size:30pt;">Вернуться</td>
         </tr>
-        <tr ng-show="dashboardCtrl.ConfirmRefresh">
+        <tr ng-show="dashboardCtrl.config!='dashboard.json' && dashboardCtrl.ConfirmRefresh">
             <td ng-click="dashboardCtrl.reloadDashboard('dashboard.json'); dashboardCtrl.myFactory.matrixType=null">Да</td>
             <td>Вернуться в основное меню?</td>
             <td ng-click="dashboardCtrl.ConfirmRefresh=false">Нет</td>

@@ -48,6 +48,4 @@ Process.prototype.calculateBase=function(){//расчет
     this.riskPremia=this.turnover*price/100;
     this.totalStavka=this.turnover*(this.riskStavka-this.baseStavka)/100;
     this.totalPremia=this.riskPremia-this.basePremia;
-
-
 };

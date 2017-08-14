@@ -1,7 +1,8 @@
 /**
  * Created by RoGGeR on 25.05.17.
  */
-var app=angular.module('mainApp', ['ngRoute','ngCookies']);
+'use strict';
+let app=angular.module('mainApp', ['ngRoute','ngCookies']);
 app.config(function($routeProvider,$sceDelegateProvider){//с помощью .config мы определяем маршруты приложения. Для конфигурации маршрутов используется объект $routeProvider.
     /*
     Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
@@ -115,7 +116,7 @@ app.factory('myFactory', function(){
         },
         cleanProcess: function(){
             this.process={};
-            for(var i=0;i<transportProp.length;i++) this.process[transportProp[i]]=""
+            for(let i=0;i<transportProp.length;i++) this.process[transportProp[i]]=""
 
         },
         amountType: "Тягачей",
@@ -137,7 +138,7 @@ app.factory('myFactory', function(){
             }
             console.log(this.parks);
             this.cleanProcess();
-        }
+        },
         finalCalc: function(){
 
         }
