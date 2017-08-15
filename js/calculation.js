@@ -1,20 +1,43 @@
 /**
  * Created by RoGGeR on 17.07.17.
  */
-
-
-var MB= [[],[]];
-var MC= [[],[]];
-var MD= [[],[]];
+"use strict";
+let Points={
+    cost:[],
+    amount:[],
+    risk:[],
+    payment: [[0,100],[100000, 70],[500000,30],[50000000, 0]]
+};
+let risks=[];
+let koef_pow;
+let xhr = new XMLHttpRequest();
+xhr.open("GET","loadPoints.php",true);
+xhr.send();
+xhr.onload = function() {
+    let ar=JSON.parse(this.responseText);
+    for(let i=0;i<ar.length;i++){
+        if(ar[i]['number']*1==1) Points.amount.push([ar[i]['x']*1,ar[i]['y']*1]);
+        else if(ar[i]['number']*1==2) Points.cost.push([ar[i]['x']*1,ar[i]['y']*1]);
+        else if(ar[i]['number']*1==3) Points.risk.push([ar[i]['x']*1,ar[i]['y']*1]);
+        else if(ar[i]['number']*1==4) koef_pow=ar[i]['x']*1;
+    }
+    SplineKoeff(0, Points.amount);
+    SplineKoeff(1, Points.cost); //интерполируем как жОские пацаны
+    SplineKoeff(2, Points.risk); //продолжаем интерполировать как жОские пацаны
+    SplineKoeff(3, Points.payment);
+};
+let MB= [[],[]];
+let MC= [[],[]];
+let MD= [[],[]];
 function SplineKoeff(index, mass)
 {
 
-    var C=[];
-    var B=[];
-    var D=[];
-    var num=mass.length;
-    var n=num-1;
-    var NM1=n-1;
+    let C=[];
+    let B=[];
+    let D=[];
+    let num=mass.length;
+    let n=num-1;
+    let NM1=n-1;
 
     if(num<2) return false;
     if(num<3){
@@ -33,7 +56,7 @@ function SplineKoeff(index, mass)
     {
         D[0]=mass[1][0]-mass[0][0];
         C[1] = (mass[1][1] - mass[0][1]) / D[0];
-        for (var i = 1; i < NM1+1; i++) {//цикл ебашит на ура
+        for (let i = 1; i < NM1+1; i++) {//цикл ебашит на ура
             D[i] = mass[i + 1][0] - mass[i][0]; //охуенно работает
             B[i]=2*(D[i-1]+D[i]);//охуенно работает
             C[i + 1] = (mass[i + 1][1] - mass[i][1]) / D[i];
@@ -44,19 +67,19 @@ function SplineKoeff(index, mass)
         C[0] = 0;
         C[n] = 0;
         if(num==3){
-            for (var i = 1; i < n+1; i++) {
-                var T = D[i-1] / B[i-1];
+            for (let i = 1; i < n+1; i++) {
+                let T = D[i-1] / B[i-1];
                 B[i] = B[i] - T * D[i-1];
                 C[i] = C[i] - T * C[i-1];
             };
             C[n] = C[n] / B[n];
-            for (var IB = 1; IB < n+1; i++) {
-                var i = n - IB;
+            for (let IB = 1; IB < n+1; i++) {
+                let i = n - IB;
                 C[i] = (C[i] - D[i] * C[i + 1]) / B[i];
             };
 
             B[n] = (mass[n][1] - mass[NM1][1]) / D[NM1] + D[NM1] * (C[NM1] + 2 * C[n]);
-            for (var i = 0; i < NM1+1; i++) {
+            for (let i = 0; i < NM1+1; i++) {
                 B[i] = (mass[i + 1][1] - mass[i][1]) / D[i] - D[i] * (C[i + 1] + 2 * C[i]);
                 D[i] = (C[i + 1] - C[i]) / D[i];
                 C[i] = 3 * C[i];
@@ -75,19 +98,19 @@ function SplineKoeff(index, mass)
             C[n] = C[n - 1] / (mass[n][0] - mass[n - 2][0]) - C[n - 2] / (mass[n - 1][0] - mass[n - 3][0]);
             C[0] = C[0] * Math.pow(D[0], 2) / (mass[3][0] - mass[0][0]);
             C[n] = -C[n] * Math.pow(D[n-1], 2) / (mass[n][0] - mass[n - 3][0]);
-            for (var i = 1; i < n+1; i++) {
+            for (let i = 1; i < n+1; i++) {
 
-                var T = D[i-1] / B[i-1];
+                let T = D[i-1] / B[i-1];
                 B[i] = B[i] - T * D[i-1];
                 C[i] = C[i] - T * C[i-1];
             };
             C[n] = C[n] / B[n];
-            for (var IB = 1; IB < n+1; IB++) {
-                var i = n - IB;
+            for (let IB = 1; IB < n+1; IB++) {
+                let i = n - IB;
                 C[i] = (C[i] - D[i] * C[i + 1]) / B[i];
             };
             B[n] = (mass[n][1] - mass[NM1][1]) / D[NM1] + D[NM1] * (C[NM1] + 2 * C[n]);
-            for (var i = 0; i < NM1+1; i++) {
+            for (let i = 0; i < NM1+1; i++) {
                 B[i] = (mass[i + 1][1] - mass[i][1]) / D[i] - D[i] * (C[i + 1] + 2 * C[i]);
                 D[i] = (C[i + 1] - C[i]) / D[i];
 
@@ -104,16 +127,16 @@ function SplineKoeff(index, mass)
 }
 function Spline(U, mass, index){
 
-    var n=mass.length-1;
-    var i=0;
+    let n=mass.length-1;
+    let i=0;
     if(i>=n+1){
         i=0;
     }
 
     if(mass[i][0]>U){
         i=0;
-        var J = n+1;//24
-        var k;
+        let J = n+1;//24
+        let k;
         do{
             k=Math.round((i+J)/2);
 
@@ -124,21 +147,21 @@ function Spline(U, mass, index){
                 i=k;
             };
         }while(J>i+1);
-        var dx=U-mass[i][0];
-        var Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
+        let dx=U-mass[i][0];
+        let Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
         return Spline1;
     }
 
     if(U<=mass[i+1][0])
     {
-        var dx=U-mass[i][0];
-        var Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
+        let dx=U-mass[i][0];
+        let Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
         return Spline1;
     }
     else{
         i=0;
-        var J = n+1;//24
-        var k;
+        let J = n+1;//24
+        let k;
         do{
             k=Math.round((i+J)/2);//12
             if(U<mass[k][0]){
@@ -147,11 +170,11 @@ function Spline(U, mass, index){
             if(U>=mass[k][0]){
                 i=k;
             };
-            var g=i+1;
+            let g=i+1;
 
         }while(J>i+1);
-        var dx=U-mass[i][0];
-        var Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
+        let dx=U-mass[i][0];
+        let Spline1=mass[i][1]+dx*(MB[index][i]+dx*(MC[index][i]+dx*MD[index][i]));
         return Spline1;
 
     }
@@ -170,22 +193,21 @@ function Franchise(cost, franchise){
 
 function BubbleSort(mass)       // A - массив, который нужно
 {
-    var A=[];
-    for(var key in mass){
+    let A=[];
+    for(let key in mass){
         A.push(mass[key]);
     }
 
                    // отсортировать по возрастанию.
-    var n = A.length;
-    for (var i = 0; i < n-1; i++){
-        for (var j = 0; j < n-1-i; j++){
+    let n = A.length;
+    for (let i = 0; i < n-1; i++){
+        for (let j = 0; j < n-1-i; j++){
             if (A[j+1][0] < A[j][0]){
-                var t = A[j+1]; A[j+1] = A[j]; A[j] = t;
+                let t = A[j+1]; A[j+1] = A[j]; A[j] = t;
             }
         }
     }
     return A;    // На выходе сортированный по возрастанию массив A.
 }
+function Limit(cost, limit){return Math.pow(limit/cost, 1/koef_pow)};
 
-
-//function Limit - перенесена в HIP.js из-за плавающего коэффициента

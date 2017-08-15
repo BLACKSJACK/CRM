@@ -125,6 +125,13 @@ app.factory('myFactory', function(){
             else this.amountType="Тягачей";
         },
         parks: [],
+        calculateParksAmount: function(){
+            let sum=0;
+            this.parks.forEach(function(park,i){
+                sum+=park.calculateAmount();
+            });
+            totalAmount=sum;
+        },
         addNewProcess: function(){
             if(this.parks.length==0){
                 this.parks.push(new Park(new Process(this.process)));
@@ -133,13 +140,45 @@ app.factory('myFactory', function(){
                 this.parks.push(new Park(new Process(this.process)));
             }
             else{
-                console.log(this.parks[this.parks.length-1]);
+                this.process.park=this.parks[this.parks.length-1];
                 this.parks[this.parks.length-1].processes.push(new Process(this.process));
             }
             console.log(this.parks);
             this.cleanProcess();
+            //this.finalCalc();
         },
         finalCalc: function(){
+            let mass=[];
+            this.parks.forEach(function (park,i) {
+                let arr=park.check();
+                arr.forEach(function(process){
+                    delete process.park;
+                    mass.push(new Process(process));
+                });
+
+                park.replaceBase();
+            });
+            for(let i=0;i<mass.length;i++){
+                this.process=mass[i];
+                this.addNewProcess();
+                this.parks[this.parks.length-1].check();
+                this.parks[this.parks.length-1].replaceBase();
+            }
+            this.calculateParksAmount();
+            this.parks.forEach(function(park,i){
+                park.calculate();
+            });
+            //обнуляем все значения, необходимые для парка:     +
+                //риски
+                //базовую премию
+                //коэффициент риска
+            //Базовый риск ставим на первое место                +
+            //смотрим есть ли повторяющиеся риски                   +
+                //заполняем массив с рисками и отключаем повторяющиеся     +
+                //если риск не повторяющийся - считаем коэффициент     +
+
+
+            //считаем каждую строку парка
 
         }
 

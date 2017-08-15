@@ -33,9 +33,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         console.log(val);
     };
     this.clean=function(){
+        for(var i=0;i<scope.currObj.length;i++) for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;
         this.currParam="";
-        myFactory.cleanProcess();
-    }
+        this.myFactory.cleanProcess();
+        this.calc.mode="making new process";
+    };
     this.alert=function(val){
 
         alert(val);
@@ -166,6 +168,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         for(var j=0;j<scope.currObj[i].values.length;j++){
                             if(scope.currObj[i].values[j].name==process[key]){
                                 scope.currObj[i].values[j].selected=true;
+                                scope.currParam=i;
                                 break;
                             }
                         }
@@ -174,7 +177,6 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             }
 
         }
-        console.log(scope.currObj);
     };
     this.alreadySelected = function(model){
         if($rootScope.mode=="calc") return !(myFactory.process[model]==="");
@@ -197,6 +199,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 //поднянуть так сказать писю так сказать к носу
                 myFactory.addNewProcess();
+                myFactory.finalCalc();
                 scope.clean();
             }
             if(this.mode=="changing process"){
