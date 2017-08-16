@@ -139,12 +139,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
 
     };
-    this.loadProcess=function(process,key){
+    this.loadProcess=function(process,prop){
         this.calc.mode="changing process";
         for(var i=0;i<scope.currObj.length;i++) for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
 
-        this.currParam = transportProp.indexOf(key);
+        this.currParam = transportProp.indexOf(prop);
 
         myFactory.process=process;
         for(var key in process){
@@ -168,7 +168,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         for(var j=0;j<scope.currObj[i].values.length;j++){
                             if(scope.currObj[i].values[j].name==process[key]){
                                 scope.currObj[i].values[j].selected=true;
-                                scope.currParam=i;
+                                if(key==prop) scope.currParam=i;
                                 break;
                             }
                         }
@@ -177,6 +177,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             }
 
         }
+
     };
     this.alreadySelected = function(model){
         if($rootScope.mode=="calc") return !(myFactory.process[model]==="");

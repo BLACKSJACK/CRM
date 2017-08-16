@@ -1,17 +1,8 @@
-<!--
-<table class="matrix" ng-repeat="park in HIP.parks track by $index" ng-init="parentIndex = $index">
-    <tbody>
-    <tr class="matrix_row" ng-repeat="process in HIP.processes | filter : { park: parentIndex } track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="HIP.myFactory.transportProp.indexOf(key)!=-1" ng-click="dashboardCtrl.currParam=HIP.myFactory.transportProp.indexOf(key);dashboardCtrl.loadProcess(process); dashboard.myFactory.process=process">{{value}}</td>
-    </tr>
-    </tbody>
-</table>
--->
 <table class="matrix" ng-repeat="park in HIP.myFactory.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
     <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="dashboardCtrl.checkTransportProp(key)!=-1" ng-click="dashboardCtrl.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboardCtrl.applyFilter(value, key) }}</td>
-        <td class="properties">{{process.totalPremia}}</td>
+        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="dashboard.checkTransportProp(key)!=-1" ng-click="dashboard.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboard.applyFilter(value, key) }}</td>
+        <td class="properties" width="150px">{{process.totalPremia | number:0}}</td>
     </tr>
     </tbody>
 </table>

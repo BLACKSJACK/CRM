@@ -51,7 +51,7 @@ app.config(function($routeProvider,$sceDelegateProvider){//с помощью .co
                 }
             },
             templateUrl: 'dashboard.html',
-            controller: 'dashboardCtrl as dashboardCtrl'
+            controller: 'dashboardCtrl as dashboard'
         })
         .when('/calc',{
 
