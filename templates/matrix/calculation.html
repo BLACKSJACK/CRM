@@ -1,8 +1,12 @@
 <table class="matrix" ng-repeat="park in HIP.myFactory.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
-    <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
-        <td class="properties" ng-repeat="(key,value) in process track by $index" ng-if="dashboard.checkTransportProp(key)!=-1" ng-click="dashboard.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboard.applyFilter(value, key) }}</td>
-        <td class="properties" width="150px">{{process.totalPremia | number:0}}</td>
+    <tr class="matrix_row" ng-repeat="process in park.processes track by $index" ng-class="{changing: process.changing}">
+        <td class="properties btns" width="20px">
+            <div class="btnCopy" ng-click="dashboard.loadProcess(HIP.copy(process), 'risk')">+</div>
+            <div class="btnDelete" ng-click="HIP.delete(process)">-</div>
+        </td>
+        <td class="properties" ng-class="{changing : process.changing && dashboard.currParam==dashboard.checkTransportProp(key)}" ng-repeat="(key,value) in process track by $index" ng-if="dashboard.checkTransportProp(key)!=-1" ng-click="dashboard.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboard.applyFilter(value, key) }}</td>
+        <td class="properties" width="150px">{{ dashboard.applyFilter(process.totalPremia, "cost") }}</td>
     </tr>
     </tbody>
 </table>

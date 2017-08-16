@@ -49,6 +49,7 @@ class Park{
         let mass=[];
         let sum=0,amount=0,risksum=0;
         for(let i=0;i<this.processes.length;i++){
+            delete this.processes[i].changing;//на всякий случай убираем выделение строки
             if(this.risks.indexOf(this.processes[i].risk)==-1){
                 this.risks.push(this.processes[i].risk);
                 sum+=this.processes[i].amount*risks[this.processes[i].wrapping];
@@ -62,7 +63,6 @@ class Park{
 
         }
         this.riskKoef=sum/(amount*risksum);
-        console.log(this.riskKoef);
 
         return mass;
     }

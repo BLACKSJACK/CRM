@@ -6,7 +6,15 @@ app.controller("HIP", function ($http, myFactory, $rootScope, $scope) {
     $rootScope.cacheTemplate={};
 
     this.myFactory=myFactory;
-
+    this.delete=function(process){
+        process.park.processes.splice(process.park.processes.indexOf(process),1);
+        myFactory.finalCalc();
+    };
+    this.copy=function(process){
+        let proc=new Process(process);
+        process.park.processes.splice(process.park.processes.indexOf(process)+1,0,proc);
+        return proc;
+    };
     for(let i=0;i<this.myFactory.currObj.length; i++){
         let currObj=myFactory.currObj;
         for(let j=0; j<currObj[i].values.length;j++){

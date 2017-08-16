@@ -2,7 +2,7 @@
  * Created by RoGGeR on 25.05.17.
  */
 'use strict';
-let app=angular.module('mainApp', ['ngRoute','ngCookies']);
+let app=angular.module('mainApp', ['ngRoute','ngCookies', 'ngAnimate']);
 app.config(function($routeProvider,$sceDelegateProvider){//с помощью .config мы определяем маршруты приложения. Для конфигурации маршрутов используется объект $routeProvider.
     /*
     Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
@@ -80,6 +80,12 @@ app.directive('karetka', function(){
         templateUrl: 'templates/karetka.html'
     };
 });
+app.directive('return', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/return.html'
+    };
+});
 app.directive('findCompany', function () {
         return{
             restrict: 'A',
@@ -114,13 +120,13 @@ app.factory('myFactory', function(){
             limit:"",
             franchise:""
         },
-        cleanProcess: function(){
+        cleanProcess: function(){// очищаем каретку от заполненного процесса
             this.process={};
             for(let i=0;i<transportProp.length;i++) this.process[transportProp[i]]=""
 
         },
-        amountType: "Тягачей",
-        changeAmountType: function(){
+        amountType: "Тягачей",// для фильтра тягачей
+        changeAmountType: function(){//для фильтра тягачей
             if(this.amountType=="Тягачей") this.amountType="Рейсов";
             else this.amountType="Тягачей";
         },
@@ -150,13 +156,13 @@ app.factory('myFactory', function(){
         finalCalc: function(){
             let mass=[];
             this.parks.forEach(function (park,i) {
-                let arr=park.check();
+                let arr=park.check();//обнуляем все значения для парка(риски, базовая премия, коэфф риска)
                 arr.forEach(function(process){
                     delete process.park;
                     mass.push(new Process(process));
                 });
 
-                park.replaceBase();
+                park.replaceBase();//Базовый риск ставим на первое место
             });
             for(let i=0;i<mass.length;i++){
                 this.process=mass[i];
@@ -172,7 +178,6 @@ app.factory('myFactory', function(){
                 //риски
                 //базовую премию
                 //коэффициент риска
-            //Базовый риск ставим на первое место                +
             //смотрим есть ли повторяющиеся риски                   +
                 //заполняем массив с рисками и отключаем повторяющиеся     +
                 //если риск не повторяющийся - считаем коэффициент     +

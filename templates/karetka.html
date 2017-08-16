@@ -2,10 +2,10 @@
 <div class="ul_container">
     <div ng-repeat="param in dashboard.currObj" class="ul" ng-class="[{mi_current: dashboard.currentUl($index)}, {mi_moveFromRight: dashboard.currentUl($index)},{ mi_moveToRight: !dashboard.currentUl($index)}]" ng-show="dashboard.currentUl($index)" >
         <div>
-            <div ng-class="{mi_selected: value.selected}" ng-repeat="value in param.values" ng-click="value.type=='relocate_here' ? dashboard.relocateHere(value.urlTo) : value.type=='relocatePage' ? dashboard.relocatePage(value.urlTo) : value.type=='reloadDashboard' ? dashboard.reloadDashboard(value.json,value.matrix) : value.type=='text' || value.type=='currency' || value.type=='amount' || value.type=='risk' ? dashboard.calc.clicked(param.model, value) : value.type=='amountType' ? dashboard.myFactory.changeAmountType() : '' ">
+            <div ng-class="{mi_selected: value.selected}" ng-repeat="value in param.values" ng-click="value.type=='relocate_here' ? dashboard.relocateHere(value.urlTo) : value.type=='relocatePage' ? dashboard.relocatePage(value.urlTo) : value.type=='reloadDashboard' ? dashboard.reloadDashboard(value.json,value.matrix) : value.type=='text' || value.type=='currency' || value.type=='amount' || value.type=='risk' ? dashboard.calc.clicked(param, value) : value.type=='amountType' ? dashboard.myFactory.changeAmountType() : '' ">
                 {{value.type == "text" || value.type == "relocate_here" || value.type =="relocatePage" || value.type=="reloadDashboard" || value.type=="risk" ? value.name : value.type=="currency" || value.type=="amount" ? dashboard.applyFilter(value) : value.type=="amountType" ? dashboard.myFactory.amountType : ""}}
 
-                <input ng-if="value.type == 'input'" type="text" ng-value="value.selected" placeholder="{{value.name}}">
+                <input ng-if="value.type == 'input'" type="text" ng-value="value.selected" placeholder="{{value.name}}" style="color: #35bfff;">
                 <input ng-if="value.type == 'input_search'" name="value.model" ng-model="value.val" ng-controller="searchCtrl as searchCtrl" ng-change="searchCtrl.isEmptyQuery(param.values) ? searchCtrl.isEmptyObject(searchCtrl.template) ? searchCtrl.search(param.values, param.url) : searchCtrl.checkTemplate(param.values) ? searchCtrl.searchFilter(param.values) : searchCtrl.search(param.values, param.url) : searchCtrl.clean()" type="text" placeholder="{{value.name}}">
                 <input ng-if="value.type == 'date_search'" type="date">
             </div>
@@ -14,6 +14,6 @@
 </div>
 <div class="nav">
     <div>
-        <div ng-repeat="param in dashboard.currObj" ng-click="dashboard.selectParam($index)" ng-if="param.name" ng-class="[{mi_selected: dashboard.currentUl($index)}, {alreadySelected : dashboard.alreadySelected(param.model)}]">{{param.name}}</div>
+        <div ng-repeat="param in dashboard.currObj" ng-click="dashboard.selectParam($index)" ng-if="param.name" ng-class="[{mi_selected: dashboard.currentUl($index)}, {alreadySelected : dashboard.alreadySelected(param.model)}]">{{param.selected ? dashboard.applyFilter(param.selected,param.model) : param.name}}</div>
     </div>
 </div>

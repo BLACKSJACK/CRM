@@ -1,6 +1,8 @@
 /**
  * Created by RoGGeR on 30.05.17.
  */
+
+"use strict";
 app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout){
 
     this.myFactory=myFactory;
@@ -12,12 +14,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     };
 
     //*************
-    this.ConfirmRefresh=false;//для кнопки "вернуться"
+
     this.Confirm=function(){
-        this.ConfirmRefresh=true;
+        this.calc.mode="confirm refresh";
 
         $timeout(function () {
-            scope.ConfirmRefresh=false
+            scope.calc.mode="listener"
         },4000);
     };
     //**************
@@ -33,10 +35,14 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         console.log(val);
     };
     this.clean=function(){
-        for(var i=0;i<scope.currObj.length;i++) for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;
+        for(var i=0;i<scope.currObj.length;i++){
+            delete scope.currObj[i].selected;
+            for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;
+        }
         this.currParam="";
         this.myFactory.cleanProcess();
-        this.calc.mode="making new process";
+        this.calc.mode="listener";
+        myFactory.finalCalc();
     };
     this.alert=function(val){
 
@@ -85,7 +91,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         location.href = url;
     };
     this.relocateHere=function(url){//переход в углубление вверху каретки
-        for(i=0; i<scope.currObj.length;i++){
+        for(let i=0; i<scope.currObj.length;i++){
 
             if(scope.currObj[i]['url']===url){
                 console.log(scope.currObj[i]);
@@ -129,6 +135,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value.name/24, '', 0);
                 else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value.name, '', 0);
             }
+            else return value.name;
         }
         else{
             if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value, '', 0) + " Р";
@@ -136,10 +143,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value/24, '', 0)+" "+myFactory.amountType;
                 else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value, '', 0)+" "+myFactory.amountType;
             }
+            else return value;
         }
 
     };
     this.loadProcess=function(process,prop){
+        process.changing=true;//для выделения строки которую меняем
         this.calc.mode="changing process";
         for(var i=0;i<scope.currObj.length;i++) for(var j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
@@ -184,10 +193,13 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         else return false;
     };
     this.calc={
-        mode:"making new process",
-        clicked: function(model, value){
-            myFactory.process[model]=value.name;
+        mode:"listener",
+        clicked: function(param, value){
+            if(this.mode=="listener") this.mode="making new process";
+            myFactory.process[param.model]=value.name;
+
             if(this.mode=="making new process"){
+                param.selected=value.name;
                 var i=0;
                 for(var key in myFactory.process){
                     if(myFactory.process[key]===""){
@@ -204,6 +216,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 scope.clean();
             }
             if(this.mode=="changing process"){
+                delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
                 scope.clean();
             }
         },

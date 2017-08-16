@@ -1,18 +1,5 @@
 <div class="dashboard_container" karetka></div>
-<div id="tooltip_box">
-    <table style="text-align: center; width:100%; height:100px; ">
-        <tbody>
-        <tr ng-click="dashboard.Confirm()"  ng-show="dashboard.config!='dashboard.json' && !dashboard.ConfirmRefresh">
-            <td id="tooltip_box_td" style="color:rgb(230, 230, 230); font-size:30pt;">Вернуться</td>
-        </tr>
-        <tr ng-show="dashboard.config!='dashboard.json' && dashboard.ConfirmRefresh">
-            <td ng-click="dashboard.reloadDashboard('dashboard.json'); dashboard.myFactory.matrixType=null">Да</td>
-            <td>Вернуться в основное меню?</td>
-            <td ng-click="dashboard.ConfirmRefresh=false">Нет</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<div id="tooltip_box" return></div>
 <div class="matrix_container" ng-controller="matrixCtrl as matrixCtrl" ng-class="{calc: dashboard.myFactory.matrixType=='HIP'}">
     <table class="matrix" ng-if="dashboard.myFactory.matrixType=='find_company'" find-company></table>
     <table class="matrix" ng-if="dashboard.myFactory.matrixType=='find_calculation'" find-calculation></table>

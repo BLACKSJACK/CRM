@@ -4,10 +4,7 @@
     div.mi_slider{
         width:1600px;
         height: 1000px;
-
         margin:5% 10% 10% 10%;
-
-
     }
     div.red{
         background: red!important;
@@ -19,7 +16,7 @@
         height:800px;
     }
     div.matrix_container.calc{
-        width:1750px;
+        width:1770px;
         font-size: 16pt;
         height:800px;
     }
@@ -54,7 +51,7 @@
         height:600px;
     }
     div.matrix_container.calc{
-        width:1150px;
+        width:1170px;
         font-size: 14pt;
         height:600px;
     }
@@ -68,6 +65,22 @@
     .mi_slider>div.dashboard_container>.nav>div>div, .mi_slider>div.dashboard_container>div>.ul>div>div{
         font-size:12pt;
     }
+}
+div#tooltip_box{
+    display: inline-block;
+}
+div#tooltip_box>table>tbody>tr>td{
+    color:rgb(230, 230, 230);
+    font-size:30pt;
+}
+div#tooltip_box>table,div#tooltip_box>table>tbody,div#tooltip_box>table>tbody>tr{
+    height: 100%;
+    display: block;
+}
+div#tooltip_box>table>tbody>tr>td{
+    line-height: 2;
+    height: 100%;
+    display: inline-block;
 }
 .alreadySelected {
     background: rgb(0, 111, 167)!important;
@@ -83,31 +96,16 @@
 }
 
 
-.animation { -webkit-transition: 0.5s; }
 
-.animation.ng-enter-stagger,
-.animation.ng-leave-stagger{
-    -webkit-transition-delay: 0.2s;
-    transition-delay: 0.2s;
-    -webkit-transition-duration:0;
-    transition-duration:0;
-}
-
-.animation.ng-leave { opacity: 1; }
-.animation.ng-leave.ng-leave-active { opacity: 0; }
-
-.animation.ng-enter { opacity: 0; }
-.animation.ng-enter.ng-enter-active { opacity: 1; }
-.element::-webkit-scrollbar { width: 0; }
-
-/* ie 10+ */
-.element { -ms-overflow-style: none; }
 
 /* фф (свойство больше не работает, других способов тоже нет)*/
 .element { overflow: -moz-scrollbars-none; }
 .matrix_container{
 
     overflow: auto;
+}
+.matrix_container.calc{
+    margin-left: -20px;
 }
 table.matrix{
     display: table;
@@ -120,6 +118,14 @@ table.matrix{
 table.matrix>tbody>tr{
     display: table-row;
     background: rgb(230, 230, 230);
+}
+div.calc>div>table.matrix>tbody>tr.changing{
+    color: white;
+    background: rgb(0, 111, 167);
+}
+div.calc>div>table.matrix>tbody>tr.changing>td.changing{
+    color: white;
+    background: #35bfff;
 }
 .multi_cell:hover{
     background: white;
@@ -165,6 +171,7 @@ body{
     height:100%;
 
 }
+
 table.matrix>tbody>tr>.properties{
     font-weight:500;
     text-align: center;
@@ -202,7 +209,11 @@ table.matrix>tbody>tr>.properties{
 
 }
 .mi_slider>div.dashboard_container>.nav>div>div:hover,
-.mi_slider>div.dashboard_container>div>.ul>div>div:hover,table.matrix>tbody>tr:hover{
+.mi_slider>div.dashboard_container>div>.ul>div>div:hover,
+div:not(.calc)>div>table.matrix>tbody>tr:hover,
+div.calc>div>table.matrix>tbody>tr>td:not(.btns):hover,
+.btnCopy:hover,
+.btnDelete:hover{
     color: white;
     background: #35bfff;
 }
@@ -354,7 +365,25 @@ table.matrix>tbody>tr>.properties{
     -webkit-animation-delay: 270ms;
     animation-delay: 270ms;
 }
+.animation { -webkit-transition: 0.5s; }
 
+.animation.ng-enter-stagger,
+.animation.ng-leave-stagger{
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+    -webkit-transition-duration:0;
+    transition-duration:0;
+}
+
+.animation.ng-leave { opacity: 1; }
+.animation.ng-leave.ng-leave-active { opacity: 0; }
+
+.animation.ng-enter { opacity: 0; }
+.animation.ng-enter.ng-enter-active { opacity: 1; }
+.element::-webkit-scrollbar { width: 0; }
+
+/* ie 10+ */
+.element { -ms-overflow-style: none; }
 
 /* Animations */
 
@@ -396,4 +425,33 @@ table.matrix>tbody>tr>.properties{
 @keyframes moveToLeft {
     0% { -webkit-transform: translateX(0%); transform: translateX(0%); }
     100% { -webkit-transform: translateX(-1250%); transform: translateX(-1250%); }
+}
+.animate-switch-container {
+    position:relative;
+    background:white;
+
+    overflow:hidden;
+}
+
+.animate-switch {
+    padding:0px;
+}
+
+.animate-switch.ng-animate {
+    transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+    top:-50px;
+}
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+    top:0;
 }

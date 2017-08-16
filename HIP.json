@@ -133,32 +133,32 @@
       {
         "name": "Таможенные платежи",
         "type": "risk",
-        "value":1
+        "value":0.1
       },
       {
         "name": "Повреждение контейнера",
         "type": "risk",
-        "value":1
+        "value":2
       },
       {
         "name": "Погрузка, разгрузка",
         "type": "risk",
-        "value":1
+        "value":3.5
       },
       {
         "name": "Поломка реф. установки",
         "type": "risk",
-        "value":1
+        "value":2
       },
       {
         "name": "Стихийные бедствия",
         "type": "risk",
-        "value":1
+        "value":0.15
       },
       {
         "name": "Повреждение товарных автомобилей",
         "type": "risk",
-        "value":1
+        "value":4
       }
     ]
   },
