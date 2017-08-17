@@ -53,7 +53,7 @@
     div.matrix_container.calc{
         width:1170px;
         font-size: 14pt;
-        height:600px;
+        height:350px;
     }
     .matrix_row{
         height: 60px;
@@ -108,7 +108,6 @@ div#tooltip_box>table>tbody>tr>td{
     margin-left: -20px;
 }
 table.matrix{
-    display: table;
     width: 100%;
     table-layout: fixed;
 

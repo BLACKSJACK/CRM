@@ -71,6 +71,13 @@ class Park{
             process.calculateBase();
         })
     }
+    getTotal(){
+        let sum=0;
+        this.processes.forEach(function(process){
+            sum+=process.totalPremia;
+        });
+        return sum;
+    }
 }
 class Process{
     constructor(process, multi){
@@ -100,6 +107,7 @@ class Process{
         this.baseStavka=price;
         this.basePremia=this.turnover*price/100;
         //******************до сюда мы посчитали стоимость без вычетов и надбавок за риск
+        console.log((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2);
         let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
         price *= 1 + spline2 / 100;
         this.riskStavka=price;

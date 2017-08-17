@@ -137,6 +137,7 @@ app.factory('myFactory', function(){
                 sum+=park.calculateAmount();
             });
             totalAmount=sum;
+            this.totalAmount=totalAmount;
         },
         addNewProcess: function(){
             if(this.parks.length==0){
@@ -153,7 +154,15 @@ app.factory('myFactory', function(){
             this.cleanProcess();
             //this.finalCalc();
         },
-        finalCalc: function(){
+        getTotal: function(){
+            let sum=0;
+            this.parks.forEach(function (park) {
+                sum+=park.getTotal();
+            });
+
+            return sum;
+        },
+        cleanUpProcessesInParks: function(){
             let mass=[];
             this.parks.forEach(function (park,i) {
                 let arr=park.check();//обнуляем все значения для парка(риски, базовая премия, коэфф риска)
@@ -170,10 +179,17 @@ app.factory('myFactory', function(){
                 this.parks[this.parks.length-1].check();
                 this.parks[this.parks.length-1].replaceBase();
             }
+        },
+        finalCalc: function(){
+
+            this.cleanUpProcessesInParks();
             this.calculateParksAmount();
+
             this.parks.forEach(function(park,i){
                 park.calculate();
             });
+            this.totalPrice=this.getTotal();
+
             //обнуляем все значения, необходимые для парка:     +
                 //риски
                 //базовую премию
