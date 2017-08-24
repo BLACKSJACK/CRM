@@ -192,6 +192,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
             if(this.mode=="making new process"){
                 param.selected=value.name;
+                console.log(myFactory.process);
                 let i=0;
                 for(let key in myFactory.process){
                     if(myFactory.process[key]===""){

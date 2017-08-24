@@ -66,6 +66,9 @@
         font-size:12pt;
     }
 }
+table.matrix.park{
+    border-bottom: 1px solid black;
+}
 div#tooltip_box{
     display: inline-block;
 }

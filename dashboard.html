@@ -17,8 +17,12 @@
         <td class="properties">{{dashboard.applyFilter(dashboard.myFactory.totalAmount, "amount")}}</td>
         <td class="properties">Агрегатный лимит</td>
         <td class="properties">{{a_limit}}</td>
-        <td class="properties">Этапов:</td>
+        <td><input type="text" ng-model="dashboard.myFactory.a_limit"></td>
+        <td ng-model="dashboard.myFactory.a_limit"></td>
+        <td class="properties">Этапов: <input type="number"></td>
+
         <td class="properties">{{payment}}</td>
     </tr>
     </tbody>
 </table>
+<input type='text' currency-input = "" ng-model = "currencyVal"/>
