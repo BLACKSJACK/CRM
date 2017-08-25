@@ -4,7 +4,7 @@
 
 "use strict";
 app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout){
-
+    this.span=1;
     this.myFactory=myFactory;
     let scope=this;
     this.search_params=[];

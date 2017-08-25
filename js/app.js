@@ -108,7 +108,91 @@ app.directive('calculation', function(){
        templateUrl: 'templates/matrix/calculation.html'
    }
 });
-app.directive('currencyInput', function($filter, $browser, myFactory) {
+app.directive('currencyInput2', function ($filter, myFactory) {
+    return {
+        require: '?ngModel',
+        link: function (scope, $element, attrs, ctrl) {
+            if (!ctrl) {
+                return;
+            }
+            $element.bind('keyup', function(event) {
+                let key = event.keyCode;
+                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
+                // This lets us support copy and paste too
+                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
+
+                if(key==13){
+                    scope.dashboard.span=2;
+                    let target = event.target;
+
+                    // do more here, like blur or other things
+                    target.blur();
+
+
+                }
+
+                console.log("done");
+                //$browser.defer(listener); // Have to do this or changes don't get picked up properly
+
+            });
+        }
+    };
+});
+app.directive('currencyInput', function ($filter, myFactory) {
+    return {
+        require: '?ngModel',
+        link: function ($scope, $element, $attrs, ctrl) {
+            if (!ctrl) {
+                return;
+            }
+
+            ctrl.$formatters.unshift(function () {
+                console.log(1);
+                return $filter('number')(ctrl.$modelValue);
+
+            });
+
+            ctrl.$parsers.unshift(function (viewValue) {
+                let plainNumber = viewValue.replace(/[\,\.]/g, ''),
+                    b = $filter('number')(plainNumber);
+
+                $element.val(b);
+
+                return plainNumber;
+            });
+            $element.bind('keydown keypress', ($event) => {
+                let key = $event.which;
+                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
+                // This lets us support copy and paste too
+                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
+
+                if(key==13){
+                    let val=$element.val().replace(/,/g, '')*1;
+                    if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
+                    else myFactory.process[$attrs['param']]=val;
+                    let i=0;
+                    for(let key in myFactory.process){
+                        if(myFactory.process[key]===""){
+                            $scope.dashboard.currParam=i;
+                            let target = $event.target;
+                            target.blur();
+                            console.log(myFactory.process);
+                            return;
+
+                        }
+                        i++;
+                    }
+                    let target = $event.target;
+                    target.blur();
+                    myFactory.addNewProcess();
+                    myFactory.finalCalc();
+                    $scope.dashboard.clean();
+                }
+            });
+        }
+    };
+});
+app.directive('currencyInput1', function($filter, $browser, myFactory) {
     return {
         require: 'ngModel',
         link: function($scope, $element, $attrs, ngModelCtrl) {
@@ -129,37 +213,37 @@ app.directive('currencyInput', function($filter, $browser, myFactory) {
             };
             $element.bind('change', listener);
 
-            $element.bind('keyup', function(event) {
-                let key = event.keyCode;
+            $element.bind('keydown keypress', ($event) => {
+                let key = $event.which;
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
                 // This lets us support copy and paste too
                 if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
 
                 if(key==13){
-                    let val=$element.val();
+                    let val=$element.val().replace(/,/g, '')*1;
                     if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
-                    else myFactory.process[$attrs['param']]=$element.val();
-                    console.log(myFactory.process);
-                    console.log(val);
+                    else myFactory.process[$attrs['param']]=val;
                     let i=0;
-
                     for(let key in myFactory.process){
                         if(myFactory.process[key]===""){
                             $scope.dashboard.currParam=i;
-                            break;
+                            let target = $event.target;
+                            target.blur();
+                            console.log(myFactory.process);
+                            return;
 
                         }
                         i++;
-
-
                     }
-
-
-
+                    let target = $event.target;
+                    target.blur();
+                    myFactory.addNewProcess();
+                    myFactory.finalCalc();
+                    $scope.dashboard.clean();
                 }
                 $browser.defer(listener); // Have to do this or changes don't get picked up properly
-
             });
+
 
             $element.bind('paste cut', function() {
                 $browser.defer(listener)
