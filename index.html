@@ -23,7 +23,7 @@
 <body ng-app="mainApp" ng-class="{html: !loggedIn}">
 
 <span ng-show="loggedIn">Hello {{name}}</span>
-<div ng-view="" ng-class="{mi_slider: loggedIn}"></div>
+<div ng-view="" ng-class="{mi_slider: loggedIn}" tabindex="0" ng-keypress="dashboard.keyboard($event)" ng-focus="dashboard.myFactory.foc=true" ng-blur="dashboard.myFactory.foc=false"></div>
 
 
 </body>

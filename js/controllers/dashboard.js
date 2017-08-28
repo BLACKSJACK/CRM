@@ -11,13 +11,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.isArray = angular.isArray;
     this.currParam=this.myFactory.currParam;
     //*************//*************//*************
-    if($document[0].activeElement.tagName==="BODY") myFactory.foc=true;
-    $document.on('keyup', keyupHandler);
-    function keyupHandler(keyEvent) {
-        if(scope.myFactory.currParam) scope.selectParam(keyEvent.key-1);
-    }
 
 
+    this.keyboard=function(event){
+        this.selectParam(event.key-1);
+    };
     //*************//*************//*************
 
     this.Confirm=function(){

@@ -254,6 +254,7 @@ app.directive('currencyInput1', function($filter, $browser, myFactory) {
 
 app.factory('myFactory', function(){
     return{
+        //foc:true,
         currParam: 0,
         matrixType: "find",
         a_limit:0,
