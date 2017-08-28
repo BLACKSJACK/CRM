@@ -147,7 +147,6 @@ app.directive('currencyInput', function ($filter, myFactory) {
             }
 
             ctrl.$formatters.unshift(function () {
-                console.log(1);
                 return $filter('number')(ctrl.$modelValue);
 
             });
@@ -173,7 +172,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                     let i=0;
                     for(let key in myFactory.process){
                         if(myFactory.process[key]===""){
-                            $scope.dashboard.currParam=i;
+                            myFactory.currParam=i;
                             let target = $event.target;
                             target.blur();
                             console.log(myFactory.process);
@@ -226,7 +225,7 @@ app.directive('currencyInput1', function($filter, $browser, myFactory) {
                     let i=0;
                     for(let key in myFactory.process){
                         if(myFactory.process[key]===""){
-                            $scope.dashboard.currParam=i;
+                            myFactory.currParam=i;
                             let target = $event.target;
                             target.blur();
                             console.log(myFactory.process);
@@ -255,6 +254,7 @@ app.directive('currencyInput1', function($filter, $browser, myFactory) {
 
 app.factory('myFactory', function(){
     return{
+        currParam: 0,
         matrixType: "find",
         a_limit:0,
         process: {
@@ -327,24 +327,24 @@ app.factory('myFactory', function(){
         },
         finalCalc: function(){
 
-            this.cleanUpProcessesInParks();
+            this.cleanUpProcessesInParks();//обнуляем все значения, необходимые для парка:     +//смотрим есть ли повторяющиеся риски                   +
             this.calculateParksAmount();
 
             this.parks.forEach(function(park,i){
-                park.calculate();
+                park.calculate();//считаем каждую строку парка
             });
             this.totalPrice=this.getTotal();
 
-            //обнуляем все значения, необходимые для парка:     +
+
                 //риски
                 //базовую премию
                 //коэффициент риска
-            //смотрим есть ли повторяющиеся риски                   +
+
                 //заполняем массив с рисками и отключаем повторяющиеся     +
                 //если риск не повторяющийся - считаем коэффициент     +
 
 
-            //считаем каждую строку парка
+
 
         }
 

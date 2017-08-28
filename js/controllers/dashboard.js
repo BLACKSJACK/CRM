@@ -3,15 +3,22 @@
  */
 
 "use strict";
-app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout){
+app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout, $document, $scope){
     this.span=1;
     this.myFactory=myFactory;
     let scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
+    this.currParam=this.myFactory.currParam;
+    //*************//*************//*************
+    if($document[0].activeElement.tagName==="BODY") myFactory.foc=true;
+    $document.on('keyup', keyupHandler);
+    function keyupHandler(keyEvent) {
+        if(scope.myFactory.currParam) scope.selectParam(keyEvent.key-1);
+    }
 
 
-    //*************
+    //*************//*************//*************
 
     this.Confirm=function(){
         this.calc.mode="confirm refresh";
@@ -22,7 +29,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     };
     //**************
 
-
+    this.alert=function(str){
+      alert(str);
+    };
     this.consolelog=function (val) {
         console.log(val);
     };
@@ -31,7 +40,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             delete scope.currObj[i].selected;//убираем подсвечивание нижней части
             for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//убираем подсвечивание верхней части
         }
-        this.currParam="";
+        this.myFactory.currParam="";
         this.myFactory.cleanProcess();
         this.calc.mode="listener";
         myFactory.finalCalc();
@@ -57,7 +66,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";
-                scope.currParam=0;
+                scope.myFactory.currParam=0;
                 scope.config=string;
                 scope.myFactory.currObj=response.data;
             },function error (response){
@@ -87,20 +96,21 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
             if(scope.currObj[i]['url']===url){
                 console.log(scope.currObj[i]);
-                scope.currParam=scope.currObj.indexOf(scope.currObj[i]);
+                scope.myFactory.currParam=scope.currObj.indexOf(scope.currObj[i]);
             }
         }
     };
 
     this.currentUl=function(index){//функция проверки для анимации и переключения между ul
-        if(index===scope.currParam) return true;
+        if(index===scope.myFactory.currParam) return true;
     };
     this.setCurrentUl=function(key){
         return transportProp.indexOf(key);
     };
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
-        this.currParam=index;
+        console.log(index);
+        this.myFactory.currParam=index;
         $rootScope.search_result=[];
 
     };
@@ -145,7 +155,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
 
-        this.currParam = transportProp.indexOf(prop);
+        this.myFactory.currParam = transportProp.indexOf(prop);
 
         myFactory.process=process;
         for(let key in process){
@@ -169,7 +179,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         for(let j=0;j<scope.currObj[i].values.length;j++){
                             if(scope.currObj[i].values[j].name==process[key]){
                                 scope.currObj[i].values[j].selected=true;
-                                if(key==prop) scope.currParam=i;
+                                if(key==prop) scope.myFactory.currParam=i;
                                 break;
                             }
                         }
@@ -196,7 +206,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 let i=0;
                 for(let key in myFactory.process){
                     if(myFactory.process[key]===""){
-                        scope.currParam=i;
+                        scope.myFactory.currParam=i;
                         return false;
                     }
                     i++;

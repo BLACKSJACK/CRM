@@ -66,6 +66,21 @@
         font-size:12pt;
     }
 }
+
+
+
+
+div.keyFriendly{
+    position: relative;
+}
+div.keyFriendly:after{
+    content:attr(key);
+    position: absolute;
+    top: 0px;
+    color: white;
+    right: 0px;
+}
+
 table.matrix.park{
     border-bottom: 1px solid black;
 }
