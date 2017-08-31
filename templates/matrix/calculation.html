@@ -1,6 +1,6 @@
 <table class="matrix park" ng-repeat="park in HIP.myFactory.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
-    <tr class="matrix_row" ng-repeat="process in park.processes track by $index" ng-class="{changing: process.changing}">
+    <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
         <td class="properties btns" width="20px">
             <div class="btnCopy" ng-click="dashboard.loadProcess(HIP.copy(process), 'risk')">+</div>
             <div class="btnDelete" ng-click="HIP.delete(process)">-</div>

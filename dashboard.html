@@ -5,23 +5,4 @@
     <table class="matrix" ng-if="dashboard.myFactory.matrixType=='find_calculation'" find-calculation></table>
     <div ng-if="dashboard.myFactory.matrixType=='HIP'" calculation ng-controller="HIP as HIP"></div>
 </div>
-<table class="matrix"  ng-if="dashboard.myFactory.matrixType=='HIP' && dashboard.myFactory.totalPrice!=undefined && dashboard.myFactory.totalPrice!=0" style="width: 1000px;
-    table-layout: fixed;
-    bottom: 0px;
-    position: fixed;
-    height: 50px;">
-    <tbody>
-    <tr class="matrix">
-        <td class="properties">Премия</td>
-        <td class="properties" style="color:red;">{{dashboard.applyFilter(dashboard.myFactory.totalPrice, "cost")}}</td>
-        <td class="properties">{{dashboard.applyFilter(dashboard.myFactory.totalAmount, "amount")}}</td>
-        <td class="properties">Агрегатный лимит</td>
-        <td class="properties">{{a_limit}}</td>
-        <td><input type="text" ng-model="dashboard.myFactory.a_limit"></td>
-        <td ng-model="dashboard.myFactory.a_limit"></td>
-        <td class="properties">Этапов: <input type="number"></td>
-
-        <td class="properties">{{payment}}</td>
-    </tr>
-    </tbody>
-</table>
+<div ng-if="dashboard.myFactory.matrixType=='HIP' && dashboard.myFactory.totalPrice!=undefined && dashboard.myFactory.totalPrice!=0" bottom></div>

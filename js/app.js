@@ -108,6 +108,12 @@ app.directive('calculation', function(){
        templateUrl: 'templates/matrix/calculation.html'
    }
 });
+app.directive('bottom', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/bottom.html'
+    }
+});
 app.directive('currencyInput2', function ($filter, myFactory) {
     return {
         require: '?ngModel',

@@ -93,7 +93,6 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         for(let i=0; i<scope.currObj.length;i++){
 
             if(scope.currObj[i]['url']===url){
-                console.log(scope.currObj[i]);
                 scope.myFactory.currParam=scope.currObj.indexOf(scope.currObj[i]);
             }
         }
@@ -154,7 +153,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
         this.myFactory.currParam = transportProp.indexOf(prop);
-
+        let a=this.currParam;
+        let b=transportProp.indexOf(prop);
         myFactory.process=process;
         for(let key in process){
             if(transportProp.indexOf(key)!=-1){
