@@ -165,6 +165,9 @@ app.directive('currencyInput', function ($filter, myFactory) {
 
                 return plainNumber;
             });
+            $element.bind('click', ($event)=>{
+               console.log($attrs['param']);
+            });
             $element.bind('keydown keypress', ($event) => {
                 let key = $event.which;
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.

@@ -43,10 +43,6 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         this.calc.mode="listener";
         myFactory.finalCalc();
     };
-    this.alert=function(val){
-
-        alert(val);
-    };
     this.isValue=function(ctx){//что то для контактов, при создании мульти выбора нужно изменить
         let val = ctx.phone;
         return val!="" && val!=undefined && val!=null && val!=NaN && !angular.equals("", val)
@@ -163,7 +159,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     });
                     karetkaParam=karetkaParam[0];
                     for(let i=0;i<karetkaParam.values.length;i++){
-                        if(karetkaParam.values[i].name=="input") karetkaParam.values[i].selected=process[key];
+                        if(karetkaParam.values[i].name=="input") karetkaParam.selected=process[key];
                         if(karetkaParam.values[i].name==process[key]){
                             karetkaParam.values[i].selected=true;
                             break;
@@ -183,8 +179,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     }
                 }
             }
-
         }
+        console.log(scope.myFactory.currParam);
 
     };
     this.alreadySelected = function(model){
@@ -199,7 +195,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
             if(this.mode=="making new process"){
                 param.selected=value.name;
-                console.log(myFactory.process);
+
                 let i=0;
                 for(let key in myFactory.process){
                     if(myFactory.process[key]===""){
