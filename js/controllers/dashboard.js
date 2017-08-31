@@ -14,7 +14,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
     this.keyboard=function(event){
-        this.selectParam(event.key-1);
+        if(scope.myFactory.foc) this.selectParam(event.key-1);
     };
     //*************//*************//*************
 
@@ -106,7 +106,6 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     };
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
-        console.log(index);
         this.myFactory.currParam=index;
         $rootScope.search_result=[];
 
@@ -212,6 +211,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 }
                 //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 //поднянуть так сказать писю так сказать к носу
+                console.log(myFactory.process);
                 myFactory.addNewProcess();
                 myFactory.finalCalc();
                 scope.clean();

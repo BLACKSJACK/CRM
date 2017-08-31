@@ -175,23 +175,27 @@ app.directive('currencyInput', function ($filter, myFactory) {
                     let val=$element.val().replace(/,/g, '')*1;
                     if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
                     else myFactory.process[$attrs['param']]=val;
-                    let i=0;
-                    for(let key in myFactory.process){
-                        if(myFactory.process[key]===""){
-                            myFactory.currParam=i;
-                            let target = $event.target;
-                            target.blur();
-                            console.log(myFactory.process);
-                            return;
+                    if($scope.dashboard.calc.mode=="making new process"){
+                        let i=0;
+                        for(let key in myFactory.process){
+                            if(myFactory.process[key]===""){
+                                myFactory.currParam=i;
+                                let target = $event.target;
+                                target.blur();
+                                console.log(myFactory.process);
+                                return;
 
+                            }
+                            i++;
                         }
-                        i++;
+                        myFactory.addNewProcess();
+                        myFactory.finalCalc();
                     }
+                    if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
+                    $scope.dashboard.clean();
                     let target = $event.target;
                     target.blur();
-                    myFactory.addNewProcess();
-                    myFactory.finalCalc();
-                    $scope.dashboard.clean();
+
                 }
             });
         }
