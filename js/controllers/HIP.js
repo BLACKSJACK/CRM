@@ -7,12 +7,14 @@ app.controller("HIP", function ($http, myFactory, $rootScope, $scope) {
 
     this.myFactory=myFactory;
     this.delete=function(process){
-        process.park.processes.splice(process.park.processes.indexOf(process),1);
+        if(process.park.processes.length>1) process.park.processes.splice(process.park.processes.indexOf(process),1);
+        else myFactory.parks.splice(myFactory.parks.indexOf(process.park));
         myFactory.finalCalc();
     };
     this.copy=function(process){
         let proc=new Process(process);
         process.park.processes.splice(process.park.processes.indexOf(process)+1,0,proc);
+        console.log(proc);
         return proc;
     };
     for(let i=0;i<this.myFactory.currObj.length; i++){

@@ -147,7 +147,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
     };
     this.loadProcess=function(process,prop){//загрузка расчета в каретку
-        this.clean();
+        myFactory.parks.forEach(function (park) {
+            park.processes.forEach(function (process) {
+                delete process.changing;
+            })
+        });
         process.changing=true;//для выделения строки которую меняем
         this.calc.mode="changing process";
         for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
