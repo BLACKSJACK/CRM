@@ -38,6 +38,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             delete scope.currObj[i].selected;//убираем подсвечивание нижней части
             for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//убираем подсвечивание верхней части
         }
+        myFactory.parks.forEach(function (park) {
+            park.processes.forEach(function (process) {
+                delete process.changing;
+            })
+        });
         this.myFactory.currParam="";
         this.myFactory.cleanProcess();
         this.calc.mode="listener";
@@ -142,6 +147,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
     };
     this.loadProcess=function(process,prop){//загрузка расчета в каретку
+        this.clean();
         process.changing=true;//для выделения строки которую меняем
         this.calc.mode="changing process";
         for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
