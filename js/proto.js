@@ -3,26 +3,34 @@
  */
 "use strict";
 const transportProp=["cost","amount","wrapping","risk","limit","franchise"];
-
-let totalAmount=120;
+let LimKoef=1;
+let totalAmount=0;
 class Park{
     constructor(process){
         this.processes=[process];
 
         this.amount=process.amount;
         this.risks=[process.risk];
+        this.wrappings=[process.wrapping];
         this.base=process.basePremia;
         process.park=this;
     }
     isMulti(){
         this.multi=false;
-        this.processes.forEach(function (process,i) {
+        this.processes.forEach(function (process) {
             if(process[multi]!=false) this.multi=true;
         });
     }
+    findMaxLimit(){
+        let max=0;
+        this.processes.forEach(function (process){
+            max=Math.max(process.limit, max);
+        });
+        return max;
+    }
     calculateAmount(){
         let max=0;
-        this.processes.forEach(function (process,i){
+        this.processes.forEach(function (process){
             max=Math.max(process.amount, max);
         });
         this.amount=max;
@@ -30,6 +38,7 @@ class Park{
     }
     clear(){
         this.risks=[];
+        this.wrappings=[];
         this.base=0;
         this.riskKoef=0;
     }
@@ -46,26 +55,60 @@ class Park{
     }
     check(){
         this.clear();
+        let wraps={};
         let mass=[];
         let sum=0,amount=0,risksum=0;
         for(let i=0;i<this.processes.length;i++){
             delete this.processes[i].changing;//на всякий случай убираем выделение строки
             if(this.risks.indexOf(this.processes[i].risk)==-1){
                 this.risks.push(this.processes[i].risk);
+                if(!wraps.hasOwnProperty(this.processes[i].wrapping)) wraps[this.processes[i].wrapping]=this.processes[i].amount;
+                else if(wraps.hasOwnProperty(this.processes[i].wrapping) && wraps[this.processes[i].wrapping]<this.processes[i].amount) wraps[this.processes[i].wrapping]=this.processes[i].amount;
+
+
+             /*
                 sum+=this.processes[i].amount*risks[this.processes[i].wrapping];
                 amount+=this.processes[i].amount;
                 risksum+=risks[this.processes[i].wrapping];
+             */
+
             }
             else{
                 mass.push(new Process(this.processes.splice(i,1)[0]));
                 i--;
             }
+            if(this.wrappings.indexOf(this.processes[i].wrapping)==-1) this.wrappings.push(this.processes[i].wrapping);
 
+
+        }
+        for(let key in wraps){
+            risksum+=risks[key];
+            amount+=wraps[key];
+            sum+=risks[key]*wraps[key];
         }
         if(amount==0 || risksum==0) this.riskKoef=0;
         else this.riskKoef=sum/(amount*risksum);
 
         return mass;
+    }
+    cutDownLimits(a_limit){
+        this.processes.forEach(function (process) {
+            if(process.limit>a_limit) process.limit=a_limit;
+        })
+    }
+    calculateWithA_limit(a_limit){
+        let overall=0;
+        this.processes.forEach(function (process) {
+            let cost=process.cost;
+            let limit=process.limit;
+            if(process.cost<a_limit) process.cost=a_limit;
+            process.limit=a_limit;
+            process.calculateBase();
+            overall+=process.totalPremia*1;
+            process.cost=cost;
+            process.limit=limit;
+        });
+        return overall;
     }
     calculate(){
         this.processes.forEach(function (process) {
@@ -120,7 +163,15 @@ class Process{
         else{
             this.totalPremia=this.riskPremia-this.basePremia;
         }
-
+        if(this.park.wrappings.indexOf(this.wrapping)!=-1){
+            this.park.wrappings.splice(this.park.wrappings.indexOf(this.wrapping),1);
+            if(this.risk!="Базовые риски"){
+                let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef)/2, Points.risk, 2);
+                this.totalPremia+=this.turnover*(this.baseStavka*spline2/100)/100;
+            }
+        }
+        this.totalPremia*=LimKoef;
+        //if(this.risk=="Базовые риски" && )
         //this.totalStavka=this.turnover*(this.riskStavka-this.baseStavka)/100; //пока не понятно что это такое вообще
         //this.totalPremia=this.riskPremia-this.basePremia; // -//-
     }

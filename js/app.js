@@ -169,37 +169,77 @@ app.directive('currencyInput', function ($filter, myFactory) {
                console.log($attrs['param']);
             });
             $element.bind('keydown keypress', ($event) => {
-                if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
+
                 let key = $event.which;
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
                 // This lets us support copy and paste too
                 if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
+                if($attrs['currencyInput']!="a_limit"){
+                    if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
+                    if(key==13){
+                        let val=$element.val().replace(/,/g, '')*1;
+                        if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
+                        else myFactory.process[$attrs['param']]=val;
+                        if($scope.dashboard.calc.mode=="making new process"){
+                            let i=0;
+                            for(let key in myFactory.process){
+                                if(myFactory.process[key]===""){
+                                    myFactory.currParam=i;
+                                    let target = $event.target;
+                                    target.blur();
+                                    console.log(myFactory.process);
+                                    return;
 
-                if(key==13){
-                    let val=$element.val().replace(/,/g, '')*1;
-                    if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
-                    else myFactory.process[$attrs['param']]=val;
-                    if($scope.dashboard.calc.mode=="making new process"){
-                        let i=0;
-                        for(let key in myFactory.process){
-                            if(myFactory.process[key]===""){
-                                myFactory.currParam=i;
-                                let target = $event.target;
-                                target.blur();
-                                console.log(myFactory.process);
-                                return;
-
+                                }
+                                i++;
                             }
-                            i++;
+                            myFactory.addNewProcess();
+                            myFactory.finalCalc();
                         }
-                        myFactory.addNewProcess();
+                        if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
+                        $scope.dashboard.clean();
+                        let target = $event.target;
+                        target.blur();
+                    }
+                }
+                else{
+                    if(key==13){
+                        LimKoef=1;
+                        myFactory.finalCalc();
+                        let a_limit=myFactory.a_limit;
+                        let val=$element.val().replace(/,/g, '')*1;
+                        a_limit.value=val;
+                        if(a_limit.value=="" || a_limit.value==0){
+                            a_limit.value=a_limit.max_limit;
+                            a_limit.hand=false;
+                            LimKoef=1;
+                        }
+                        else if(a_limit.type=="Количество случаев"){
+
+                        }
+                        else if(a_limit.value<a_limit.max_limit){
+                            myFactory.parks.forEach(function (park) {
+                                park.cutDownLimits(a_limit.value);
+                            });
+                            a_limit.hand=false;
+                            LimKoef=1;
+                        }
+                        else{
+                            a_limit.hand=true;
+                            let overall=0;
+                            myFactorygit.cleanUpProcessesInParks();
+                            myFactory.parks.forEach(function (park) {
+                                overall+=park.calculateWithA_limit(a_limit.value)*1;
+                            });
+                            overall-=myFactory.totalPrice;
+                            overall*=a_limit.max_limit/a_limit.value;
+                            overall+=myFactory.totalPrice;
+                            overall=overall/myFactory.totalPrice;
+                            LimKoef=overall;
+                        }
+
                         myFactory.finalCalc();
                     }
-                    if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
-                    $scope.dashboard.clean();
-                    let target = $event.target;
-                    target.blur();
-
                 }
             });
         }
@@ -271,7 +311,23 @@ app.factory('myFactory', function(){
         //foc:true,
         currParam: 0,
         matrixType: "find",
-        a_limit:0,
+
+        a_limit:{
+            max_limit:0,
+            value:0,
+            type:"Агрегатный лимит",
+            hand: false,
+            changeType: function(){
+                if(this.type=="Агрегатный лимит"){
+                    this.type="Количество случаев";
+                    this.value=1;
+                }
+                else{
+                    this.type="Агрегатный лимит";
+                    if(!this.hand) this.value=this.max_limit;
+                }
+            }
+        },
         process: {
             cost:"",
             amount:"",
@@ -293,11 +349,19 @@ app.factory('myFactory', function(){
         parks: [],
         calculateParksAmount: function(){
             let sum=0;
-            this.parks.forEach(function(park,i){
+            this.parks.forEach(function(park){
                 sum+=park.calculateAmount();
             });
             totalAmount=sum;
             this.totalAmount=totalAmount;
+        },
+        findMaxLimit: function(){
+            let max=0;
+            this.parks.forEach(function(park){
+                max=Math.max(park.findMaxLimit(), max);
+            });
+            this.a_limit.max_limit=max;
+            if(!this.a_limit.hand) this.a_limit.value=max;
         },
         addNewProcess: function(){
             if(this.parks.length==0){
@@ -344,12 +408,13 @@ app.factory('myFactory', function(){
 
             this.cleanUpProcessesInParks();//обнуляем все значения, необходимые для парка:     +//смотрим есть ли повторяющиеся риски                   +
             this.calculateParksAmount();
-
+            this.findMaxLimit();
+            //подсчет премии с агрегатным лимитом, отличным от обычного
             this.parks.forEach(function(park,i){
                 park.calculate();//считаем каждую строку парка
             });
             this.totalPrice=this.getTotal();
-
+            console.log(this.parks);
 
                 //риски
                 //базовую премию
