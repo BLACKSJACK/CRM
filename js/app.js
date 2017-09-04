@@ -169,6 +169,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                console.log($attrs['param']);
             });
             $element.bind('keydown keypress', ($event) => {
+                if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
                 let key = $event.which;
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
                 // This lets us support copy and paste too

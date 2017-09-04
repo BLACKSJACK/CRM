@@ -62,7 +62,8 @@ class Park{
             }
 
         }
-        this.riskKoef=sum/(amount*risksum);
+        if(amount==0 || risksum==0) this.riskKoef=0;
+        else this.riskKoef=sum/(amount*risksum);
 
         return mass;
     }

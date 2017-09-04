@@ -14,6 +14,6 @@
 </div>
 <div class="nav">
     <div>
-        <div key="{{$index+1}}" ng-repeat="param in dashboard.currObj" ng-click="dashboard.selectParam($index)" ng-if="param.name" ng-class="[{mi_selected: dashboard.currentUl($index)}, {alreadySelected : dashboard.alreadySelected(param.model)},{keyFriendly : dashboard.myFactory.foc}]">{{param.selected ? dashboard.applyFilter(param.selected,param.model) : param.name}}</div>
+        <div key="{{$index+1}}" ng-repeat="param in dashboard.currObj" ng-click="dashboard.selectParam($index)" ng-if="param.name" ng-class="[{mi_selected: dashboard.currentUl($index)}, {alreadySelected : dashboard.alreadySelected(param.model)},{keyFriendly : dashboard.myFactory.foc}]">{{param.selected ? param.model=="amount" ? dashboard.applyFilter(param.selected, "badAssAmount") : dashboard.applyFilter(param.selected,param.model) : param.name}}</div>
     </div>
 </div>

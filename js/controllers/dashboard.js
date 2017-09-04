@@ -142,6 +142,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value/24, '', 0)+" "+myFactory.amountType;
                 else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value, '', 0)+" "+myFactory.amountType;
             }
+            else if(key=="badAssAmount") return $filter("currency")(value, '', 0)+" "+myFactory.amountType;
             else return value;
         }
 
@@ -169,7 +170,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     });
                     karetkaParam=karetkaParam[0];
                     for(let i=0;i<karetkaParam.values.length;i++){
-                        if(karetkaParam.values[i].name=="input") karetkaParam.selected=process[key];
+                        if(karetkaParam.values[i].name=="input"){
+                            if(key=='amount' && scope.myFactory.amountType=="Тягачей"){
+                                karetkaParam.selected=process[key]/24;
+                            }
+                            else karetkaParam.selected=process[key];
+                        }
                         if(karetkaParam.values[i].name==process[key]){
                             karetkaParam.values[i].selected=true;
                             break;
@@ -204,7 +210,10 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             myFactory.process[param.model]=value.name;
 
             if(this.mode=="making new process"){
-                param.selected=value.name;
+                if(param.model=='amount' && scope.myFactory.amountType=="Тягачей"){
+                    param.selected=value.name/24;
+                }
+                else param.selected=value.name;
 
                 let i=0;
                 for(let key in myFactory.process){
