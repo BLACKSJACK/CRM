@@ -5,10 +5,10 @@
 let app=angular.module('mainApp', ['ngRoute','ngCookies', 'ngAnimate']);
 app.config(function($routeProvider,$sceDelegateProvider){//с помощью .config мы определяем маршруты приложения. Для конфигурации маршрутов используется объект $routeProvider.
     /*
-    Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
-    Объект маршрута задает представление и обрабатывающий его контроллер с помощью параметров
-    templateUrl и controller. Поэтому для представлений нам не надо определять контроллер с помощью директивы.
-    */
+     Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
+     Объект маршрута задает представление и обрабатывающий его контроллер с помощью параметров
+     templateUrl и controller. Поэтому для представлений нам не надо определять контроллер с помощью директивы.
+     */
     $routeProvider
         .when('/',{
             resolve:{
@@ -87,26 +87,26 @@ app.directive('return', function(){
     };
 });
 app.directive('findCompany', function () {
-        return{
-            restrict: 'A',
-            templateUrl: 'templates/matrix/find_company.html',
-            link: function(scope, elements, attrs, ctrl){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/matrix/find_company.html',
+        link: function(scope, elements, attrs, ctrl){
 
-            }
         }
+    }
 
 });
 app.directive('findCalculation', function () {
-   return{
-       restrict: 'A',
-       templateUrl: 'templates/matrix/find_calculation.html'
-   }
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/matrix/find_calculation.html'
+    }
 });
 app.directive('calculation', function(){
-   return{
-       restrict: 'A',
-       templateUrl: 'templates/matrix/calculation.html'
-   }
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/matrix/calculation.html'
+    }
 });
 app.directive('bottom', function(){
     return{
@@ -175,35 +175,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                 // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
                 // This lets us support copy and paste too
                 if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
-                if($attrs['currencyInput']!="a_limit"){
-                    if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
-                    if(key==13){
-                        let val=$element.val().replace(/,/g, '')*1;
-                        if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
-                        else myFactory.process[$attrs['param']]=val;
-                        if($scope.dashboard.calc.mode=="making new process"){
-                            let i=0;
-                            for(let key in myFactory.process){
-                                if(myFactory.process[key]===""){
-                                    myFactory.document.currParam=i;
-                                    let target = $event.target;
-                                    target.blur();
-                                    console.log(myFactory.process);
-                                    return;
-
-                                }
-                                i++;
-                            }
-                            myFactory.addNewProcess();
-                            myFactory.finalCalc();
-                        }
-                        if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
-                        $scope.dashboard.clean();
-                        let target = $event.target;
-                        target.blur();
-                    }
-                }
-                else{
+                if($attrs['currencyInput']=="a_limit"){
                     if(key==13){
                         LimKoef=1;
                         let a_limit=myFactory.a_limit;
@@ -245,12 +217,50 @@ app.directive('currencyInput', function ($filter, myFactory) {
                                 overall=overall/myFactory.totalPrice;
                                 LimKoef=overall;
                             }
-
-
+                        }
+                        myFactory.finalCalc();
+                    }
+                }
+                else if($attrs.currencyInput=="payment"){
+                    if(key==13){
+                        if($element.val()==0 || $element.val()==""){
+                            myFactory.payment.val=1;
+                            myFactory.payment.hand=false;
+                        }
+                        else{
+                            if($element.val()>12) myFactory.payment.val=12;
+                            myFactory.payment.hand=true;
                         }
                         myFactory.finalCalc();
 
+                    }
+                }
+                else{
+                    if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
+                    if(key==13){
+                        let val=$element.val().replace(/,/g, '')*1;
+                        if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
+                        else myFactory.process[$attrs['param']]=val;
+                        if($scope.dashboard.calc.mode=="making new process"){
+                            let i=0;
+                            for(let key in myFactory.process){
+                                if(myFactory.process[key]===""){
+                                    myFactory.document.currParam=i;
+                                    let target = $event.target;
+                                    target.blur();
+                                    console.log(myFactory.process);
+                                    return;
 
+                                }
+                                i++;
+                            }
+                            myFactory.addNewProcess();
+                            myFactory.finalCalc();
+                        }
+                        if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
+                        $scope.dashboard.clean();
+                        let target = $event.target;
+                        target.blur();
                     }
                 }
             });
@@ -281,6 +291,15 @@ app.factory('myFactory', function(){
                     if(!this.hand) this.value=this.max_limit;
                 }
                 //factory.finalCalc();
+            }
+        },
+        payment:{
+            val:0,
+            hand:false,
+            mode:"ON",
+            changeMode:function(){
+                if(this.mode=="ON") this.mode="OFF";
+                else this.mode="ON";
             }
         },
         process: {
@@ -370,9 +389,10 @@ app.factory('myFactory', function(){
             });
             //подсчет премии с агрегатным лимитом, отличным от обычного
 
+            //***************** считаем агрегатный лимит
             if(this.a_limit.hand){
                 this.parks.forEach(function(park){
-                    park.ApplyAlimitKoef();
+                    park.applyKoef(LimKoef);
                 })
             }
             else{
@@ -380,14 +400,42 @@ app.factory('myFactory', function(){
                 this.a_limit.type="Агрегатный лимит";
             }
             this.totalPrice=this.getTotal();
-            console.log(this.parks);
+            //****************
 
-                //риски
-                //базовую премию
-                //коэффициент риска
+            //****************считаем этапы платежей
+            if(this.payment.mode=="ON"){
+                if(!this.payment.hand){
+                    let a=this.totalPrice/30000;
+                    a-=a%1;
+                    if(a==0) a=1;
+                    else if(a>12) a=12;
+                    else{
+                        while(a!=1 && a!=2 && a!=4 && a!=6 && a!=12){
+                            a--;
+                        }
+                    }
 
-                //заполняем массив с рисками и отключаем повторяющиеся     +
-                //если риск не повторяющийся - считаем коэффициент     +
+                    this.payment.val=a;
+                }
+                let spline=Spline(this.totalPrice, Points.payment, 3);
+                let payment=spline;
+                console.log(payment);
+                spline/=100*(12-1);
+                spline=spline*this.payment.val-spline;
+                this.payment.koef=1+spline;
+                this.parks.forEach(function(park){
+                    park.applyKoef(1+spline);
+                });
+                this.totalPrice=this.getTotal();
+            }
+
+
+            //риски
+            //базовую премию
+            //коэффициент риска
+
+            //заполняем массив с рисками и отключаем повторяющиеся     +
+            //если риск не повторяющийся - считаем коэффициент     +
 
 
 

@@ -66,11 +66,11 @@ class Park{
                 else if(wraps.hasOwnProperty(this.processes[i].wrapping) && wraps[this.processes[i].wrapping]<this.processes[i].amount) wraps[this.processes[i].wrapping]=this.processes[i].amount;
 
 
-             /*
+
                 sum+=this.processes[i].amount*risks[this.processes[i].wrapping];
                 amount+=this.processes[i].amount;
                 risksum+=risks[this.processes[i].wrapping];
-             */
+
 
             }
             else{
@@ -81,14 +81,26 @@ class Park{
 
 
         }
-        for(let key in wraps){
-            risksum+=risks[key];
-            amount+=wraps[key];
-            sum+=risks[key]*wraps[key];
-        }
-        if(amount==0 || risksum==0) this.riskKoef=0;
-        else this.riskKoef=sum/(amount*risksum);
 
+        for(let key in wraps){
+         /*   risksum+=risks[key];
+            amount+=wraps[key];
+          sum+=risks[key]*wraps[key];
+          */
+            let flag=true;
+            this.processes.forEach(function(process){
+                if(process.wrapping==key && process.risk=="Базовые риски") flag=false;
+            });
+            if(flag){
+                risksum+=risks[key];
+                amount+=wraps[key];
+                sum+=risks[key]*wraps[key];
+            }
+        }
+
+        if(amount==0 || risksum==0) this.riskKoef=0;
+        else this.riskKoef=sum/amount;
+        this.riskSum=risksum;
         return mass;
     }
     cutDownLimits(a_limit){
@@ -116,9 +128,9 @@ class Park{
         });
         return overall;
     }
-    ApplyAlimitKoef(){
+    applyKoef(koef){
         this.processes.forEach(function(process){
-            process.totalPrice*=LimKoef;
+            process.totalPrice*=koef;
         })
     }
     calculate(){
@@ -143,6 +155,7 @@ class Process{
         if(multi) this.multi=multi;
     }
     calculateBase(){
+        this.totalPrice=0;
         for(let i=0;i<transportProp.length;i++){
             if(typeof this[transportProp[i]]  == "undefined"){
                 console.log("Объект не полный, не хватает свойства "+ transportProp[i]);
@@ -162,24 +175,29 @@ class Process{
         this.baseRate=price;
         this.basePrice=this.turnover*price/100;
         //******************до сюда мы посчитали стоимость без вычетов и надбавок за риск
-        console.log((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2);
-        let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
+
+        //************  проверяем учли ли мы надбавку за прицеп базовых рисков для данного типа прицепа
+        if(this.park.wrappings.indexOf(this.wrapping)!=-1){
+            this.park.wrappings.splice(this.park.wrappings.indexOf(this.wrapping),1);
+            if(this.risk!="Базовые риски"){
+                //this.park.riskSum+=risks[this.wrapping];
+                let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef/this.park.riskSum)/2, Points.risk, 2);
+                this.totalPrice+=this.turnover*(this.baseRate*spline2/100)/100;
+            }
+        }
+        //**************
+
+        //*******************считаем надбавку за риск
+        let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef/this.park.riskSum+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
         price *= 1 + spline2 / 100;
         this.riskRate=price;
         this.riskPrice=this.turnover*price/100;
         if(this.basePrice>this.park.base){
-            this.totalPrice=this.riskPrice-this.park.base;
+            this.totalPrice+=this.riskPrice-this.park.base;
             this.park.base=this.basePrice;
         }
         else{
-            this.totalPrice=this.riskPrice-this.basePrice;
-        }
-        if(this.park.wrappings.indexOf(this.wrapping)!=-1){
-            this.park.wrappings.splice(this.park.wrappings.indexOf(this.wrapping),1);
-            if(this.risk!="Базовые риски"){
-                let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef)/2, Points.risk, 2);
-                this.totalPrice+=this.turnover*(this.baseRate*spline2/100)/100;
-            }
+            this.totalPrice+=this.riskPrice-this.basePrice;
         }
 
         //if(this.risk=="Базовые риски" && )
