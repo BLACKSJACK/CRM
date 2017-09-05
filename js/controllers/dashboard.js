@@ -9,7 +9,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     let scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
-    this.currParam=this.myFactory.currParam;
+    this.currParam=this.myFactory.document.currParam;
     //*************//*************//*************
 
 
@@ -43,7 +43,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 delete process.changing;
             })
         });
-        this.myFactory.currParam="";
+        this.myFactory.document.currParam="";
         this.myFactory.cleanProcess();
         this.calc.mode="listener";
         myFactory.finalCalc();
@@ -65,7 +65,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";
-                scope.myFactory.currParam=0;
+                scope.myFactory.document.currParam=0;
                 scope.config=string;
                 scope.myFactory.currObj=response.data;
             },function error (response){
@@ -94,20 +94,20 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         for(let i=0; i<scope.currObj.length;i++){
 
             if(scope.currObj[i]['url']===url){
-                scope.myFactory.currParam=scope.currObj.indexOf(scope.currObj[i]);
+                scope.myFactory.document.currParam=scope.currObj.indexOf(scope.currObj[i]);
             }
         }
     };
 
     this.currentUl=function(index){//функция проверки для анимации и переключения между ul
-        if(index===scope.myFactory.currParam) return true;
+        if(index===scope.myFactory.document.currParam) return true;
     };
     this.setCurrentUl=function(key){
         return transportProp.indexOf(key);
     };
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
-        this.myFactory.currParam=index;
+        this.myFactory.document.currParam=index;
         $rootScope.search_result=[];
 
     };
@@ -158,7 +158,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
 
-        this.myFactory.currParam = transportProp.indexOf(prop);
+        this.myFactory.document.currParam = transportProp.indexOf(prop);
         let a=this.currParam;
         let b=transportProp.indexOf(prop);
         myFactory.process=process;
@@ -188,7 +188,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         for(let j=0;j<scope.currObj[i].values.length;j++){
                             if(scope.currObj[i].values[j].name==process[key]){
                                 scope.currObj[i].values[j].selected=true;
-                                if(key==prop) scope.myFactory.currParam=i;
+                                if(key==prop) scope.myFactory.document.currParam=i;
                                 break;
                             }
                         }
@@ -196,7 +196,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 }
             }
         }
-        console.log(scope.myFactory.currParam);
+        console.log(scope.myFactory.document.currParam);
 
     };
     this.alreadySelected = function(model){
@@ -218,7 +218,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 let i=0;
                 for(let key in myFactory.process){
                     if(myFactory.process[key]===""){
-                        scope.myFactory.currParam=i;
+                        scope.myFactory.document.currParam=i;
                         return false;
                     }
                     i++;
