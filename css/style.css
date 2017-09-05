@@ -165,7 +165,7 @@ input::-moz-placeholder     {text-overflow:ellipsis;}
 input:-moz-placeholder      {text-overflow:ellipsis;}
 input:-ms-input-placeholder {text-overflow:ellipsis;}
 .hand{
-    color: rgb(53, 191, 255)!important;
+    color: rgb(0, 111, 167)!important;
 }
 .mi_slider>div.dashboard_container>div>.ul>div>div>a{
     width: 100%;

@@ -166,7 +166,8 @@ app.directive('currencyInput', function ($filter, myFactory) {
                 return plainNumber;
             });
             $element.bind('click', ($event)=>{
-               console.log($attrs['param']);
+                console.log($element);
+                $event.target.select();
             });
             $element.bind('keydown keypress', ($event) => {
 
@@ -210,14 +211,12 @@ app.directive('currencyInput', function ($filter, myFactory) {
                         let val=$element.val().replace(/,/g, '')*1;
                         a_limit.value=val;
                         if(a_limit.value=="" || a_limit.value==0){
+                            a_limit.type="Агрегатный лимит";
                             a_limit.value=a_limit.max_limit;
                             a_limit.hand=false;
                             LimKoef=1;
                         }
-                        else if(a_limit.type=="Количество случаев"){
-
-                        }
-                        else if(a_limit.value<a_limit.max_limit){
+                        else if(a_limit.value<a_limit.max_limit && a_limit.type=="Агрегатный лимит"){
                             myFactory.parks.forEach(function (park) {
                                 park.cutDownLimits(a_limit.value);
                             });
@@ -227,18 +226,29 @@ app.directive('currencyInput', function ($filter, myFactory) {
                         else{
                             a_limit.hand=true;
                             let overall=0;
-                            myFactorygit.cleanUpProcessesInParks();
-                            myFactory.parks.forEach(function (park) {
-                                overall+=park.calculateWithA_limit(a_limit.value)*1;
-                            });
-                            overall-=myFactory.totalPrice;
-                            overall*=a_limit.max_limit/a_limit.value;
-                            overall+=myFactory.totalPrice;
-                            overall=overall/myFactory.totalPrice;
-                            LimKoef=overall;
-                        }
+                            myFactory.cleanUpProcessesInParks();
+                            if(a_limit.type=="Количество случаев"){
+                                myFactory.parks.forEach(function (park) {
+                                    overall+=park.calculateMatrixWithAlimit(a_limit.value,true)*1;
+                                });
+                                LimKoef=overall/myFactory.totalPrice;
+                            }
+                            else{
+                                myFactory.parks.forEach(function (park) {
+                                    overall+=park.calculateMatrixWithAlimit(a_limit.value,false)*1;
+                                });
+                                overall-=myFactory.totalPrice;
+                                overall*=a_limit.max_limit/a_limit.value;
+                                overall+=myFactory.totalPrice;
+                                overall=overall/myFactory.totalPrice;
+                                LimKoef=overall;
+                            }
 
+
+                        }
                         myFactory.finalCalc();
+
+
                     }
                 }
             });
@@ -308,7 +318,9 @@ app.directive('currencyInput1', function($filter, $browser, myFactory) {
 
 app.factory('myFactory', function(){
     return{
-        //foc:true,
+        document:{
+
+        },
         currParam: 0,
         matrixType: "find",
 
@@ -326,6 +338,7 @@ app.factory('myFactory', function(){
                     this.type="Агрегатный лимит";
                     if(!this.hand) this.value=this.max_limit;
                 }
+                //factory.finalCalc();
             }
         },
         process: {
@@ -409,10 +422,17 @@ app.factory('myFactory', function(){
             this.cleanUpProcessesInParks();//обнуляем все значения, необходимые для парка:     +//смотрим есть ли повторяющиеся риски                   +
             this.calculateParksAmount();
             this.findMaxLimit();
-            //подсчет премии с агрегатным лимитом, отличным от обычного
+
             this.parks.forEach(function(park,i){
                 park.calculate();//считаем каждую строку парка
             });
+            //подсчет премии с агрегатным лимитом, отличным от обычного
+
+            if(this.a_limit.hand){
+                this.parks.forEach(function(park){
+                    park.ApplyAlimitKoef();
+                })
+            }
             this.totalPrice=this.getTotal();
             console.log(this.parks);
 

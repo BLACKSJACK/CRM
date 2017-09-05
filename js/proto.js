@@ -12,7 +12,7 @@ class Park{
         this.amount=process.amount;
         this.risks=[process.risk];
         this.wrappings=[process.wrapping];
-        this.base=process.basePremia;
+        this.base=process.basePrice;
         process.park=this;
     }
     isMulti(){
@@ -96,19 +96,30 @@ class Park{
             if(process.limit>a_limit) process.limit=a_limit;
         })
     }
-    calculateWithA_limit(a_limit){
+    calculateMatrixWithAlimit(a_limit, events){//считаем сколько была бы общая премия если вместо лимита и стоимости поставить агрегатный лимит
         let overall=0;
         this.processes.forEach(function (process) {
             let cost=process.cost;
             let limit=process.limit;
-            if(process.cost<a_limit) process.cost=a_limit;
-            process.limit=a_limit;
+            if(events){
+                process.limit*=a_limit*0.33;
+            }
+            else{
+                if(process.cost<a_limit) process.cost=a_limit;
+                process.limit=a_limit;
+            }
             process.calculateBase();
-            overall+=process.totalPremia*1;
+            overall+=process.totalPrice*1;
             process.cost=cost;
             process.limit=limit;
+            process.calculateBase();
         });
         return overall;
+    }
+    ApplyAlimitKoef(){
+        this.processes.forEach(function(process){
+            process.totalPrice*=LimKoef;
+        })
     }
     calculate(){
         this.processes.forEach(function (process) {
@@ -118,7 +129,7 @@ class Park{
     getTotal(){
         let sum=0;
         this.processes.forEach(function(process){
-            sum+=process.totalPremia;
+            sum+=process.totalPrice;
         });
         return sum;
     }
@@ -148,32 +159,32 @@ class Process{
             price*=Limit(this.limit*totalAmount*(1+((this.cost-this.limit)/this.limit)), this.limit);
         }
         else price*=Limit(this.cost*totalAmount*(1+((this.limit-this.cost)/this.limit)), this.limit);
-        this.baseStavka=price;
-        this.basePremia=this.turnover*price/100;
+        this.baseRate=price;
+        this.basePrice=this.turnover*price/100;
         //******************до сюда мы посчитали стоимость без вычетов и надбавок за риск
         console.log((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2);
         let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
         price *= 1 + spline2 / 100;
-        this.riskStavka=price;
-        this.riskPremia=this.turnover*price/100;
-        if(this.basePremia>this.park.base){
-            this.totalPremia=this.riskPremia-this.park.base;
-            this.park.base=this.basePremia;
+        this.riskRate=price;
+        this.riskPrice=this.turnover*price/100;
+        if(this.basePrice>this.park.base){
+            this.totalPrice=this.riskPrice-this.park.base;
+            this.park.base=this.basePrice;
         }
         else{
-            this.totalPremia=this.riskPremia-this.basePremia;
+            this.totalPrice=this.riskPrice-this.basePrice;
         }
         if(this.park.wrappings.indexOf(this.wrapping)!=-1){
             this.park.wrappings.splice(this.park.wrappings.indexOf(this.wrapping),1);
             if(this.risk!="Базовые риски"){
                 let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef)/2, Points.risk, 2);
-                this.totalPremia+=this.turnover*(this.baseStavka*spline2/100)/100;
+                this.totalPrice+=this.turnover*(this.baseRate*spline2/100)/100;
             }
         }
-        this.totalPremia*=LimKoef;
+
         //if(this.risk=="Базовые риски" && )
-        //this.totalStavka=this.turnover*(this.riskStavka-this.baseStavka)/100; //пока не понятно что это такое вообще
-        //this.totalPremia=this.riskPremia-this.basePremia; // -//-
+        //this.totalRate=this.turnover*(this.riskRate-this.baseRate)/100; //пока не понятно что это такое вообще
+        //this.totalPrice=this.riskPrice-this.basePrice; // -//-
     }
 }
 
