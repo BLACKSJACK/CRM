@@ -12,7 +12,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.currParam=this.myFactory.document.currParam;
     //*************//*************//*************
 
-
+    this.deleteFocusForPlusMinus=function(process){
+        delete process.foc;
+    };
     this.keyboard=function(event){
         if(scope.myFactory.foc) this.selectParam(event.key-1);
     };

@@ -1,19 +1,24 @@
-<table class="matrix bottom" style="width: 1000px;
+<table class="matrix bottom" style="width: 1130px;
     table-layout: fixed;
     bottom: 0px;
     position: fixed;
 ">
     <tbody>
-    <tr class="matrix">
-        <td><input type="text" ng-model="dashboard.myFactory.practicalPrice.val" currency-input="practicalPrice"></td>
-        <td class="properties button">Премия</td>
-        <td class="properties" style="color:red;">{{dashboard.applyFilter(dashboard.myFactory.totalPrice, "cost")}}</td>
-        <td class="properties button">{{dashboard.applyFilter(dashboard.myFactory.totalAmount, "amount")}}</td>
-        <td class="properties button" ng-click="dashboard.myFactory.a_limit.changeType()">{{dashboard.myFactory.a_limit.type}}</td>
-        <td><input type="text" ng-model="dashboard.myFactory.a_limit.value" currency-input="a_limit" ng-class="{hand: dashboard.myFactory.a_limit.hand}"></td>
-        <td style="text-align: center;" ng-click="dashboard.myFactory.payment.changeMode(); dashboard.myFactory.finalCalc();">Этапы платежей  <span style="color: orange;">{{dashboard.myFactory.payment.mode}}</span></td>
-        <td class="properties"><input  ng-class="{hand: dashboard.myFactory.payment.hand}" currency-input="payment" ng-model="dashboard.myFactory.payment.val" type="number"></td>
-
-    </tr>
+        <tr class="matrix">
+            <td class="properties">Факт. премия:</td>
+            <td><input type="text" ng-model="dashboard.myFactory.practicalPrice.val" currency-input="practicalPrice"></td>
+            <td class="properties">Агентские</td>
+            <td><input type="text" ng-model="dashboard.myFactory.agents.val" currency-input="agents"></td>
+            <td class="properties" ng-click="dashboard.myFactory.agents.changeMode()">{{dashboard.myFactory.agents.mode}}</td>
+            <td class="properties button">Премия:</td>
+            <td class="properties" style="color:red;" ng-hide="dashboard.myFactory.single">{{dashboard.applyFilter(dashboard.myFactory.totalPrice, "cost")}}</td>
+            <td class="properties" style="color:red;" ng-show="dashboard.myFactory.single">{{dashboard.applyFilter(dashboard.myFactory.totalPriceForSingle, "cost")}}</td>
+            <td class="properties button" ng-click="dashboard.myFactory.single=true" ng-hide="dashboard.myFactory.single">{{dashboard.applyFilter(dashboard.myFactory.totalAmount, "amount")}}</td>
+            <td class="properties button" ng-click="dashboard.myFactory.single=false" ng-show="dashboard.myFactory.single">{{dashboard.applyFilter(dashboard.myFactory.totalAmountForSingle, "amount")}}</td>
+            <td class="properties button" ng-click="dashboard.myFactory.a_limit.changeType()">{{dashboard.myFactory.a_limit.type}}:</td>
+            <td><input type="text" ng-model="dashboard.myFactory.a_limit.value" currency-input="a_limit" ng-class="{hand: dashboard.myFactory.a_limit.hand}"></td>
+            <td style="text-align: center;" ng-click="dashboard.myFactory.payment.changeMode(); dashboard.myFactory.finalCalc();">Этапы  <span style="color: orange;">{{dashboard.myFactory.payment.mode}}</span></td>
+            <td class="properties"><input  ng-class="{hand: dashboard.myFactory.payment.hand}" currency-input="payment" ng-model="dashboard.myFactory.payment.val" type="number"></td>
+        </tr>
     </tbody>
 </table>

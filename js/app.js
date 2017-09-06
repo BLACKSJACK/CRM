@@ -156,12 +156,12 @@ app.directive('currencyInput', function ($filter, myFactory) {
                         let val=$element.val().replace(/,/g, '')*1;
                         a_limit.value=val;
                         if(a_limit.value=="" || a_limit.value==0){
-                            a_limit.type="Агрегатный лимит";
+                            a_limit.type="Агр. лимит";
                             a_limit.value=a_limit.max_limit;
                             a_limit.hand=false;
                             LimKoef=1;
                         }
-                        else if(a_limit.value<a_limit.max_limit && a_limit.type=="Агрегатный лимит"){
+                        else if(a_limit.value<a_limit.max_limit && a_limit.type=="Агр. лимит"){
                             myFactory.parks.forEach(function (park) {
                                 park.cutDownLimits(a_limit.value);
                             });
@@ -171,7 +171,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                         else{
                             let overall=0;
                             myFactory.cleanUpProcessesInParks();
-                            if(a_limit.type=="Количество случаев"){
+                            if(a_limit.type=="Кол-во случаев"){
                                 myFactory.parks.forEach(function (park) {
                                     overall+=park.calculateMatrixWithAlimit(a_limit.value,true)*1;
                                 });
@@ -213,9 +213,17 @@ app.directive('currencyInput', function ($filter, myFactory) {
                         }
                         else{
                             //если мы что-то ввели в фактическую премию
+                            if(myFactory.single){
+                                myFactory.practicalPrice.val*=(myFactory.totalAmount/myFactory.totalAmountForSingle);
+                            }
                             myFactory.practicalPrice.koef=myFactory.practicalPrice.val/myFactory.totalPrice;
                             myFactory.practicalPriceKoefAction(true);
                         }
+                        myFactory.finalCalc();
+                    }
+                }
+                else if($attrs.currencyInput=="agents"){
+                    if(key==13){
                         myFactory.finalCalc();
                     }
                 }
@@ -257,21 +265,21 @@ app.factory('myFactory', function(){
         document:{
             currParam: 0,
         },
-
+        single:false,
         matrixType: "find",
 
         a_limit:{
             max_limit:0,
             value:0,
-            type:"Агрегатный лимит",
+            type:"Агр. лимит",
             hand: false,
             changeType: function(){
-                if(this.type=="Агрегатный лимит"){
-                    this.type="Количество случаев";
+                if(this.type=="Агр. лимит"){
+                    this.type="Кол-во случаев";
                     this.value=1;
                 }
                 else{
-                    this.type="Агрегатный лимит";
+                    this.type="Агр. лимит";
                     if(!this.hand) this.value=this.max_limit;
                 }
                 //factory.finalCalc();
@@ -284,6 +292,25 @@ app.factory('myFactory', function(){
             changeMode:function(){
                 if(this.mode=="ON") this.mode="OFF";
                 else this.mode="ON";
+            }
+        },
+        agents:{
+            val:"",
+            getKoef: function(totalPrice){
+                this.val*=1;
+                if(this.mode=="%"){
+                    let newPrice=totalPrice/(1-this.val/100);
+                    return newPrice/totalPrice;
+                }
+                else{
+                    let newPrice=totalPrice+this.val;
+                    return newPrice/totalPrice;
+                }
+            },
+            mode:"Р",
+            changeMode: function(){
+                if(this.mode=="Р") this.mode="%";
+                else this.mode="Р";
             }
         },
         practicalPrice:{
@@ -395,7 +422,7 @@ app.factory('myFactory', function(){
             });
             //подсчет премии с агрегатным лимитом, отличным от обычного
 
-            //***************** считаем агрегатный лимит
+            //***************** считаем Агр. лимит
             if(this.a_limit.hand){
                 this.parks.forEach(function(park){
                     park.applyKoef(LimKoef);
@@ -403,7 +430,7 @@ app.factory('myFactory', function(){
             }
             else{
                 this.a_limit.value=this.a_limit.max_limit;
-                this.a_limit.type="Агрегатный лимит";
+                this.a_limit.type="Агр. лимит";
             }
             this.totalPrice=this.getTotal();
             //****************
@@ -432,13 +459,42 @@ app.factory('myFactory', function(){
                 });
                 this.totalPrice=this.getTotal();
             }
+            //****************
+
+            //****************Агентские
+            if(this.agents.val!=0){
+                let koef=this.agents.getKoef(this.totalPrice);
+                this.parks.forEach(function(park){
+                    park.applyKoef(koef);
+                });
+            }
+            //****************
+
+            //****************Для одного тягача
+            this.totalPrice=this.getTotal();
+
+            if(this.amountType=="Тягачей"){
+                this.totalAmountForSingle=24;
+
+
+            }
+            else{
+                this.totalAmountForSingle=1;
+
+            }
+            this.totalPriceForSingle=this.totalPrice/(this.totalAmount/this.totalAmountForSingle);
+            //****************
+
+            //****************Фактическая премия
             if(this.practicalPrice.val!=0 && this.practicalPrice.val!=""){
                 this.parks.forEach(function(park){
                     park.applyPracticalPriceKoef();
                 });
                 let val=this.getTotal();
-                this.practicalPrice.val=val-(val%1)
+                this.practicalPrice.val=val-(val%1);
+                if(this.single) this.practicalPrice.val/=(this.totalAmount/this.totalAmountForSingle);
             }
+            //****************
 
 
             //риски
