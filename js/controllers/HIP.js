@@ -14,7 +14,9 @@ app.controller("HIP", function ($http, myFactory, $rootScope, $scope) {
     this.copy=function(process){
         let proc=new Process(process);
         process.park.processes.splice(process.park.processes.indexOf(process)+1,0,proc);
-        console.log(proc);
+        for(let key in proc){
+            if(transportProp.indexOf(key)==-1 && key!="park" && key!="totalPrice") delete proc[key];
+        }
         return proc;
     };
     for(let i=0;i<this.myFactory.currObj.length; i++){

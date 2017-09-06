@@ -5,6 +5,7 @@
 ">
     <tbody>
     <tr class="matrix">
+        <td><input type="text" ng-model="dashboard.myFactory.practicalPrice.val" currency-input="practicalPrice"></td>
         <td class="properties button">Премия</td>
         <td class="properties" style="color:red;">{{dashboard.applyFilter(dashboard.myFactory.totalPrice, "cost")}}</td>
         <td class="properties button">{{dashboard.applyFilter(dashboard.myFactory.totalAmount, "amount")}}</td>

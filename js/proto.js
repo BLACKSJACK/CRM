@@ -133,6 +133,11 @@ class Park{
             process.totalPrice*=koef;
         })
     }
+    applyPracticalPriceKoef(){
+        this.processes.forEach(function(process){
+            if(process.practicalPriceKoef) process.totalPrice*=process.practicalPriceKoef;
+        })
+    }
     calculate(){
         this.processes.forEach(function (process) {
             process.calculateBase();

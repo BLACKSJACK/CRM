@@ -114,36 +114,6 @@ app.directive('bottom', function(){
         templateUrl: 'templates/bottom.html'
     }
 });
-app.directive('currencyInput2', function ($filter, myFactory) {
-    return {
-        require: '?ngModel',
-        link: function (scope, $element, attrs, ctrl) {
-            if (!ctrl) {
-                return;
-            }
-            $element.bind('keyup', function(event) {
-                let key = event.keyCode;
-                // If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
-                // This lets us support copy and paste too
-                if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) return;
-
-                if(key==13){
-                    scope.dashboard.span=2;
-                    let target = event.target;
-
-                    // do more here, like blur or other things
-                    target.blur();
-
-
-                }
-
-                console.log("done");
-                //$browser.defer(listener); // Have to do this or changes don't get picked up properly
-
-            });
-        }
-    };
-});
 app.directive('currencyInput', function ($filter, myFactory) {
     return {
         require: '?ngModel',
@@ -235,6 +205,20 @@ app.directive('currencyInput', function ($filter, myFactory) {
 
                     }
                 }
+                else if($attrs.currencyInput=="practicalPrice"){
+                    if(key==13){
+                        if($element.val()==0 || $element.val()==""){
+                            //если мы очистили форму для фактической премии
+                            myFactory.practicalPriceKoefAction(false);
+                        }
+                        else{
+                            //если мы что-то ввели в фактическую премию
+                            myFactory.practicalPrice.koef=myFactory.practicalPrice.val/myFactory.totalPrice;
+                            myFactory.practicalPriceKoefAction(true);
+                        }
+                        myFactory.finalCalc();
+                    }
+                }
                 else{
                     if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
                     if(key==13){
@@ -302,6 +286,10 @@ app.factory('myFactory', function(){
                 else this.mode="ON";
             }
         },
+        practicalPrice:{
+            val:"",
+            koef:1
+        },
         process: {
             cost:"",
             amount:"",
@@ -321,6 +309,24 @@ app.factory('myFactory', function(){
             else this.amountType="Тягачей";
         },
         parks: [],
+        practicalPriceKoefAction: function(mode){
+            let myFactory=this;
+            if(mode){
+                this.parks.forEach(function(park){
+                    park.processes.forEach(function(process){
+                        process.practicalPriceKoef=myFactory.practicalPrice.koef;
+                        console.log(process);
+                    })
+                })
+            }
+            else{
+                this.parks.forEach(function(park){
+                    park.processes.forEach(function(process){
+                        delete process.practicalPriceKoef;
+                    })
+                })
+            }
+        },
         calculateParksAmount: function(){
             let sum=0;
             this.parks.forEach(function(park){
@@ -418,8 +424,6 @@ app.factory('myFactory', function(){
                     this.payment.val=a;
                 }
                 let spline=Spline(this.totalPrice, Points.payment, 3);
-                let payment=spline;
-                console.log(payment);
                 spline/=100*(12-1);
                 spline=spline*this.payment.val-spline;
                 this.payment.koef=1+spline;
@@ -427,6 +431,13 @@ app.factory('myFactory', function(){
                     park.applyKoef(1+spline);
                 });
                 this.totalPrice=this.getTotal();
+            }
+            if(this.practicalPrice.val!=0 && this.practicalPrice.val!=""){
+                this.parks.forEach(function(park){
+                    park.applyPracticalPriceKoef();
+                });
+                let val=this.getTotal();
+                this.practicalPrice.val=val-(val%1)
             }
 
 
