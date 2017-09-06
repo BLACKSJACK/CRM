@@ -130,9 +130,7 @@ class Park{
     }
     applyKoef(koef){
         this.processes.forEach(function(process){
-            console.log(process.totalPrice, koef);
             process.totalPrice*=koef;
-            console.log(process.totalPrice);
         })
     }
     applyPracticalPriceKoef(){
