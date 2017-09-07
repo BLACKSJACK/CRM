@@ -3,6 +3,7 @@
  */
 "use strict";
 const transportProp=["cost","amount","wrapping","risk","limit","franchise"];
+const qwerty=["Q","W","E","R","T","Y","U","I","O","P"];
 let LimKoef=1;
 let totalAmount=0;
 class Park{
@@ -99,8 +100,8 @@ class Park{
         }
 
         if(amount==0 || risksum==0) this.riskKoef=0;
-        else this.riskKoef=sum/amount;
-        this.riskSum=risksum;
+        else this.riskKoef=sum/(amount*risksum);
+        //this.riskSum=risksum;
         return mass;
     }
     cutDownLimits(a_limit){
@@ -186,14 +187,14 @@ class Process{
             this.park.wrappings.splice(this.park.wrappings.indexOf(this.wrapping),1);
             if(this.risk!="Базовые риски"){
                 //this.park.riskSum+=risks[this.wrapping];
-                let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef/this.park.riskSum)/2, Points.risk, 2);
+                let spline2 = Spline(risks[this.wrapping]*this.park.riskKoef/2, Points.risk, 2);
                 this.totalPrice+=this.turnover*(this.baseRate*spline2/100)/100;
             }
         }
         //**************
 
         //*******************считаем надбавку за риск
-        let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef/this.park.riskSum+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
+        let spline2 = Spline((risks[this.wrapping]*this.park.riskKoef+risks[this.risk])/2, Points.risk, 2);//риски надо еще обработать
         price *= 1 + spline2 / 100;
         this.riskRate=price;
         this.riskPrice=this.turnover*price/100;

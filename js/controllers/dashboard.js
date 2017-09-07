@@ -9,16 +9,57 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     let scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
-    this.currParam=this.myFactory.document.currParam;
+
     //*************//*************//*************
 
-    this.deleteFocusForPlusMinus=function(process){
-        delete process.foc;
+    //*************Обработчик управления с клавиатуры
+    this.addQwertyKey=function(index){
+        return qwerty[index];
     };
-    this.keyboard=function(event){
-        if(scope.myFactory.foc) this.selectParam(event.key-1);
+    this.addNumberKey=function(value, param){
+        if(param.model=='cost'|| param.model=='amount'||param.model=='limit'||param.model=='franchise'){
+            if(param.values.indexOf(value)!=0 && param.values.indexOf(value)!=1) return param.values.indexOf(value)-1;
+        }
+        else return param.values.indexOf(value)+1;
     };
-    //*************//*************//*************
+    this.keyboard=function($event){
+
+        let key=$event.keyCode;
+        if(key==1081) key=113;
+        else if(key==1094) key=119;
+        else if(key==1091) key=101;
+        else if(key==1082) key=114;
+        else if(key==1077) key=116;
+        else if(key==1085) key=121;
+        else if(key==1075) key=117;
+        else if(key==1096) key=105;
+        else if(key==1097) key=111;
+        else if(key==1079) key=112;
+
+        let keyCodes=myFactory.keyCodes;
+        console.log(keyCodes.number.mass.indexOf(key), keyCodes.number.length);
+        if(scope.myFactory.foc){
+            if(keyCodes.number.mass.indexOf(key)!=-1 && keyCodes.number.mass.indexOf(key)<keyCodes.number.length){
+                let param=scope.currObj[this.myFactory.document.currParam];
+                if(transportProp.indexOf(param.model)!=-1){
+                    if(param.model=='cost'|| param.model=='amount'||param.model=='limit'||param.model=='franchise'){
+                        console.log(param.values[keyCodes.number.mass.indexOf(key)+2]);
+                        scope.calc.clicked(param,param.values[keyCodes.number.mass.indexOf(key)+2]);
+                    }
+                    else scope.calc.clicked(param,param.values[keyCodes.number.mass.indexOf(key)]);
+                }
+                //else if(param.values[keyCodes.number.mass.indexOf(key)])
+            }
+            else if(keyCodes.qwerty.mass.indexOf(key)!=-1 && keyCodes.qwerty.mass.indexOf(key)<keyCodes.qwerty.length){
+                this.selectParam(keyCodes.qwerty.mass.indexOf(key));
+
+            }
+            else if(keyCodes.tab.mass.indexOf(key)!=-1){
+
+            }
+        }
+    };
+    //*************
 
     this.Confirm=function(){
         this.calc.mode="confirm refresh";
@@ -66,8 +107,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         if(typeof type !="undefined") scope.myFactory.matrixType=type;
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
+                scope.myFactory.keyCodes.qwerty.length=scope.currObj.filter(function (obj) {
+                    return obj["name"]!=undefined;
+                }).length;
                 scope.navStyle="width:"+100/scope.currObj.length+"%;";
-                scope.myFactory.document.currParam=0;
+                scope.selectParam(0);
                 scope.config=string;
                 scope.myFactory.currObj=response.data;
             },function error (response){
@@ -79,9 +123,13 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.config="dashboard.json";
     $http.post("dashboard.json").then(function success (response) {//устанавливаем каретку управления и заполняем ее из файла dashboard.json
             scope.currObj=response.data;
+            scope.myFactory.keyCodes.qwerty.length=scope.currObj.filter(function (obj) {
+                return obj["name"]!=undefined;
+            }).length;
             if($cookies.get('currentObj')){
                 scope.currObj=$cookies.get('currentObj');
                 $cookies.remove('currentObj');
+
             }
 
 
@@ -89,6 +137,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
             console.log(response);
         }
     );
+
     this.relocatePage=function(url){//переход на другую страницу(как в случае с калькулятором который не написан)
         location.href = url;
     };
@@ -96,7 +145,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         for(let i=0; i<scope.currObj.length;i++){
 
             if(scope.currObj[i]['url']===url){
-                scope.myFactory.document.currParam=scope.currObj.indexOf(scope.currObj[i]);
+                scope.selectParam(scope.currObj.indexOf(scope.currObj[i]));
             }
         }
     };
@@ -111,6 +160,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.selectParam=function (index) { // нажатии на nav
         this.myFactory.document.currParam=index;
         $rootScope.search_result=[];
+        this.myFactory.keyCodes.number.length=this.currObj[this.myFactory.document.currParam].values.length+1;
+
+
 
     };
     this.checkTransportProp=function (key) {
@@ -190,7 +242,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         for(let j=0;j<scope.currObj[i].values.length;j++){
                             if(scope.currObj[i].values[j].name==process[key]){
                                 scope.currObj[i].values[j].selected=true;
-                                if(key==prop) scope.myFactory.document.currParam=i;
+                                if(key==prop) scope.selectParam(i);
                                 break;
                             }
                         }
@@ -220,7 +272,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 let i=0;
                 for(let key in myFactory.process){
                     if(myFactory.process[key]===""){
-                        scope.myFactory.document.currParam=i;
+                        scope.selectParam(i);
                         return false;
                     }
                     i++;

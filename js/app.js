@@ -209,7 +209,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                     if(key==13){
                         if($element.val()==0 || $element.val()==""){
                             //если мы очистили форму для фактической премии
-                            myFactory.practicalPriceKoefAction(false);
+                            myFactory.checkPracticalPriceKoef(false);
                         }
                         else{
                             //если мы что-то ввели в фактическую премию
@@ -217,7 +217,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                                 myFactory.practicalPrice.val*=(myFactory.totalAmount/myFactory.totalAmountForSingle);
                             }
                             myFactory.practicalPrice.koef=myFactory.practicalPrice.val/myFactory.totalPrice;
-                            myFactory.practicalPriceKoefAction(true);
+                            myFactory.checkPracticalPriceKoef()(true);
                         }
                         myFactory.finalCalc();
                     }
@@ -237,9 +237,11 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             let i=0;
                             for(let key in myFactory.process){
                                 if(myFactory.process[key]===""){
-                                    myFactory.document.currParam=i;
+                                    $scope.dashboard.selectParam(i);
                                     let target = $event.target;
                                     target.blur();
+                                    document.querySelector(".dashboard_container").focus();
+
                                     console.log(myFactory.process);
                                     return;
 
@@ -262,6 +264,19 @@ app.directive('currencyInput', function ($filter, myFactory) {
 
 app.factory('myFactory', function(){
     return{
+        keyCodes:{
+            qwerty:{
+                mass:[113,119,101,114,116,121,117,105,111,112],
+                length:0
+            },
+            number:{
+                mass:[49,50,51,52,53,54,55,56,57,48],//длину придется пока задавать
+                length:7
+            },
+            tab:{
+                mass:[60,62,167,177]
+            }
+        },
         document:{
             currParam: 0,
         },
@@ -336,7 +351,7 @@ app.factory('myFactory', function(){
             else this.amountType="Тягачей";
         },
         parks: [],
-        practicalPriceKoefAction: function(mode){
+        checkPracticalPriceKoef: function(mode){
             let myFactory=this;
             if(mode){
                 this.parks.forEach(function(park){

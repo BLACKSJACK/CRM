@@ -73,7 +73,7 @@
     }
 
 }
-.mi_slider:focus { outline: none; }
+.mi_slider:focus,.dashboard_container:focus { outline: none; }
 .red{
     border: 1px solid red;
 }
