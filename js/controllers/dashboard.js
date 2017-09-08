@@ -165,6 +165,17 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
     };
+    this.selectNextParam=function(){
+        let i=0;
+        for(let key in myFactory.process){
+            if(myFactory.process[key]===""){
+                scope.selectParam(i);
+                return false;
+            }
+            i++;
+        }
+        return true;
+    };
     this.checkTransportProp=function (key) {
         return transportProp.indexOf(key);
     };
@@ -257,33 +268,54 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         if($rootScope.mode=="calc") return !(myFactory.process[model]==="");
         else return false;
     };
+    this.addPropertyToProcess=function(param, value){
+        myFactory.process[param.model]=value.name;//заполняем соответствующее свойство создаваемого процесса
+        //*****************Заносим выбранное значение в нижнюю часть каретки
+        if(!param.name){
+            scope.currObj.forEach(function(newParam){
+                if(newParam.name && newParam.model==param.model) param=newParam
+            })
+        }
+        if(param.model=='amount' && scope.myFactory.amountType=="Тягачей"){
+            param.selected=value.name/24;
+        }
+        else param.selected=value.name;
+        //*****************
+
+
+        if(scope.selectNextParam()){
+            //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
+            //поднянуть так сказать писю так сказать к носу
+            console.log(myFactory.process);
+            myFactory.addNewProcess();
+            myFactory.finalCalc();
+            scope.clean();
+        }
+    }
     this.calc={
         mode:"listener",
         clicked: function(param, value){
             if(this.mode=="listener") this.mode="making new process";
-            myFactory.process[param.model]=value.name;
+            //*****************
+            if(value.action){
+                if(value.action=="selectAll"){
+                    scope.myFactory.multi.changeMode(true);
+                    let model=param.model;
+                    param.values.forEach(function(val){
+                        if(val!=value){
+                            let obj={};
+                            obj[model]=val.name;
+                            scope.myFactory.multi.template.push(obj);
+                        }
+                    });
+                    console.log(scope.myFactory.multi.template);
+                }
+            }
+            //*****************
+
 
             if(this.mode=="making new process"){
-                if(param.model=='amount' && scope.myFactory.amountType=="Тягачей"){
-                    param.selected=value.name/24;
-                }
-                else param.selected=value.name;
-
-                let i=0;
-                for(let key in myFactory.process){
-                    if(myFactory.process[key]===""){
-                        scope.selectParam(i);
-                        return false;
-                    }
-                    i++;
-
-                }
-                //здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
-                //поднянуть так сказать писю так сказать к носу
-                console.log(myFactory.process);
-                myFactory.addNewProcess();
-                myFactory.finalCalc();
-                scope.clean();
+                scope.addPropertyToProcess(param,value);
             }
             if(this.mode=="changing process"){
                 delete scope.myFactory.process.changing;//убираем выделение строки которую меняли

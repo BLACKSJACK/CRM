@@ -264,6 +264,18 @@ app.directive('currencyInput', function ($filter, myFactory) {
 
 app.factory('myFactory', function(){
     return{
+        multi:{
+            mode:false,
+            changeMode:function(mode){
+                if(mode===undefined){
+                    if(this.mode==false) this.mode=true;
+                    else this.mode=false;
+                }
+                else this.mode=mode;
+                console.log(this.mode);
+            },
+            template:[]
+        },
         keyCodes:{
             qwerty:{
                 mass:[113,119,101,114,116,121,117,105,111,112],
@@ -389,8 +401,8 @@ app.factory('myFactory', function(){
             if(this.parks.length==0){
                 this.parks.push(new Park(new Process(this.process)));
             }
-            else if(this.parks[this.parks.length-1].risks.indexOf(this.process.risk)!=-1){
-                this.parks.push(new Park(new Process(this.process)));
+            else if(this.parks[0].risks.indexOf(this.process.risk)!=-1){
+                this.parks.splice(0,0,new Park(new Process(this.process)));
             }
             else{
                 this.process.park=this.parks[this.parks.length-1];

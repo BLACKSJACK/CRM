@@ -244,7 +244,8 @@
     "values":[
       {
         "name": "Выбрать все",
-        "type": "action",
+        "type": "risk",
+        "action": "selectAll",
         "value":1
       },
       {
