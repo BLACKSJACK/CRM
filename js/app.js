@@ -274,7 +274,12 @@ app.factory('myFactory', function(){
                 else this.mode=mode;
                 console.log(this.mode);
             },
-            template:[]
+            template:[],
+            arrays:{
+                risk:[],
+                wrapping:[]
+            }
+
         },
         keyCodes:{
             qwerty:{
