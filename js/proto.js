@@ -6,15 +6,56 @@ const transportProp=["cost","amount","wrapping","risk","limit","franchise"];
 const qwerty=["Q","W","E","R","T","Y","U","I","O","P"];
 let LimKoef=1;
 let totalAmount=0;
+class Multi{
+    constructor(process, template){
+        let wrapping=[];
+        let risk=[];
+        let limit=[process.limit];
+        let franchise=[process.franchise];
+        template.forEach(function (proc) {
+            if(proc.wrapping && wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
+            if(proc.risk && risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
+            if(proc.limit) limit.push(process.cost*proc.limit);
+            if(proc.franchise) franchise.push(process.cost*proc.franchise);
+        });
+        this.amount=process.amount;
+        this.cost=process.cost;
+        if(wrapping.length==1) this.wrapping=wrapping[0];
+        else this.wrapping=wrapping.length;
+        if(risk.length==1) this.risk=risk[0];
+        else this.risk=risk.length;
+        if(limit.length==1) this.limit=limit[0];
+        else{
+            let min=limit[0];
+            let max=limit[0];
+            for(let i=0;i<limit.length;i++){
+                if(limit[i]>max) max=limit[i];
+                if(limit[i]<min) min=limit[i];
+            }
+            this.limit=min+"-"+max;
+        }
+        if(franchise.length==1) this.franchise=franchise[0];
+        else{
+            let min=franchise[0];
+            let max=franchise[0];
+            for(let i=0;i<franchise.length;i++){
+                if(franchise[i]>max) max=franchise[i];
+                if(franchise[i]<min) min=franchise[i];
+            }
+            this.franchise=min+"-"+max;
+        }
+    }
+}
 class Park{
     constructor(process){
         this.processes=[process];
-
-        this.amount=process.amount;
-        this.risks=[process.risk];
-        this.wrappings=[process.wrapping];
-        this.base=process.basePrice;
-        process.park=this;
+        if(process.constructor.name=="Process"){
+            this.amount=process.amount;
+            this.risks=[process.risk];
+            this.wrappings=[process.wrapping];
+            this.base=process.basePrice;
+            process.park=this;
+        }
     }
     isMulti(){
         this.multi=false;

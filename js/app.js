@@ -278,6 +278,12 @@ app.factory('myFactory', function(){
             arrays:{
                 risk:[],
                 wrapping:[]
+            },
+            clean: function () {
+                this.arrays.risk=[];
+                this.arrays.wrapping=[];
+                this.mode=false;
+                this.template=[];
             }
 
         },
@@ -402,8 +408,31 @@ app.factory('myFactory', function(){
             this.a_limit.max_limit=max;
             //if(!this.a_limit.hand) this.a_limit.value=max;
         },
+        makeMulti: function(){
+            this.process.risk="Базовые риски";
+            this.parks.push(new Park(new Process(this.process)));
+            let myFactory=this;
+            this.multi.template.forEach(function (proc) {
+                let newProcess={};
+                for(let key in myFactory.process) newProcess[key]=myFactory.process[key];
+                for(let key in proc){
+                    if(key=="limit" || key=="franchise") newProcess[key]=proc[key]*myFactory.process.cost;
+                    else newProcess[key]=proc[key];
+                }
+                newProcess.park=myFactory.parks[myFactory.parks.length-1];
+                myFactory.parks[myFactory.parks.length-1].processes.push(new Process(newProcess));
+            });
+            console.log(this.parks);
+        },
         addNewProcess: function(){
-            if(this.parks.length==0){
+            //если мульти
+            if(this.multi.template.length>0){
+                this.makeMulti();
+
+            }
+
+            //если не мульти
+            else if(this.parks.length==0){
                 this.parks.push(new Park(new Process(this.process)));
             }
             else if(this.parks[0].risks.indexOf(this.process.risk)!=-1){
@@ -413,9 +442,9 @@ app.factory('myFactory', function(){
                 this.process.park=this.parks[this.parks.length-1];
                 this.parks[this.parks.length-1].processes.push(new Process(this.process));
             }
-            console.log(this.parks);
+            //console.log(this.parks[0].processes[0].constructor.name);
             this.cleanProcess();
-            //this.finalCalc();
+
         },
         getTotal: function(){
             let sum=0;

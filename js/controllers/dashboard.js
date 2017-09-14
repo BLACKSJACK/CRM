@@ -88,7 +88,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         });
         this.myFactory.document.currParam="";
         this.myFactory.cleanProcess();
-        this.myFactory.multi.mode=false;
+        this.myFactory.multi.clean();
         this.calc.mode="listener";
         myFactory.finalCalc();
     };
@@ -303,8 +303,11 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
             if(this.mode=="making new process"){
+                //если мы выбираем не мульти значения или режим не мульти
                 if(!scope.myFactory.multi.mode || (scope.myFactory.multi.mode && param.model!="wrapping" && param.model!="risk" ) ){
-                    if(value.action=="selectAll"){//выбрать все - отключение
+
+                    //выбрать все - отключение надо доделать
+                    if(value.action=="selectAll"){
                         scope.myFactory.multi.changeMode(true);
                         let model=param.model;
                         param.values.forEach(function(val){
@@ -321,8 +324,14 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                         console.log(scope.myFactory.multi);
                     }
 
+                    //если выбран пакет
+                    else if(value.action=="package"){
+                        let multi=scope.myFactory.multi;
+                        multi.template=value.values;
+                    }
 
-                    scope.addPropertyToProcess(param,value);
+
+                    scope.addPropertyToProcess(param,value.name);
                     value.selected=true;
 
 

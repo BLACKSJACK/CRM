@@ -126,7 +126,10 @@ function SplineKoeff(index, mass)
     }
 }
 function Spline(U, mass, index){
-
+    if (isNaN(U) || U===undefined){
+        alert("Ошибка в вычислениях, необходимо обратиться к разработчику");
+        return 1;
+    }
     let n=mass.length-1;
     let i=0;
     if(i>=n+1){
