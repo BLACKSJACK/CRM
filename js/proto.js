@@ -7,19 +7,27 @@ const qwerty=["Q","W","E","R","T","Y","U","I","O","P"];
 let LimKoef=1;
 let totalAmount=0;
 class Multi{
-    constructor(process, template){
+    constructor(array){
         let wrapping=[];
         let risk=[];
-        let limit=[process.limit];
-        let franchise=[process.franchise];
-        template.forEach(function (proc) {
-            if(proc.wrapping && wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
-            if(proc.risk && risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
-            if(proc.limit) limit.push(process.cost*proc.limit);
-            if(proc.franchise) franchise.push(process.cost*proc.franchise);
+        let limit=[];
+        let franchise=[];
+        let cost=[];
+        let amount=[];
+        this.processes=[];
+        let mult=this;
+        this.show=false;
+        array.forEach(function (proc) {
+            mult.processes.push(proc);
+            proc.multi=mult;
+            if(wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
+            if(risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
+            limit.push(proc.limit);
+            franchise.push(proc.franchise);
+            cost.push(proc.cost);
+            amount.push(proc.amount);
+
         });
-        this.amount=process.amount;
-        this.cost=process.cost;
         if(wrapping.length==1) this.wrapping=wrapping[0];
         else this.wrapping=wrapping.length;
         if(risk.length==1) this.risk=risk[0];
@@ -43,6 +51,26 @@ class Multi{
                 if(franchise[i]<min) min=franchise[i];
             }
             this.franchise=min+"-"+max;
+        }
+        if(cost.length==1) this.cost=cost[0];
+        else{
+            let min=cost[0];
+            let max=cost[0];
+            for(let i=0;i<cost.length;i++){
+                if(cost[i]>max) max=cost[i];
+                if(cost[i]<min) min=cost[i];
+            }
+            this.cost=min+"-"+max;
+        }
+        if(amount.length==1) this.franchise=amount[0];
+        else{
+            let min=amount[0];
+            let max=amount[0];
+            for(let i=0;i<amount.length;i++){
+                if(amount[i]>max) max=amount[i];
+                if(amount[i]<min) min=amount[i];
+            }
+            this.amount=min+"-"+max;
         }
     }
 }
@@ -99,10 +127,6 @@ class Process{
         else{
             this.totalPrice+=this.riskPrice-this.basePrice;
         }
-        console.log(this.park);
-        //if(this.risk=="Базовые риски" && )
-        //this.totalRate=this.turnover*(this.riskRate-this.baseRate)/100; //пока не понятно что это такое вообще
-        //this.totalPrice=this.riskPrice-this.basePrice; // -//-
     }
 }
 class Park{
@@ -146,13 +170,15 @@ class Park{
     replaceBase(){
         let base;
         if(this.processes[0].risk=="Базовые риски") return;
-        this.processes.forEach(function(process,i, mass){
+
+        for(let i=0; i<this.processes.length; i++){
+            let process=this.processes[i];
             if(process.risk=="Базовые риски"){
-                base=mass.splice(i,1);
-                mass.splice(0,0,base[0]);
+                base=this.processes.splice(i,1);
+                this.processes.splice(0,0,base[0]);
                 return false;
             }
-        })
+        }
     }
     check(){
         this.clear();

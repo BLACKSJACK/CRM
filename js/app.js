@@ -265,6 +265,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
 app.factory('myFactory', function(){
     return{
         multi:{
+            multies:[],
             mode:false,
             count:0,
             template:[],
@@ -416,7 +417,7 @@ app.factory('myFactory', function(){
         makePackage: function(){
             let array=[];
             this.process.risk="Базовые риски";
-            this.process.multi=this.multi.count;
+            //this.process.multi=this.multi.count;
             array.push(new Process(this.process));
             let myFactory=this;
 
@@ -428,14 +429,14 @@ app.factory('myFactory', function(){
                     else newProcess[key]=proc[key];
                 }
                 //newProcess.park=myFactory.parks[myFactory.parks.length-1];
-                newProcess.multi=myFactory.multi.count;
+                //newProcess.multi=myFactory.multi.count;
                 array.push(new Process(newProcess));
                 //myFactory.parks[myFactory.parks.length-1].processes.push(new Process(newProcess));
             });
             return array;
 
         },
-        makeMulti: function () {
+        makeMulti: function (park, index) {
             if(this.multi.arrays.risk.length==0){
                 this.multi.arrays.risk.push(this.process.risk);
             }
@@ -468,42 +469,69 @@ app.factory('myFactory', function(){
 
             let newParkFlag=false;
             let myFactory=this;
-            array.forEach(function (process) {
-                process.multi=myFactory.multi.count;
-            });
-            if(this.parks.length==0) newParkFlag=true;
-            else{
+            this.multi.multies.push(new Multi(array));
+            if(park){
                 array.forEach(function (process) {
-                    if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
+                    process.park=park;
+                    park.processes.splice(0,index,process);
                 });
             }
-            if(newParkFlag){
-                for(let i=0;i<array.length;i++){
-                    if(i==0){
-                        this.parks.splice(0,0,new Park(array[i]));
+            else{
+                if(this.parks.length==0) newParkFlag=true;
+                else{
+                    array.forEach(function (process) {
+                        if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
+                    });
+                }
+                if(newParkFlag){
+                    for(let i=0;i<array.length;i++){
+                        if(i==0){
+                            this.parks.splice(0,0,new Park(array[i]));
+                        }
+                        else{
+                            array[i].park=this.parks[0];
+                            this.parks[0].processes.push(array[i]);
+                        }
                     }
-                    else{
+                }
+                else{ //если таких рисков в первом парке нету
+                    for(let i=0;i<array.length;i++){
                         array[i].park=this.parks[0];
                         this.parks[0].processes.push(array[i]);
                     }
-                }
-            }
-            else{ //если таких рисков в первом парке нету
-                for(let i=0;i<array.length;i++){
-                    array[i].park=this.parks[0];
-                    this.parks[0].processes.push(array[i]);
                 }
             }
 
 
 
         },
-        addNewProcess: function(){
+        addNewProcess: function(mode){
             //если мульти
-
-            if(this.multi.template.length>0){
+            if(mode=="changing"){
+                let park=this.process.park;
+                let process=park.processes[park.processes.indexOf(this.process)];
+                this.cleanProcess();
+                for(let key in process){
+                    if(transportProp.indexOf(key)!=-1) this.process[key]=process[key];
+                }
+                let index=park.processes.indexOf(process);
+                park.processes.splice(park.processes.indexOf(process), 1);
+                if(this.multi.template.length>0){
+                    let array=this.makePackage();
+                    this.multi.multies.push(new Multi(array));
+                    array.forEach(function (process) {
+                        process.park=park;
+                        park.processes.splice(0,index,process);
+                    });
+                }
+                else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
+                    this.makeMulti(park, index);
+                }
+            }
+            else if(this.multi.template.length>0){
                 let array=this.makePackage();
-                this.multi.count++;
+                this.multi.multies.push(new Multi(array));
+
                 let newParkFlag=false;
                 let myFactory=this;
                 if(this.parks.length==0) newParkFlag=true;
@@ -532,7 +560,7 @@ app.factory('myFactory', function(){
                 }
 
             }
-            else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping>0){
+            else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
                 this.makeMulti();
             }
             //если не мульти

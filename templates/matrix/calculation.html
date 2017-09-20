@@ -1,12 +1,12 @@
 <table class="matrix park" ng-repeat="park in HIP.myFactory.parks track by $index" ng-init="parentIndex = $index">
     <tbody>
     <tr class="matrix_row" ng-repeat="process in park.processes track by $index">
-        <td class="properties btns" width="20px">
+        <td class="properties btns" width="20px" ng-if="process.multi===undefined || !process.multi.show">
             <div class="btnCopy" ng-click="dashboard.loadProcess(HIP.copy(process), 'risk')">+</div>
             <div class="btnDelete" ng-click="HIP.delete(process)">-</div>
         </td>
-        <td class="properties" ng-class="{mi_selected : process.changing && dashboard.myFactory.document.currParam==dashboard.checkTransportProp(key)}" ng-repeat="(key,value) in process track by $index" ng-if="dashboard.checkTransportProp(key)!=-1" ng-click="dashboard.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboard.applyFilter(value, key) }}</td>
-        <td class="properties" width="150px" ng-class="{red: process.practicalPriceKoef}">{{ dashboard.applyFilter(process.totalPrice, "cost") }}</td>
+        <td class="properties" ng-class="{mi_selected : process.changing && dashboard.myFactory.document.currParam==dashboard.checkTransportProp(key)}" ng-repeat="(key,value) in process track by $index" ng-if="dashboard.checkTransportProp(key)!=-1 &&(process.multi===undefined || !process.multi.show)" ng-click="dashboard.loadProcess(process, key);">{{key=="wrapping" || key=="risk" ? value : dashboard.applyFilter(value, key) }}</td>
+        <td class="properties" width="150px" ng-if="process.multi===undefined || !process.multi.show" ng-class="{red: process.practicalPriceKoef}">{{ dashboard.applyFilter(process.totalPrice, "cost") }}</td>
     </tr>
     </tbody>
 </table>

@@ -9,7 +9,29 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     let scope=this;
     this.search_params=[];
     this.isArray = angular.isArray;
-
+    this.multiClicked=function(){
+        myFactory.multiChangeMode();
+        if(this.calc.mode=="making new process"){
+            if(scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
+                console.log(myFactory.multi);
+                console.log(myFactory.process);
+                myFactory.addNewProcess();
+                myFactory.finalCalc();
+                scope.clean();
+            }
+        }
+        else if(this.calc.mode=="changing process"){
+            if(!myFactory.multi.mode){
+                myFactory.addNewProcess("changing");
+                delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
+                scope.clean();
+            }
+            else{
+                if(myFactory.process.wrapping!="" && myFactory.process.wrapping!="multi" && myFactory.multi.arrays.wrapping.indexOf(myFactory.process.wrapping)) myFactory.multi.arrays.wrapping.push(myFactory.process.wrapping);
+                if(myFactory.process.risk!="" && myFactory.process.risk!="multi" && myFactory.multi.arrays.risk.indexOf(myFactory.process.risk)) myFactory.multi.arrays.risk.push(myFactory.process.risk);
+            }
+        }
+    };
     //*************//*************//*************
 
     //*************Обработчик управления с клавиатуры
@@ -295,41 +317,83 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
     };
+    this.clickedSelectAll=function(param, value){
+        scope.myFactory.multiChangeMode(true);
+        let model=param.model;
+        param.values.forEach(function(val){
+            if(val!=value){
+                val.selected=true;
+                scope.myFactory.multi.mode=true; //включаем режим мульти
+                let multi=scope.myFactory.multi;
+                if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
+                    val.selected=true;
+                    multi.arrays[param.model].push(val.name);
+                }
+
+            }
+        });
+        console.log(scope.myFactory.multi);
+        //this.addPropertyToProcess(param, "multi");
+    };
+    this.clickedOnMulti=function(param, value){//при нажатии на верх каретки в мульти параметры при режиме мульти
+        let multi=scope.myFactory.multi;
+        if(value.action=="selectAll"){
+            scope.myFactory.multiChangeMode(true);
+            param.values.forEach(function(val){
+                if(val!=value){
+                    val.selected=true;
+                    scope.myFactory.multi.mode=true; //включаем режим мульти
+                    let multi=scope.myFactory.multi;
+                    if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
+                        val.selected=true;
+                        multi.arrays[param.model].push(val.name);
+                    }
+
+                }
+            });
+            console.log(scope.myFactory.multi);
+        }
+        else if(multi.arrays[param.model].indexOf(value.name)==-1){//если такой элемент не был выбран
+            value.selected=true;
+            multi.arrays[param.model].push(value.name);
+        }
+        else{
+            delete value.selected;
+            multi.arrays[param.model].splice(multi.arrays[param.model].indexOf(value.name),1);
+        }
+
+        //здесь должно быть перестроение шаблона
+
+
+        //работа с нижней частью каретки и непосредственно с создаваемым объектом
+        if(multi.arrays[param.model].length>1){
+            scope.addPropertyToProcess(param, "multi");
+        }
+        else if(multi.arrays[param.model].length==1){
+            scope.addPropertyToProcess(param, multi.arrays[param.model][0]);
+        }
+        else{
+            delete value.selected;
+            delete param.selected;
+            myFactory.process[param.model]="";
+        }
+        //*********
+        console.log(multi.arrays[param.model]);
+    };
     this.calc={
         mode:"listener",
         clicked: function(param, value){
             if(this.mode=="listener") this.mode="making new process";
 
 
-
-            //***************** нам этот кусочек пока не нужен
-            if(value.action){
-
-            }
-            //*****************
-
-
             if(this.mode=="making new process"){
                 //если мы выбираем не мульти значения или режим не мульти
                 if(!scope.myFactory.multi.mode || (scope.myFactory.multi.mode && param.model!="wrapping" && param.model!="risk" ) ){
-
+                    scope.addPropertyToProcess(param,value.name);
+                    value.selected=true;
                     //выбрать все - отключение надо доделать
                     if(value.action=="selectAll"){
-                        scope.myFactory.multiChangeMode(true);
-                        let model=param.model;
-                        param.values.forEach(function(val){
-                            if(val!=value){
-                                val.selected=true;
-                                scope.myFactory.multi.mode=true; //включаем режим мульти
-                                let multi=scope.myFactory.multi;
-                                if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
-                                    val.selected=true;
-                                    multi.arrays[param.model].push(val.name);
-                                }
-
-                            }
-                        });
-                        console.log(scope.myFactory.multi);
+                        scope.clickedSelectAll(param, value);
                     }
 
                     //если выбран пакет
@@ -339,8 +403,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     }
 
 
-                    scope.addPropertyToProcess(param,value.name);
-                    value.selected=true;
+
 
 
                     if(scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
@@ -352,56 +415,35 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                     }
                 }
                 else{
-                    let multi=scope.myFactory.multi;
-                    if(value.action=="selectAll"){
-                        scope.myFactory.multiChangeMode(true);
-                        param.values.forEach(function(val){
-                            if(val!=value){
-                                val.selected=true;
-                                scope.myFactory.multi.mode=true; //включаем режим мульти
-                                let multi=scope.myFactory.multi;
-                                if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
-                                    val.selected=true;
-                                    multi.arrays[param.model].push(val.name);
-                                }
-
-                            }
-                        });
-                        console.log(scope.myFactory.multi);
-                    }
-                    else if(multi.arrays[param.model].indexOf(value.name)==-1){//если такой элемент не был выбран
-                        value.selected=true;
-                        multi.arrays[param.model].push(value.name);
-                    }
-                    else{
-                        delete value.selected;
-                        multi.arrays[param.model].splice(multi.arrays[param.model].indexOf(value.name),1);
-                    }
-
-                    //здесь должно быть перестроение шаблона
-
-
-                    //работа с нижней частью каретки и непосредственно с создаваемым объектом
-                    if(multi.arrays[param.model].length>1){
-                        scope.addPropertyToProcess(param, "multi");
-                    }
-                    else if(multi.arrays[param.model].length==1){
-                        scope.addPropertyToProcess(param, multi.arrays[param.model][0]);
-                    }
-                    else{
-                        delete value.selected;
-                        delete param.selected;
-                        myFactory.process[param.model]="";
-                    }
-                    //*********
-                    console.log(multi.arrays[param.model]);
+                    scope.clickedOnMulti(param, value);
                 }
 
             }
             if(this.mode=="changing process"){
-                scope.addPropertyToProcess(param,value.name);
-                delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
-                scope.clean();
+                if(!scope.myFactory.multi.mode) {
+                    if(value.action=="selectAll"){
+                        scope.clickedSelectAll(param, value);
+                        if(myFactory.process.wrapping!="" && myFactory.process.wrapping!="multi" && myFactory.multi.arrays.wrapping.indexOf(myFactory.process.wrapping)) myFactory.multi.arrays.wrapping.push(myFactory.process.wrapping);
+                        if(myFactory.process.risk!="" && myFactory.process.risk!="multi" && myFactory.multi.arrays.risk.indexOf(myFactory.process.risk)) myFactory.multi.arrays.risk.push(myFactory.process.risk);
+                    }
+
+                    //если выбран пакет
+                    else if(value.action=="package"){
+                        let multi=scope.myFactory.multi;
+                        multi.template=value.values;
+                        myFactory.addNewProcess("changing");
+                        delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
+                        scope.clean();
+                    }
+                    else{
+                        scope.addPropertyToProcess(param, value.name);
+                        delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
+                        scope.clean();
+                    }
+                }
+                else{
+                    scope.clickedOnMulti(param, value);
+                }
             }
         },
     }
