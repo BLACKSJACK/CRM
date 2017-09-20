@@ -194,14 +194,13 @@ app.directive('currencyInput', function ($filter, myFactory) {
                 else if($attrs.currencyInput=="payment"){
                     if(key==13){
                         if($element.val()<=0 || $element.val()==""){
-                            myFactory.payment.val=1;
+                            $element.val(1);
                             myFactory.payment.hand=false;
                         }
                         else{
-                            if($element.val()>12) myFactory.payment.val=12;
+                            if($element.val()>12) $element.val(12);
                             myFactory.payment.hand=true;
                         }
-                        $event.target.blur();
                         myFactory.finalCalc();
 
                     }
@@ -220,13 +219,11 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             myFactory.practicalPrice.koef=myFactory.practicalPrice.val/myFactory.totalPrice;
                             myFactory.checkPracticalPriceKoef(true);
                         }
-                        $event.target.blur();
                         myFactory.finalCalc();
                     }
                 }
                 else if($attrs.currencyInput=="agents"){
                     if(key==13){
-                        $event.target.blur();
                         myFactory.finalCalc();
                     }
                 }
