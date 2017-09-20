@@ -193,7 +193,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                 }
                 else if($attrs.currencyInput=="payment"){
                     if(key==13){
-                        if($element.val()==0 || $element.val()==""){
+                        if($element.val()<=0 || $element.val()==""){
                             myFactory.payment.val=1;
                             myFactory.payment.hand=false;
                         }
@@ -201,6 +201,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             if($element.val()>12) myFactory.payment.val=12;
                             myFactory.payment.hand=true;
                         }
+                        $event.target.blur();
                         myFactory.finalCalc();
 
                     }
@@ -217,13 +218,15 @@ app.directive('currencyInput', function ($filter, myFactory) {
                                 myFactory.practicalPrice.val*=(myFactory.totalAmount/myFactory.totalAmountForSingle);
                             }
                             myFactory.practicalPrice.koef=myFactory.practicalPrice.val/myFactory.totalPrice;
-                            myFactory.checkPracticalPriceKoef()(true);
+                            myFactory.checkPracticalPriceKoef(true);
                         }
+                        $event.target.blur();
                         myFactory.finalCalc();
                     }
                 }
                 else if($attrs.currencyInput=="agents"){
                     if(key==13){
+                        $event.target.blur();
                         myFactory.finalCalc();
                     }
                 }
@@ -266,14 +269,7 @@ app.factory('myFactory', function(){
     return{
         multi:{
             mode:false,
-            changeMode:function(mode){
-                if(mode===undefined){
-                    if(this.mode==false) this.mode=true;
-                    else this.mode=false;
-                }
-                else this.mode=mode;
-                console.log(this.mode);
-            },
+            count:0,
             template:[],
             arrays:{
                 risk:[],
@@ -286,6 +282,18 @@ app.factory('myFactory', function(){
                 this.template=[];
             }
 
+        },
+        multiChangeMode: function (mode) {
+            if(mode===undefined){
+                if(this.multi.mode==false){
+                    if(this.process.wrapping!="" && this.process.wrapping!="multi" && this.multi.arrays.wrapping.indexOf(this.process.wrapping)) this.multi.arrays.wrapping.push(this.process.wrapping);
+                    if(this.process.risk!="" && this.process.risk!="multi" && this.multi.arrays.risk.indexOf(this.process.risk)) this.multi.arrays.risk.push(this.process.risk);
+                    this.multi.mode=true;
+                }
+                else this.multi.mode=false;
+            }
+            else this.multi.mode=mode;
+            console.log(this.multi.mode);
         },
         keyCodes:{
             qwerty:{
@@ -408,10 +416,13 @@ app.factory('myFactory', function(){
             this.a_limit.max_limit=max;
             //if(!this.a_limit.hand) this.a_limit.value=max;
         },
-        makeMulti: function(){
+        makePackage: function(){
+            let array=[];
             this.process.risk="Базовые риски";
-            this.parks.push(new Park(new Process(this.process)));
+            this.process.multi=this.multi.count;
+            array.push(new Process(this.process));
             let myFactory=this;
+
             this.multi.template.forEach(function (proc) {
                 let newProcess={};
                 for(let key in myFactory.process) newProcess[key]=myFactory.process[key];
@@ -419,18 +430,114 @@ app.factory('myFactory', function(){
                     if(key=="limit" || key=="franchise") newProcess[key]=proc[key]*myFactory.process.cost;
                     else newProcess[key]=proc[key];
                 }
-                newProcess.park=myFactory.parks[myFactory.parks.length-1];
-                myFactory.parks[myFactory.parks.length-1].processes.push(new Process(newProcess));
+                //newProcess.park=myFactory.parks[myFactory.parks.length-1];
+                newProcess.multi=myFactory.multi.count;
+                array.push(new Process(newProcess));
+                //myFactory.parks[myFactory.parks.length-1].processes.push(new Process(newProcess));
             });
-            console.log(this.parks);
+            return array;
+
+        },
+        makeMulti: function () {
+            if(this.multi.arrays.risk.length==0){
+                this.multi.arrays.risk.push(this.process.risk);
+            }
+            if(this.multi.arrays.wrapping.length==0){
+                this.multi.arrays.wrapping.push(this.process.wrapping);
+            }
+            let array=[];
+
+            for(let i=0; i<this.multi.arrays.wrapping.length; i++){
+                for(let j=0; j<this.multi.arrays.risk.length; j++){
+                    this.process.wrapping=this.multi.arrays.wrapping[i];
+                    this.process.risk=this.multi.arrays.risk[j];
+                    let risk=this.process.risk;
+                    let packages=this.packages.filter(function (pack) {
+                        return pack.name==risk;
+                    });
+                    if(packages.length>0){
+                        this.multi.template=packages[0].values;
+                        let mass=this.makePackage();
+                        mass.forEach(function (proc) {
+                            array.push(proc);
+                        });
+                    }
+                    else{
+                        array.push(new Process(this.process));
+                    }
+                }
+            }
+            console.log(array);
+
+            let newParkFlag=false;
+            let myFactory=this;
+            array.forEach(function (process) {
+                process.multi=myFactory.multi.count;
+            });
+            if(this.parks.length==0) newParkFlag=true;
+            else{
+                array.forEach(function (process) {
+                    if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
+                });
+            }
+            if(newParkFlag){
+                for(let i=0;i<array.length;i++){
+                    if(i==0){
+                        this.parks.splice(0,0,new Park(array[i]));
+                    }
+                    else{
+                        array[i].park=this.parks[0];
+                        this.parks[0].processes.push(array[i]);
+                    }
+                }
+            }
+            else{ //если таких рисков в первом парке нету
+                for(let i=0;i<array.length;i++){
+                    array[i].park=this.parks[0];
+                    this.parks[0].processes.push(array[i]);
+                }
+            }
+
+
+
         },
         addNewProcess: function(){
             //если мульти
+
             if(this.multi.template.length>0){
-                this.makeMulti();
+                let array=this.makePackage();
+                this.multi.count++;
+                let newParkFlag=false;
+                let myFactory=this;
+                if(this.parks.length==0) newParkFlag=true;
+                else{
+                    array.forEach(function (process) {
+                        if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
+                    })
+                }
+                //если мы создаем новый парк тк риски в первом парке такие уже есть
+                if(newParkFlag){
+                    for(let i=0;i<array.length;i++){
+                        if(i==0){
+                            this.parks.splice(0,0,new Park(new Process(array[i])));
+                        }
+                        else{
+                            array[i].park=this.parks[0];
+                            this.parks[0].processes.push(new Process(array[i]));
+                        }
+                    }
+                }
+                else{ //если таких рисков в первом парке нету
+                    for(let i=0;i<array.length;i++){
+                        array[i].park=this.parks[0];
+                        this.parks[0].processes.push(new Process(array[i]));
+                    }
+                }
 
             }
-
+            else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping>0){
+                this.makeMulti();
+            }
             //если не мульти
             else if(this.parks.length==0){
                 this.parks.push(new Park(new Process(this.process)));
@@ -439,8 +546,8 @@ app.factory('myFactory', function(){
                 this.parks.splice(0,0,new Park(new Process(this.process)));
             }
             else{
-                this.process.park=this.parks[this.parks.length-1];
-                this.parks[this.parks.length-1].processes.push(new Process(this.process));
+                this.process.park=this.parks[0];
+                this.parks[0].processes.push(new Process(this.process));
             }
             //console.log(this.parks[0].processes[0].constructor.name);
             this.cleanProcess();
@@ -451,7 +558,6 @@ app.factory('myFactory', function(){
             this.parks.forEach(function (park) {
                 sum+=park.getTotal();
             });
-
             return sum;
         },
         cleanUpProcessesInParks: function(){

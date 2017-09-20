@@ -268,7 +268,8 @@
   {
     "url": "Пакеты",
     "model": "risk",
-    "values":[
+    "values":
+    [
       {
         "name":"Международные",
         "type": "risk",

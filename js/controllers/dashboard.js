@@ -108,6 +108,13 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         if(typeof type !="undefined") scope.myFactory.matrixType=type;
         $http.post(string).then(function success (response) {
                 scope.currObj=response.data;
+                if(string=="HIP.json"){
+                    let pack=scope.currObj.filter(function (param) {
+                        return param.url=="Пакеты";
+                    });
+                    pack=pack[0];
+                    scope.myFactory.packages=pack.values;
+                }
                 scope.myFactory.keyCodes.qwerty.length=scope.currObj.filter(function (obj) {
                     return obj["name"]!=undefined;
                 }).length;
@@ -308,16 +315,17 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
                     //выбрать все - отключение надо доделать
                     if(value.action=="selectAll"){
-                        scope.myFactory.multi.changeMode(true);
+                        scope.myFactory.multiChangeMode(true);
                         let model=param.model;
                         param.values.forEach(function(val){
                             if(val!=value){
                                 val.selected=true;
                                 scope.myFactory.multi.mode=true; //включаем режим мульти
-                                let obj={};
-                                obj[model]=val.name;
-                                if(scope.myFactory.multi.arrays[model].indexOf(val.name)==-1) scope.myFactory.multi.arrays[model].push(val.name);
-                                scope.myFactory.multi.template.push(obj);
+                                let multi=scope.myFactory.multi;
+                                if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
+                                    val.selected=true;
+                                    multi.arrays[param.model].push(val.name);
+                                }
 
                             }
                         });
@@ -336,6 +344,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
 
                     if(scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
+                        console.log(myFactory.multi);
                         console.log(myFactory.process);
                         myFactory.addNewProcess();
                         myFactory.finalCalc();
@@ -344,7 +353,23 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 }
                 else{
                     let multi=scope.myFactory.multi;
-                    if(multi.arrays[param.model].indexOf(value.name)==-1){//если такой элемент не был выбран
+                    if(value.action=="selectAll"){
+                        scope.myFactory.multiChangeMode(true);
+                        param.values.forEach(function(val){
+                            if(val!=value){
+                                val.selected=true;
+                                scope.myFactory.multi.mode=true; //включаем режим мульти
+                                let multi=scope.myFactory.multi;
+                                if(multi.arrays[param.model].indexOf(val.name)==-1){//если такой элемент не был выбран
+                                    val.selected=true;
+                                    multi.arrays[param.model].push(val.name);
+                                }
+
+                            }
+                        });
+                        console.log(scope.myFactory.multi);
+                    }
+                    else if(multi.arrays[param.model].indexOf(value.name)==-1){//если такой элемент не был выбран
                         value.selected=true;
                         multi.arrays[param.model].push(value.name);
                     }
@@ -374,6 +399,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
             }
             if(this.mode=="changing process"){
+                scope.addPropertyToProcess(param,value.name);
                 delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
                 scope.clean();
             }
