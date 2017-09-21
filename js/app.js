@@ -2,7 +2,7 @@
  * Created by RoGGeR on 25.05.17.
  */
 'use strict';
-let app=angular.module('mainApp', ['ngRoute','ngCookies', 'ngAnimate']);
+let app=angular.module('mainApp', ['ngRoute','ngCookies']);
 app.config(function($routeProvider,$sceDelegateProvider){//с помощью .config мы определяем маршруты приложения. Для конфигурации маршрутов используется объект $routeProvider.
     /*
      Метод $routeProvider.when принимает два параметра: название маршрута и объект маршрута.
@@ -528,6 +528,10 @@ app.factory('myFactory', function(){
                     this.makeMulti(park, index);
                 }
             }
+
+            else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
+                this.makeMulti();
+            }
             else if(this.multi.template.length>0){
                 let array=this.makePackage();
                 this.multi.multies.push(new Multi(array));
@@ -559,9 +563,6 @@ app.factory('myFactory', function(){
                     }
                 }
 
-            }
-            else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
-                this.makeMulti();
             }
             //если не мульти
             else if(this.parks.length==0){
@@ -599,9 +600,11 @@ app.factory('myFactory', function(){
             for(let i=0;i<mass.length;i++){
                 this.process=mass[i];
                 this.addNewProcess();
-                this.parks[this.parks.length-1].check();
-                this.parks[this.parks.length-1].replaceBase();
             }
+            this.parks.forEach(function (park) {
+                park.check();
+                park.replaceBase();
+            })
         },
         finalCalc: function(){
 
@@ -687,7 +690,9 @@ app.factory('myFactory', function(){
                 if(this.single) this.practicalPrice.val/=(this.totalAmount/this.totalAmountForSingle);
             }
             //****************
-
+            this.multi.multies.forEach(function (multi) {
+                multi.calculatePrice();
+            });
 
             //риски
             //базовую премию

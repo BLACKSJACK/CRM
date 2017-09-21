@@ -95,8 +95,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.alert=function(str){
       alert(str);
     };
-    this.consolelog=function (val) {
-        console.log(val);
+    this.console=console;
+    this.isNaN=function(val){
+        return isNaN(val);
     };
     this.clean=function(){//очищаем каретку и возвращаем ее в исходное состояние
         for(let i=0;i<scope.currObj.length;i++){
