@@ -50,10 +50,8 @@ class Multi{
             if(min==max) this.amount=min;
             else this.amount=min+"-"+max;
         }
-        if(wrapping.length==1) this.wrapping=wrapping[0];
-        else this.wrapping=wrapping.length;
-        if(risk.length==1) this.risk=risk[0];
-        else this.risk=risk.length;
+        this.wrapping=wrapping;
+        this.risk=risk;
         if(limit.length==1) this.limit=limit[0];
         else{
             let min=limit[0];
@@ -85,6 +83,41 @@ class Multi{
             total+=process.totalPrice;
         });
         this.price=total;
+    }
+    open(key){
+        if(this.risk.length>1 && this.wrapping.length>1){
+            let mass=this.processes;
+            this.processes=[];
+            let multi=this;
+            this[key].forEach(function (val) {
+                let array=mass.filter(function (process) {
+                    return process[key]==val;
+                });
+                multi.processes.push(new Multi(array));
+                array.forEach(function (process) {
+                    process.multi=multi.processes[multi.processes.length-1];
+                })
+            });
+            this.processes.forEach(function (multik) {
+                multik.calculatePrice();
+                multik.parent=multi;
+            })
+        }
+        this.show=true;
+    }
+    close(toParent){
+        if(toParent){
+            let mass=[];
+            let multi=this;
+            this.processes.forEach(function (multik) {
+                multik.processes.forEach(function (process) {
+                    process.multi=multi;
+                    mass.push(process);
+                });
+            })
+            this.processes=mass;
+        }
+        this.show=false;
     }
 }
 class Process{

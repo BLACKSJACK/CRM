@@ -11,7 +11,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.isArray = angular.isArray;
     this.multiClicked=function(){
         myFactory.multiChangeMode();
-        if(this.calc.mode=="making new process"){
+        if(this.calc.mode=="making new process" && !myFactory.multi.mode){
             if(scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 console.log(myFactory.multi);
                 console.log(myFactory.process);
