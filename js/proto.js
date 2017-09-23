@@ -79,9 +79,67 @@ class Multi{
     }
     calculatePrice(){
         let total=0;
-        this.processes.forEach(function (process) {
-            total+=process.totalPrice;
+        let wrapping=[];
+        let risk=[];
+        let limit=[];
+        let franchise=[];
+        let cost=[];
+        let amount=[];
+        this.processes.forEach(function (proc) {
+            if(wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
+            if(risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
+            limit.push(proc.limit);
+            franchise.push(proc.franchise);
+            cost.push(proc.cost);
+            amount.push(proc.amount);
+            total+=proc.totalPrice;
         });
+        if(cost.length==1) this.cost=cost[0];
+        else{
+            let min=cost[0];
+            let max=cost[0];
+            for(let i=0;i<cost.length;i++){
+                if(cost[i]>max) max=cost[i];
+                if(cost[i]<min) min=cost[i];
+            }
+            if(min==max) this.cost=min;
+            else this.cost=min+"-"+max;
+        }
+        if(amount.length==1) this.franchise=amount[0];
+        else{
+            let min=amount[0];
+            let max=amount[0];
+            for(let i=0;i<amount.length;i++){
+                if(amount[i]>max) max=amount[i];
+                if(amount[i]<min) min=amount[i];
+            }
+            if(min==max) this.amount=min;
+            else this.amount=min+"-"+max;
+        }
+        this.wrapping=wrapping;
+        this.risk=risk;
+        if(limit.length==1) this.limit=limit[0];
+        else{
+            let min=limit[0];
+            let max=limit[0];
+            for(let i=0;i<limit.length;i++){
+                if(limit[i]>max) max=limit[i];
+                if(limit[i]<min) min=limit[i];
+            }
+            if(min==max) this.limit=min;
+            else this.limit=min+"-"+max;
+        }
+        if(franchise.length==1) this.franchise=franchise[0];
+        else{
+            let min=franchise[0];
+            let max=franchise[0];
+            for(let i=0;i<franchise.length;i++){
+                if(franchise[i]>max) max=franchise[i];
+                if(franchise[i]<min) min=franchise[i];
+            }
+            if(min==max) this.franchise=min;
+            else this.franchise=min+"-"+max;
+        }
         this.price=total;
     }
     open(key){
@@ -118,6 +176,11 @@ class Multi{
             this.processes=mass;
         }
         this.show=false;
+    }
+    changeProperty(key, value){
+        this.processes.forEach(function (process) {
+            process[key]=value;
+        })
     }
 }
 class Process{

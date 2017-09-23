@@ -114,6 +114,17 @@ app.directive('bottom', function(){
         templateUrl: 'templates/bottom.html'
     }
 });
+app.directive('ngRightClick', function($parse) {
+    return function(scope, element, attrs) {
+        let fn = $parse(attrs.ngRightClick);
+        element.bind('contextmenu', function(event) {
+            scope.$apply(function() {
+                event.preventDefault();
+                fn(scope, {$event:event});
+            });
+        });
+    };
+});
 app.directive('currencyInput', function ($filter, myFactory) {
     return {
         require: '?ngModel',
@@ -228,12 +239,12 @@ app.directive('currencyInput', function ($filter, myFactory) {
                     }
                 }
                 else{
-                    if($scope.dashboard.calc.mode=="listener") $scope.dashboard.calc.mode="making new process";
+                    if($scope.dashboard.karetka.mode=="listener") $scope.dashboard.karetka.mode="making new process";
                     if(key==13){
                         let val=$element.val().replace(/,/g, '')*1;
                         if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
                         else myFactory.process[$attrs['param']]=val;
-                        if($scope.dashboard.calc.mode=="making new process"){
+                        if($scope.dashboard.karetka.mode=="making new process"){
                             let i=0;
                             for(let key in myFactory.process){
                                 if(myFactory.process[key]===""){
@@ -251,7 +262,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             myFactory.addNewProcess();
                             myFactory.finalCalc();
                         }
-                        if($scope.dashboard.calc.mode=="changing process") delete myFactory.process.changing;
+                        if($scope.dashboard.karetka.mode=="changing process") delete myFactory.process.changing;
                         $scope.dashboard.clean();
                         let target = $event.target;
                         target.blur();

@@ -11,7 +11,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     this.isArray = angular.isArray;
     this.multiClicked=function(){
         myFactory.multiChangeMode();
-        if(this.calc.mode=="making new process" && !myFactory.multi.mode){
+        if(this.karetka.mode=="making new process" && !myFactory.multi.mode){
             if(scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
                 console.log(myFactory.multi);
                 console.log(myFactory.process);
@@ -20,7 +20,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 scope.clean();
             }
         }
-        else if(this.calc.mode=="changing process"){
+        else if(this.karetka.mode=="changing process"){
             if(!myFactory.multi.mode){
                 myFactory.addNewProcess("changing");
                 delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
@@ -66,9 +66,9 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
                 if(transportProp.indexOf(param.model)!=-1){
                     if(param.model=='cost'|| param.model=='amount'||param.model=='limit'||param.model=='franchise'){
                         console.log(param.values[keyCodes.number.mass.indexOf(key)+2]);
-                        scope.calc.clicked(param,param.values[keyCodes.number.mass.indexOf(key)+2]);
+                        scope.karetka.clicked(param,param.values[keyCodes.number.mass.indexOf(key)+2]);
                     }
-                    else scope.calc.clicked(param,param.values[keyCodes.number.mass.indexOf(key)]);
+                    else scope.karetka.clicked(param,param.values[keyCodes.number.mass.indexOf(key)]);
                 }
                 //else if(param.values[keyCodes.number.mass.indexOf(key)])
             }
@@ -84,10 +84,10 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
     //*************
 
     this.Confirm=function(){
-        this.calc.mode="confirm refresh";
+        this.karetka.mode="confirm refresh";
 
         $timeout(function () {
-            scope.calc.mode="listener"
+            scope.karetka.mode="listener"
         },4000);
     };
     //**************
@@ -112,7 +112,7 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         this.myFactory.document.currParam="";
         this.myFactory.cleanProcess();
         this.myFactory.multi.clean();
-        this.calc.mode="listener";
+        this.karetka.mode="listener";
         myFactory.finalCalc();
     };
     this.isValue=function(ctx){//что то для контактов, при создании мульти выбора нужно изменить
@@ -223,8 +223,26 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
         return result*1;
     }
-    this.applyFilter = function(value, key){
-        if(typeof key == "undefined"){
+    this.applyFilter = function(value, key, group){
+        if(group!==undefined){
+            if(!isNumeric(value) && value.indexOf("-")!=-1){
+                value=value.split("-");
+                if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value[0], '', 0) + " Р"+" - "+$filter("currency")(value[1], '', 0) + " Р";
+                else if(key=="amount"){
+                    if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value[0]/24, '', 0)+" "+myFactory.amountType+" - "+$filter("currency")(value[1]/24, '', 0)+" "+myFactory.amountType;
+                    else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value[0], '', 0)+" "+myFactory.amountType +" - "+$filter("currency")(value[1], '', 0)+" "+myFactory.amountType;
+                }
+            }
+            else{
+                if(key=="cost" || key =="limit" || key=="franchise") return $filter("currency")(value, '', 0) + " Р";
+                else if(key=="amount"){
+                    if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value/24, '', 0)+" "+myFactory.amountType;
+                    else if(this.myFactory.amountType=="Рейсов") return $filter("currency")(value, '', 0)+" "+myFactory.amountType;
+                }
+                return value;
+            }
+        }
+        else if(typeof key == "undefined"){
             if(value.type=="currency") return $filter(value.type)(value.name, '', 0);
             else if(value.type=="amount"){
                 if(this.myFactory.amountType=="Тягачей") return $filter("currency")(value.name/24, '', 0);
@@ -243,63 +261,12 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         }
 
     };
-    this.loadProcess=function(process,prop){//загрузка расчета в каретку
-        myFactory.parks.forEach(function (park) {
-            park.processes.forEach(function (process) {
-                delete process.changing;
-            })
-        });
-        process.changing=true;//для выделения строки которую меняем
-        this.calc.mode="changing process";
-        for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
 
-
-        this.myFactory.document.currParam = transportProp.indexOf(prop);
-        let a=this.currParam;
-        let b=transportProp.indexOf(prop);
-        myFactory.process=process;
-        for(let key in process){
-            if(transportProp.indexOf(key)!=-1){
-                if(key=='cost'|| key=='amount'||key=='limit'||key=='franchise'){
-                    let karetkaParam=scope.currObj.filter(function(obj){
-                        return obj['model']==key;
-                    });
-                    karetkaParam=karetkaParam[0];
-                    for(let i=0;i<karetkaParam.values.length;i++){
-                        if(karetkaParam.values[i].name=="input"){
-                            if(key=='amount' && scope.myFactory.amountType=="Тягачей"){
-                                karetkaParam.selected=process[key]/24;
-                            }
-                            else karetkaParam.selected=process[key];
-                        }
-                        if(karetkaParam.values[i].name==process[key]){
-                            karetkaParam.values[i].selected=true;
-                            break;
-                        }
-
-                    }
-                }
-                else{
-                    for(let i=0;i<scope.currObj.length;i++){
-                        for(let j=0;j<scope.currObj[i].values.length;j++){
-                            if(scope.currObj[i].values[j].name==process[key]){
-                                scope.currObj[i].values[j].selected=true;
-                                if(key==prop) scope.selectParam(i);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        console.log(scope.myFactory.document.currParam);
-
-    };
     this.alreadySelected = function(model){
         if($rootScope.mode=="calc") return !(myFactory.process[model]==="");
         else return false;
     };
-    this.addPropertyToProcess=function(param, value){
+    this.addPropertyToProcess=function(param, value){//меняем обычный процесс который у нас в фабрике
         myFactory.process[param.model]=value;//заполняем соответствующее свойство создаваемого процесса
 
 
@@ -315,9 +282,8 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         else param.selected=value;
         //*****************
 
-
-
     };
+
     this.clickedSelectAll=function(param, value){
         scope.myFactory.multiChangeMode(true);
         let model=param.model;
@@ -381,8 +347,85 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
         //*********
         console.log(multi.arrays[param.model]);
     };
-    this.calc={
+    this.matrix={
+        loadProcess: function (process, prop) {
+            myFactory.parks.forEach(function (park) {
+                park.processes.forEach(function (process) {
+                    delete process.changing;
+                })
+            });
+            process.changing=true;//для выделения строки которую меняем
+            scope.karetka.mode="changing process";
+            for(let i=0;i<scope.currObj.length;i++) for(let j=0;j<scope.currObj[i].values.length;j++) delete scope.currObj[i].values[j].selected;//selected параметр позволяет подсветить то значение, которое выбрано в процессе
+
+
+            scope.myFactory.document.currParam = transportProp.indexOf(prop);
+            let a=scope.currParam;
+            let b=transportProp.indexOf(prop);
+            myFactory.process=process;
+            for(let key in process){
+                if(transportProp.indexOf(key)!=-1){
+                    if(key=='cost'|| key=='amount'||key=='limit'||key=='franchise'){
+                        let karetkaParam=scope.currObj.filter(function(obj){
+                            return obj['model']==key;
+                        });
+                        karetkaParam=karetkaParam[0];
+                        for(let i=0;i<karetkaParam.values.length;i++){
+                            if(karetkaParam.values[i].name=="input"){
+                                if(key=='amount' && scope.myFactory.amountType=="Тягачей"){
+                                    karetkaParam.selected=process[key]/24;
+                                }
+                                else karetkaParam.selected=process[key];
+                            }
+                            if(karetkaParam.values[i].name==process[key]){
+                                karetkaParam.values[i].selected=true;
+                                break;
+                            }
+
+                        }
+                    }
+                    else{
+                        for(let i=0;i<scope.currObj.length;i++){
+                            for(let j=0;j<scope.currObj[i].values.length;j++){
+                                if(scope.currObj[i].values[j].name==process[key]){
+                                    scope.currObj[i].values[j].selected=true;
+                                    if(key==prop) scope.selectParam(i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(scope.myFactory.document.currParam);
+        },
+        loadMulti:function(process, key){
+            let multi=process.multi;
+            if( !isNumeric(multi[key]) && multi[key].indexOf("-")!=-1 ){
+                return;
+            }
+            else{
+                if( (key=="wrapping" || key=="risk") && multi[key].length>1 ){
+                    for(let i=0;i<scope.currObj.length;i++){
+                        for(let j=0;j<scope.currObj[i].values.length;j++){
+                            if( multi[key].indexOf(scope.currObj[i].values[j].name) ){
+                                scope.currObj[i].values[j].selected=true;
+                            }
+                        }
+                    }
+                    return;
+                }
+                this.loadProcess(multi, key);
+            }
+
+
+        }
+    };
+    this.karetka={
         mode:"listener",
+        multiClicked: function (param) {
+            console.log(param);
+        },
         clicked: function(param, value){
             if(this.mode=="listener") this.mode="making new process";
 
@@ -421,7 +464,22 @@ app.controller('dashboardCtrl',function($rootScope,$http,$cookies, myFactory, $f
 
             }
             if(this.mode=="changing process"){
-                if(!scope.myFactory.multi.mode) {
+                if(myFactory.process.constructor.name=="Multi"){
+                    let multi=myFactory.process;
+                    param=param.model;
+                    if( isNumeric(multi[param]) || multi[param].length==1){
+                        if(value.action=="package" || value.action=="selectAll"){
+
+                        }
+                        else{
+                            multi.changeProperty(param, value.name);
+                            delete scope.myFactory.process.changing;//убираем выделение строки которую меняли
+                            scope.clean();
+                        }
+                    }
+
+                }
+                else if(!scope.myFactory.multi.mode) {
                     if(value.action=="selectAll"){
                         scope.clickedSelectAll(param, value);
                         if(myFactory.process.wrapping!="" && myFactory.process.wrapping!="multi" && myFactory.multi.arrays.wrapping.indexOf(myFactory.process.wrapping)) myFactory.multi.arrays.wrapping.push(myFactory.process.wrapping);

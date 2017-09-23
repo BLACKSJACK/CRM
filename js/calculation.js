@@ -214,3 +214,6 @@ function BubbleSort(mass)       // A - массив, который нужно
 }
 function Limit(cost, limit){return Math.pow(limit/cost, 1/koef_pow)};
 
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
