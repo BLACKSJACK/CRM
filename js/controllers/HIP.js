@@ -8,7 +8,7 @@ app.controller("HIP", function ($http, myFactory, $rootScope, $scope) {
     this.myFactory=myFactory;
     this.delete=function(process){
         if(process.park.processes.length>1) process.park.processes.splice(process.park.processes.indexOf(process),1);
-        else myFactory.parks.splice(myFactory.parks.indexOf(process.park));
+        else myFactory.parks.splice(myFactory.parks.indexOf(process.park), 1);
         myFactory.finalCalc();
     };
     this.copy=function(process){

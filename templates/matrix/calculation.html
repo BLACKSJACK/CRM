@@ -22,7 +22,7 @@
 
         <td class="properties"  style="background:red!important;  color: white!important;" ng-class="{mi_selected : process.changing && dashboard.myFactory.document.currParam==dashboard.checkTransportProp(key)}"
             ng-repeat="(key,value) in process.multi track by $index" ng-if="dashboard.checkTransportProp(key)!=-1 && process.multi!==undefined && !process.multi.show && process.multi.processes.indexOf(process)==0"
-            ng-right-click="(key=='wrapping' || key=='risk') && process.multi[key].length>1 ?  process.multi.open(key)  : ''; dashboard.clean()" ng-click="dashboard.matrix.loadMulti(process, key)">{{(key=="wrapping"|| key=="risk") ? value.length==1 ? value[0] : value.length : dashboard.applyFilter(value, key, "group") }}</td>
+            ng-right-click="(key=='wrapping' || key=='risk') && process.multi[key].length>1 || key=='risk' && process.multi.packName ?  process.multi.open(key)  : ''; dashboard.clean()" ng-click="dashboard.matrix.loadMulti(process, key)">{{ (key=="wrapping"|| key=="risk") ? value.length==1 ? value[0] : value.length : process.multi.packName!==undefined ? dashboard.applyFilter(process.multi.processes[0][key], key) : dashboard.applyFilter(value, key, "group")  }}</td>
 
         <td class="properties" style="background:red!important;  color: white!important;" width="150px" ng-if="process.multi!==undefined && !process.multi.show  && !process.multi.show && process.multi.processes.indexOf(process)==0" ng-class="{red: process.practicalPriceKoef}">{{ dashboard.applyFilter(process.multi.price, "cost") }}</td>
 

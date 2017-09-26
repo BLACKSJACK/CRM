@@ -7,78 +7,22 @@ const qwerty=["Q","W","E","R","T","Y","U","I","O","P"];
 let LimKoef=1;
 let totalAmount=0;
 class Multi{
-    constructor(array){
-        let wrapping=[];
-        let risk=[];
-        let limit=[];
-        let franchise=[];
-        let cost=[];
-        let amount=[];
-        this.processes=[];
+    constructor(array, packName, template){
         let mult=this;
         this.show=false;
+        this.processes=[];
         array.forEach(function (proc) {
             mult.processes.push(proc);
             proc.multi=mult;
-            if(wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
-            if(risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
-            limit.push(proc.limit);
-            franchise.push(proc.franchise);
-            cost.push(proc.cost);
-            amount.push(proc.amount);
-
         });
-        if(cost.length==1) this.cost=cost[0];
-        else{
-            let min=cost[0];
-            let max=cost[0];
-            for(let i=0;i<cost.length;i++){
-                if(cost[i]>max) max=cost[i];
-                if(cost[i]<min) min=cost[i];
-            }
-            if(min==max) this.cost=min;
-            else this.cost=min+"-"+max;
+        if(packName){
+            this.packName=packName;
+            this.template=template;
         }
-        if(amount.length==1) this.franchise=amount[0];
-        else{
-            let min=amount[0];
-            let max=amount[0];
-            for(let i=0;i<amount.length;i++){
-                if(amount[i]>max) max=amount[i];
-                if(amount[i]<min) min=amount[i];
-            }
-            if(min==max) this.amount=min;
-            else this.amount=min+"-"+max;
-        }
-        this.wrapping=wrapping;
-        this.risk=risk;
-        if(limit.length==1) this.limit=limit[0];
-        else{
-            let min=limit[0];
-            let max=limit[0];
-            for(let i=0;i<limit.length;i++){
-                if(limit[i]>max) max=limit[i];
-                if(limit[i]<min) min=limit[i];
-            }
-            if(min==max) this.limit=min;
-            else this.limit=min+"-"+max;
-        }
-        if(franchise.length==1) this.franchise=franchise[0];
-        else{
-            let min=franchise[0];
-            let max=franchise[0];
-            for(let i=0;i<franchise.length;i++){
-                if(franchise[i]>max) max=franchise[i];
-                if(franchise[i]<min) min=franchise[i];
-            }
-            if(min==max) this.franchise=min;
-            else this.franchise=min+"-"+max;
-        }
+        this.getValues();
 
-        console.log(this);
     }
-    calculatePrice(){
-        let total=0;
+    getValues(){
         let wrapping=[];
         let risk=[];
         let limit=[];
@@ -86,13 +30,14 @@ class Multi{
         let cost=[];
         let amount=[];
         this.processes.forEach(function (proc) {
-            if(wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
-            if(risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
-            limit.push(proc.limit);
-            franchise.push(proc.franchise);
-            cost.push(proc.cost);
-            amount.push(proc.amount);
-            total+=proc.totalPrice;
+
+                if(wrapping.indexOf(proc.wrapping)==-1) wrapping.push(proc.wrapping);
+                if(risk.indexOf(proc.risk)==-1) risk.push(proc.risk);
+                limit.push(proc.limit);
+                franchise.push(proc.franchise);
+                cost.push(proc.cost);
+                amount.push(proc.amount);
+
         });
         if(cost.length==1) this.cost=cost[0];
         else{
@@ -105,7 +50,7 @@ class Multi{
             if(min==max) this.cost=min;
             else this.cost=min+"-"+max;
         }
-        if(amount.length==1) this.franchise=amount[0];
+        if(amount.length==1) this.amount=amount[0];
         else{
             let min=amount[0];
             let max=amount[0];
@@ -140,26 +85,88 @@ class Multi{
             if(min==max) this.franchise=min;
             else this.franchise=min+"-"+max;
         }
+        if(this.packName){
+            console.log(this.template);
+            let risks=["Базовые риски"];
+            this.template.forEach(function (process) {
+                risks.push(process.risk);
+            });
+            for(let i=0;i<risks.length; i++){
+                this.risk.splice(this.risk.indexOf(risks[i]),1);
+            }
+            this.risk.push(this.packName)
+        }
+    }
+    calculatePrice(){
+        this.getValues();
+        let total=0;
+        this.processes.forEach(function (proc) {
+            total+=proc.totalPrice;
+        });
         this.price=total;
     }
     open(key){
-        if(this.risk.length>1 && this.wrapping.length>1){
+        if(this.risk.length>1 && this.wrapping.length>1 || this.wrapping.length>1 && this.packName){
             let mass=this.processes;
             this.processes=[];
             let multi=this;
-            this[key].forEach(function (val) {
-                let array=mass.filter(function (process) {
-                    return process[key]==val;
+            let massive=[];
+            if(key=="risk" && this[key].length==1 && this.packName){
+                massive.push("Базовые риски");
+                this.template.forEach(function (templateProcess) {
+                    massive.push(templateProcess.risk);
                 });
-                multi.processes.push(new Multi(array));
-                array.forEach(function (process) {
-                    process.multi=multi.processes[multi.processes.length-1];
+                massive.forEach(function (val) {
+                    let array=mass.filter(function (process) {
+                        return process[key]==val;
+                    });
+                    multi.processes.push(new Multi(array));
+                    array.forEach(function (process) {
+                        process.multi=multi.processes[multi.processes.length-1];
+                    });
+                });
+                this.processes.forEach(function (multik) {
+                    multik.calculatePrice();
+                    multik.parent=multi;
                 })
-            });
-            this.processes.forEach(function (multik) {
-                multik.calculatePrice();
-                multik.parent=multi;
-            })
+            }
+            else{
+                this[key].forEach(function (val) {
+                    if(val==multi.packName){
+                        let array=mass.filter(function (process) {
+                            return process["package"]==val;
+                        });
+                        multi.processes.push(new Multi(array));
+                        array.forEach(function (process) {
+                            process.multi=multi.processes[multi.processes.length-1];
+                        });
+                        multi.processes[multi.processes.length-1].packName=multi.packName;
+                        multi.processes[multi.processes.length-1].template=multi.template;
+
+                    }
+                    else{
+                        let pack=true;
+                        let array=mass.filter(function (process) {
+                            return process[key]==val;
+                        });
+                        multi.processes.push(new Multi(array));
+                        array.forEach(function (process) {
+                            if(!process.package) pack=false;
+                            process.multi=multi.processes[multi.processes.length-1];
+                        });
+                        if(pack){
+                            multi.processes[multi.processes.length-1].packName=multi.packName;
+                            multi.processes[multi.processes.length-1].template=multi.template;
+                        }
+                    }
+
+                });
+                this.processes.forEach(function (multik) {
+                    multik.calculatePrice();
+                    multik.parent=multi;
+                })
+            }
+
         }
         this.show=true;
     }
@@ -172,10 +179,11 @@ class Multi{
                     process.multi=multi;
                     mass.push(process);
                 });
-            })
+            });
             this.processes=mass;
         }
         this.show=false;
+        this.calculatePrice();
     }
     changeProperty(key, value){
         this.processes.forEach(function (process) {
@@ -390,7 +398,12 @@ class Park{
     }
     calculate(){
         this.processes.forEach(function (process) {
-            process.calculateBase();
+            if(process.constructor.name=="Multi"){
+                process.processes.forEach(function (proc) {
+                    proc.calculateBase();
+                })
+            }
+            else process.calculateBase();
         })
     }
     getTotal(){

@@ -391,6 +391,53 @@ app.factory('myFactory', function(){
             else this.amountType="Тягачей";
         },
         parks: [],
+        choosePark:function (array, park, index) {
+            for(let j=0;j<array.length; j++){
+                let process=array[j];
+                if(process.constructor.name=="Multi"){
+                    let multi=process;
+                    array.splice(j, 1);
+                    for(let i=0; i<multi.processes.length; i++){
+                        array.splice(j+i, 0, multi.processes[i]);
+                    }
+                }
+            }
+
+            if(!park) console.log(array);
+            if(park){
+                array.forEach(function (process) {
+                    process.park=park;
+                    park.processes.splice(index, 0,process);
+                });
+            }
+            else{
+                let newParkFlag=false;
+                let myFactory=this;
+                if(this.parks.length==0) newParkFlag=true;
+                else{
+                    array.forEach(function (process) {
+                        if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
+                    });
+                }
+                if(newParkFlag){
+                    for(let i=0;i<array.length;i++){
+                        if(i==0){
+                            this.parks.splice(i,0,new Park(array[i]));
+                        }
+                        else{
+                            array[i].park=this.parks[0];
+                            this.parks[0].processes.splice(i, 0, array[i]);
+                        }
+                    }
+                }
+                else{ //если таких рисков в первом парке нету
+                    for(let i=0;i<array.length;i++){
+                        array[i].park=this.parks[0];
+                        this.parks[0].processes.splice(i, 0, array[i]);
+                    }
+                }
+            }
+        },
         checkPracticalPriceKoef: function(mode){
             let myFactory=this;
             if(mode){
@@ -425,9 +472,13 @@ app.factory('myFactory', function(){
             this.a_limit.max_limit=max;
             //if(!this.a_limit.hand) this.a_limit.value=max;
         },
-        makePackage: function(){
+        makePackage: function(){//ебучие пакеты
             let array=[];
+            let obj={};
+            obj.packName=this.process.risk;
+            obj.template=this.multi.template;
             this.process.risk="Базовые риски";
+            this.process["package"]=obj.packName;
             //this.process.multi=this.multi.count;
             array.push(new Process(this.process));
             let myFactory=this;
@@ -438,83 +489,67 @@ app.factory('myFactory', function(){
                 for(let key in proc){
                     if(key=="limit" || key=="franchise") newProcess[key]=proc[key]*myFactory.process.cost;
                     else newProcess[key]=proc[key];
+
                 }
-                //newProcess.park=myFactory.parks[myFactory.parks.length-1];
-                //newProcess.multi=myFactory.multi.count;
+
                 array.push(new Process(newProcess));
-                //myFactory.parks[myFactory.parks.length-1].processes.push(new Process(newProcess));
             });
-            return array;
+            obj.multi=new Multi(array, obj.packName, obj.template);
+            this.multi.multies.push(obj.multi);
+            obj.array=array;
+            delete this.process["package"];
+            return obj;
 
         },
-        makeMulti: function (park, index) {
+        makeMulti: function () {
             if(this.multi.arrays.risk.length==0){
                 this.multi.arrays.risk.push(this.process.risk);
             }
             if(this.multi.arrays.wrapping.length==0){
                 this.multi.arrays.wrapping.push(this.process.wrapping);
             }
-            let array=[];
+            if(this.multi.arrays.wrapping.length==1 && this.multi.arrays.risk.length==1){
+                let risk=this.multi.arrays.risk[0];
+                let packages=this.packages.filter(function (pack) {//ебучие пакеты
+                    return pack.name==risk;
+                });
+                if(packages.length>0){
+                    return;
+                }
+                else{
+                    return [new Process(this.process)];
+                }
+            }
 
+            let array=[];
+            let obj;
             for(let i=0; i<this.multi.arrays.wrapping.length; i++){
                 for(let j=0; j<this.multi.arrays.risk.length; j++){
                     this.process.wrapping=this.multi.arrays.wrapping[i];
                     this.process.risk=this.multi.arrays.risk[j];
                     let risk=this.process.risk;
-                    let packages=this.packages.filter(function (pack) {
+                    let packages=this.packages.filter(function (pack) {//ебучие пакеты
                         return pack.name==risk;
                     });
                     if(packages.length>0){
                         this.multi.template=packages[0].values;
-                        let mass=this.makePackage();
-                        mass.forEach(function (proc) {
+                        obj=this.makePackage();
+                        obj.array.forEach(function (proc) {
                             array.push(proc);
-                        });
+                        })
                     }
                     else{
                         array.push(new Process(this.process));
                     }
                 }
             }
-            console.log(array);
-
-            let newParkFlag=false;
-            let myFactory=this;
-            this.multi.multies.push(new Multi(array));
-            if(park){
-                array.forEach(function (process) {
-                    process.park=park;
-                    park.processes.splice(0,index,process);
-                });
+            let multi=new Multi(array);
+            this.multi.multies.push(multi);
+            if(obj){
+                multi.packName=obj.packName;
+                multi.template=obj.template;
             }
-            else{
-                if(this.parks.length==0) newParkFlag=true;
-                else{
-                    array.forEach(function (process) {
-                        if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
-                    });
-                }
-                if(newParkFlag){
-                    for(let i=0;i<array.length;i++){
-                        if(i==0){
-                            this.parks.splice(0,0,new Park(array[i]));
-                        }
-                        else{
-                            array[i].park=this.parks[0];
-                            this.parks[0].processes.push(array[i]);
-                        }
-                    }
-                }
-                else{ //если таких рисков в первом парке нету
-                    for(let i=0;i<array.length;i++){
-                        array[i].park=this.parks[0];
-                        this.parks[0].processes.push(array[i]);
-                    }
-                }
-            }
-
-
-
+            return array;
         },
         addNewProcess: function(mode){
             //если мульти
@@ -527,66 +562,31 @@ app.factory('myFactory', function(){
                 }
                 let index=park.processes.indexOf(process);
                 park.processes.splice(park.processes.indexOf(process), 1);
-                if(this.multi.template.length>0){
-                    let array=this.makePackage();
-                    this.multi.multies.push(new Multi(array));
-                    array.forEach(function (process) {
-                        process.park=park;
-                        park.processes.splice(0,index,process);
-                    });
+                if(this.multi.template.length>0){//если меняем на пакет
+                    let obj=this.makePackage();
+                    let array=obj.array;
+                    this.choosePark(array, park, index);
                 }
-                else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
-                    this.makeMulti(park, index);
+                else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){//если меняем на комплекс
+                    let array=this.makeMulti();
+                    this.choosePark(array, park, index);
                 }
             }
 
             else if(this.multi.arrays.risk.length>0 || this.multi.arrays.wrapping.length>0){
-                this.makeMulti();
+                let array=this.makeMulti();
+                this.choosePark(array);
             }
-            else if(this.multi.template.length>0){
-                let array=this.makePackage();
-                this.multi.multies.push(new Multi(array));
-
-                let newParkFlag=false;
-                let myFactory=this;
-                if(this.parks.length==0) newParkFlag=true;
-                else{
-                    array.forEach(function (process) {
-                        if(myFactory.parks[0].risks.indexOf(process.risk)!=-1) newParkFlag=true;
-                    })
-                }
-                //если мы создаем новый парк тк риски в первом парке такие уже есть
-                if(newParkFlag){
-                    for(let i=0;i<array.length;i++){
-                        if(i==0){
-                            this.parks.splice(0,0,new Park(new Process(array[i])));
-                        }
-                        else{
-                            array[i].park=this.parks[0];
-                            this.parks[0].processes.push(new Process(array[i]));
-                        }
-                    }
-                }
-                else{ //если таких рисков в первом парке нету
-                    for(let i=0;i<array.length;i++){
-                        array[i].park=this.parks[0];
-                        this.parks[0].processes.push(new Process(array[i]));
-                    }
-                }
+            else if(this.multi.template.length>0){//ебучие пакеты
+                let obj=this.makePackage();
+                let array=obj.array;
+                this.choosePark(array);
 
             }
             //если не мульти
-            else if(this.parks.length==0){
-                this.parks.push(new Park(new Process(this.process)));
-            }
-            else if(this.parks[0].risks.indexOf(this.process.risk)!=-1){
-                this.parks.splice(0,0,new Park(new Process(this.process)));
-            }
             else{
-                this.process.park=this.parks[0];
-                this.parks[0].processes.push(new Process(this.process));
+                this.choosePark([new Process(this.process)]);
             }
-            //console.log(this.parks[0].processes[0].constructor.name);
             this.cleanProcess();
 
         },
