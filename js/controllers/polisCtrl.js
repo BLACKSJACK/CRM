@@ -186,7 +186,7 @@ app.controller("polisCtrl",function(myFactory, $http, $location, $scope, $rootSc
             })
             console.log(risks);
             
-            makePDF(myFactory, risks);
+            polis.makePDF(myFactory, risks);
         },function error (response){
             console.log(response);
 

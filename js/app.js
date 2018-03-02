@@ -430,7 +430,7 @@ app.factory('myFactory', function(){
         polisCurrent:"",
         polis:[
             {
-                name:"БАЗОВЫЕ РИСКИ (ЗАСТРАХОВАНЫ)",
+                name:"Базовые риски",
                 included: true,
                 values:[
                     {
