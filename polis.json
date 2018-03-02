@@ -1,0 +1,43 @@
+[
+    {
+        "name": "Компания",
+        "type": "search/create",
+        "values": [
+            {
+                "name": ""
+            }
+        ]
+    },
+    {
+        "name": "Расчет",
+        "type": "search/create",
+        "values": [
+            {
+                "name": ""
+            }
+        ]
+    },
+    {
+        "name": "Оговорки и условия",
+        "type": "lists",
+        "values":[
+            {
+                "name": "Базовые риски застрахованы",
+                "type": "multi_button"
+            },
+            {
+                "name": "За исключением",
+                "type": "multi_button"
+            },
+            {
+                "name": "Новый список",
+                "type": "button"
+            }
+        ]
+    },
+    {
+        "name": "Даты",
+        "type": "dates",
+        "values":[]
+    }
+]
