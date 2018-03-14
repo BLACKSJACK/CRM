@@ -51,6 +51,18 @@ app.controller("polisCtrl",function(myFactory, $http, $location, $scope, $rootSc
             ]
         },
         {
+            "name": "Финансы",
+            "type": "finance",
+            "values": [
+                {
+                    "name": "something"
+                },
+                {
+                    "name": "anything"
+                }
+            ]
+        },
+        {
             "name": "Даты",
             "type": "dates",
             "values":[]

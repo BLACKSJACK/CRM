@@ -21,7 +21,6 @@ class Multi{
             this.template=template;
         }
         this.getValues();
-
     }
     removePackage(){
         if(this.packName){
@@ -308,12 +307,17 @@ class Process{
         let spline = Spline(this.cost, Points.cost, 1);
         let spline1 = Spline(totalAmount, Points.amount, 0);
         let price = spline*(1+spline1/100);
-
+        console.log(this.park);
         price *= Franchise(this.cost, this.franchise);
+
+        /**
+         * влияние лимита по случаю на данный риск
+         * 05.03.2018 поменяли totalAmount на this.park.amount(поменяли в формуле общее число траков на число траков в данном парке)
+         */
         if(this.cost>=this.limit){
-            price*=Limit(this.limit*totalAmount*(1+((this.cost-this.limit)/this.limit)), this.limit);
+            price*=Limit(this.limit*this.park.amount*(1+((this.cost-this.limit)/this.limit)), this.limit);
         }
-        else price*=Limit(this.cost*totalAmount*(1+((this.limit-this.cost)/this.limit)), this.limit);
+        else price*=Limit(this.cost*this.park.amount*(1+((this.limit-this.cost)/this.limit)), this.limit);
         this.baseRate=price;
         this.basePrice=this.turnover*price/100;
         //******************до сюда мы посчитали стоимость без вычетов и надбавок за риск
@@ -351,7 +355,14 @@ class Process{
 }
 class Park{
     constructor(process){
-        this.processes=[process];
+        if(Array.isArray(process)){
+            this.processes=process;
+            process=process[0];
+            this.processes.forEach((process, i)=>{
+                if(i!==0) process.park=this;
+            })
+        }
+        else this.processes=[process];
         if(process.constructor.name=="Process"){
             this.cost=process.cost;
             this.amount=process.amount;
@@ -642,6 +653,11 @@ class Park{
                 number: ""
             })
         }
+        this.processes.forEach(process=>{
+            if(process.amount===this.amount){
+                process.cars=this.cars;
+            }
+        })
     }
     getTotal(){
         let sum=0;

@@ -214,7 +214,9 @@ function BubbleSort(mass)       // A - массив, который нужно
     }
     return A;    // На выходе сортированный по возрастанию массив A.
 }
-function Limit(cost, limit){return Math.pow(limit/cost, 1/koef_pow)};
+function Limit(cost, limit){
+    return Math.pow(limit/cost, 1/koef_pow)
+};
 
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);

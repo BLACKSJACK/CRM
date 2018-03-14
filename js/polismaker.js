@@ -76,7 +76,7 @@ class PolisMaker{
                                 style:"firstHeader",
                             },
                             {
-                                text:`Объем перевозок, ${myFactory.amountType}`,
+                                text:`Объем перевозок`,
                                 style:"firstHeader", 
                             },
                             {
@@ -133,7 +133,7 @@ class PolisMaker{
                     body: [
                         [
                             {
-                                text:'Номер машины', 
+                                text:'Номер', 
                                 style:"firstHeader",
                             },
                             {
@@ -141,19 +141,19 @@ class PolisMaker{
                                 style:"firstHeader", 
                             },
                             {
-                                text:'Год выпуска*', 
+                                text:'Год*', 
                                 style:"firstHeader",
                             },
                             {
-                                text:'Стаж*', 
+                                text:'Марка*', 
                                 style:"firstHeader",
                             },
                             {
-                                text:'Включена с', 
+                                text:'Включена', 
                                 style:"firstHeader",
                             },
                             {
-                                text:'Включена по',
+                                text:'Исключена',
                                 style:"firstHeader",
                             }
                         ]
@@ -168,7 +168,7 @@ class PolisMaker{
                 tableContent.push(
                     [
                         {
-                            text:car
+                            text: car.number
                         },
                         "",
                         "",
@@ -207,6 +207,22 @@ class PolisMaker{
         const paragraphs=[];
         myFactory.polis.forEach((obj,i)=>{
             if(obj.name==="Базовые риски"){
+                return;
+            }
+            if(obj.name==="Не подлежат страхованию грузы"){
+                const ul=[];
+                obj.values.forEach(value=>ul.push(value));
+                paragraphs.push(
+                    {
+                        text: `2.0 ${obj.name}:\n`,
+                        decoration: 'underline',
+                        fontSize:16,
+                        pageBreak: 'before'
+                    },
+                    {
+                        ul
+                    }
+                )
                 return;
             }
             let paragraph={};
@@ -264,12 +280,13 @@ class PolisMaker{
                 if(baseRisk.included) ul.push(...baseRisk.ToPDF);
                 for(const risk of list){
                     ul.push(
-                        `${risk.name} - ${risk.title.toLowerCase()}. \n Относится к перечням: ${risk.list.toString()}.\n`
+                        `${risk.name} - ${risk.title.toLowerCase()}. \n Относится к Перечню: ${risk.list.toString()}.\n`
                     )
                 }
                 return [
                     {
-                        text: 'Определения застрахованных рисков:\n',
+                        text: '1.0 Определения застрахованных рисков:\n',
+                        decoration: 'underline',
                         fontSize:16,
                         pageBreak: 'before'
                     },
@@ -287,7 +304,8 @@ class PolisMaker{
                 }
                 return [
                     {
-                        text: 'Определения не заявленных на страхование рисков:\n',
+                        text: '1.1 Определения не заявленных на страхование рисков:\n',
+                        decoration: 'underline',
                         fontSize:16
                     },
                     {
@@ -378,8 +396,7 @@ class PolisMaker{
      * @param  {array} risks Список рисков с описанием
      */
     makePDF(myFactory, risks){
-        
-    
+        console.log(myFactory.parks);
         let docDefinition = {
             content: [
                 "\n\n\n\n\n\n",
@@ -500,7 +517,7 @@ class PolisMaker{
                                     
                                 },
                                 {
-                                    text:3,
+                                    text:`${myFactory.totalAmount / 24 } на 0.0.2018`,
                                     margin:[0,5,0,0],
                                     bold: true,
                                     colSpan: 2,
@@ -613,42 +630,35 @@ class PolisMaker{
                             
                             [
                                 {
-                                    text: "ТОЛЬКО ПЕРЕЧИСЛЕННЫЕ ГРУЗЫ: ",
-                                    style: "leftCellFirstTable"
-                                    
-                                },
-                                {
-                                    text:"------",
-                                    margin:[0,10,0,0],
+                                    text: "Любой и каждый груз с учетом исключений по пункту 2",
                                     style: "leftCellFirstTable",
+                                    colSpan: 2,
                                     alignment: 'center',
                                     bold: true,
+                                    margin:[0,5,0,0]
+                                    
                                 },
+                                {},
                                 {
                                     text:" НЕТ",
-                                    margin:[0,10,0,0],
+                                    margin:[0,5,0,0],
                                     alignment: 'center',
                                 }
                             ],
                             [
                                 {
-                                    text: [
-                                        {
-                                            text:"ТОЛЬКО ПЕРЕЧИСЛЕННЫЕ ГРУЗЫ:\n ",
-                                        },
-                                        {
-                                            text:"грузов, принятых к перевозке в поврежденном состоянии; наливных и насыпных грузов; взрывчатых веществ; кинопленки и киноленты; стекло и стеклянно-фарфоровых изделий без специальной упаковки; банкнот и монет; драгоценных камней, драгоценных металлов и изделий из них; ювелирных изделий; художественных изделий и антиквариата; предметов искусства; живых организмов любых видов; товаров военного и двойного назначения.",
-                                            fontSize:9,
-                                        }
-                                    ],
+                                    text: "Наличие перечня грузов, подпадающих под страхование",
                                     style: "leftCellFirstTable",
                                     colSpan:2,
+                                    alignment: 'center',
+                                    bold: true,
+                                    margin:[0,5,0,0]
                                     
                                 },
                                 {},
                                 {
                                     text:"ДА",
-                                    margin:[0,25,0,0],
+                                    margin:[0,5,0,0],
                                     alignment: 'center',
                                 }
                             ]
@@ -754,7 +764,7 @@ class PolisMaker{
         
         docDefinition.content.push(
             {
-                text: "Под действия настоящего Полиса подпадают следующие перечни транспортных средств, на закрепленных ниже условиях:"
+                text: "Под действия настоящего Полиса подпадают следующие Перечни транспортных средств, на закрепленных ниже условиях:"
             },
             "\n",
             ...this.makeTables(myFactory),

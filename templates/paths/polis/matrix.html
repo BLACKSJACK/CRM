@@ -9,3 +9,4 @@
     <div addition="addition" ng-repeat="addition in dashboard.myFactory.polis" ng-if="addition.included" ng-click="dashboard.myFactory.polisCurrent=addition; dashboard.relocatePage({urlTo:'polisEditor'})"></div>
 </div>
 
+<div class="view  view_active" ng-if="newDashboard.checkCurrentPage(3)" finance-view ng-click="dashboard.relocatePage({urlTo:'finance'})"></div>

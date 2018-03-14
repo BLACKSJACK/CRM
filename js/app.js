@@ -97,10 +97,38 @@ app.config(function($routeProvider){//с помощью .config мы опред�
             controller: 'polisEditorCtrl'
 
         })
+        .when('/finance',{
+            templateUrl: './templates/paths/finance/index.html',
+            controller: 'financeCtrl'
+        })
         .otherwise({
             redirectTo: '/login'
         });
 });
+app.directive('financeDashboard', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/paths/finance/dashboard.html'
+    };
+});
+app.directive('financeMatrix', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/paths/finance/matrix.html'
+    };
+});
+app.directive('financeReturn', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/paths/finance/return.html'
+    };
+});
+app.directive('financeView', function(){
+    return{
+        restrict: 'A',
+        templateUrl: 'templates/views/finance.view.html'
+    }
+})
 app.directive('polisEditorReturn', function(){
     return{
         restrict: 'A',
@@ -468,11 +496,11 @@ app.factory('myFactory', function(){
                 ]
             },
             {
-                name: "Застрахован любой и каждый груз, за исключением",
+                name: "Не подлежат страхованию грузы",
                 included: true,
                 values:[
                     {
-                        text:"грузов, принятых к перевозке в поврежденном состоянии",
+                        text:"грузы, принятых к перевозке в поврежденном состоянии",
                         checked: true
                     },
                     {
@@ -641,6 +669,21 @@ app.factory('myFactory', function(){
                     this.hand=false;
                 }
                 else this.mode="ON";
+            },
+            makeArray(price){
+                let array=[];
+                let payment=price / this.val;
+                for(let i=0; i<this.val; i++){
+                    let date=new Date();
+                    date.setMonth(date.getMonth() + i * (12/this.val))
+                    array.push({
+                        price: payment,
+                        date,
+                        debt: "",
+                        debtDate: ""
+                    })
+                }
+                this.array=array;
             }
         },
         agents:{
@@ -1065,6 +1108,7 @@ app.factory('myFactory', function(){
                 });
                 this.totalPriceWithoutPayments=this.totalPrice;
                 this.totalPrice=this.getTotal();
+                
             }
             //****************
 
@@ -1108,6 +1152,7 @@ app.factory('myFactory', function(){
             this.parks.forEach(function (park) {
                 park.getValues();
             });
+            this.payment.makeArray(this.totalPrice);
             console.log(this.parks, this.multi.multies);
             console.log(myFactory.totalPrice);
             //риски

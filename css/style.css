@@ -532,7 +532,7 @@ div.calc>div>table.matrix>tbody>tr>td:not(.btns):hover,
 
 .login-footer {
     margin: 10px 0;
-    overlow: hidden;
+    overflow: hidden;
     float: left;
     width: 100%;
 }
@@ -623,7 +623,7 @@ div.calc>div>table.matrix>tbody>tr>td:not(.btns):hover,
     -webkit-animation-delay: 270ms;
     animation-delay: 270ms;
 }
-.animation { -webkit-transition: 0.5s; }
+.animation { transition: 0.5s; }
 
 .animation.ng-enter-stagger,
 .animation.ng-leave-stagger{

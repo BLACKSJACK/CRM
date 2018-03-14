@@ -669,10 +669,10 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
                 if(key!="processes") newMulti[key]=multi[key];
             }
             let park=multi.processes[0].park;
-            let newPark=new Park(array[0]);
+            let newPark=new Park(array);
             myFactory.parks.splice(myFactory.parks.indexOf(park)+1, 0, newPark);
-            array.splice(0,1);
-            myFactory.choosePark(array, newPark, 0);
+            // array.splice(0,1);
+            // myFactory.choosePark(array, newPark, 0);
             myFactory.finalCalc();
 
 
@@ -1234,11 +1234,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
     ];
     let processes=[
         {
-            cost:2000000,
+            cost:10000000,
             amount:72,
             wrapping:"Автовоз",
             risk:"Таможенные платежи",
-            limit:2000000,
+            limit:10000000,
             basePrice:26290.529691321786,
             baseRate:0.018257312285640127,   
             franchise:0,
