@@ -199,31 +199,10 @@ app.controller("polisCtrl",function(myFactory, $http, $location, $scope, $rootSc
             console.log(risks);
             
             polis.makePDF(myFactory, risks);
+            return null;
         },function error (response){
             console.log(response);
 
         })
-        // $http.post("HIP.json").then(function success (response) {
-        //     let risks=[];
-        //     response.data.forEach(({model, values})=>{
-        //         if(model=="risk"){
-        //             values.forEach((value)=>{
-        //                 if(value.action===undefined && value.type==="risk") risks.push(value);
-        //             })
-        //         }
-        //     })
-        //     console.log(risks);
-            
-        //     makePDF(myFactory, risks);
-        //     //myFactory.parks=[];
-           
-
-
-        //     },function error (response){
-        //         console.log(response);
-
-        //     }
-        // );
-        
     }
 })

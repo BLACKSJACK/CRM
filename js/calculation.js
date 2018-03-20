@@ -13,6 +13,9 @@ let koef_pow;
 let xhr = new XMLHttpRequest();
 xhr.open("GET","loadPoints.php",true);
 xhr.send();
+/**
+ * загружаем точки из БД
+ */
 xhr.onload = function() {
     let ar=JSON.parse(this.responseText);
     for(let i=0;i<ar.length;i++){
@@ -30,6 +33,11 @@ xhr.onload = function() {
 let MB= [[],[]];
 let MC= [[],[]];
 let MD= [[],[]];
+/**
+ * функция получения массива значений для возможности обращения к ним через график
+ * @param {number} index 
+ * @param {array} mass 
+ */
 function SplineKoeff(index, mass)
 {
 
@@ -126,6 +134,12 @@ function SplineKoeff(index, mass)
 
     }
 }
+/**
+ * функция получение значения из графика
+ * @param {number} U значение
+ * @param {array} mass массив с точкаии
+ * @param {number} index к какому из массивов обращаемся
+ */
 function Spline(U, mass, index){
     if (isNaN(U) || U===undefined){
         console.log("Ошибка в вычислениях, необходимо обратиться к разработчику");
@@ -185,6 +199,11 @@ function Spline(U, mass, index){
     }
 
 }
+/**
+ * функция получения франшизы, единица минус корень квадратный из франшизы деленной на стоимость
+ * @param {number} cost 
+ * @param {number} franchise 
+ */
 function Franchise(cost, franchise){
     if(franchise<cost){
 
@@ -220,4 +239,15 @@ function Limit(cost, limit){
 
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
+}
+function addSpaces(nStr) {
+    nStr += '';
+    let x = nStr.split('.');
+    let x1 = x[0];
+    let x2 = x.length > 1 ? '.' + x[1] : '';
+    let rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ' ' + '$2');
+    }
+    return x1 + x2;
 }

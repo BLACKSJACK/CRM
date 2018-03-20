@@ -421,7 +421,6 @@ table.matrix>tbody>tr>.properties{
 
     height: 65px;
     position: relative;
-    border-top-width: 30px;
 }
 
 table.matrix>tbody>tr>.properties::before{

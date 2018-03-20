@@ -496,7 +496,7 @@ app.factory('myFactory', function(){
                 ]
             },
             {
-                name: "Не подлежат страхованию грузы",
+                name: "Страхование по полису не распространяется на следующие грузы",
                 included: true,
                 values:[
                     {
@@ -567,6 +567,10 @@ app.factory('myFactory', function(){
             }
 
         },
+        /**
+         * function multiChangeMode функция меняет состояние мульти 
+         * @param {boolean} mode режим мульти
+         */
         multiChangeMode: function (mode) {
             if(mode===undefined){
                 if(this.multi.mode==false){
@@ -579,6 +583,9 @@ app.factory('myFactory', function(){
             else this.multi.mode=mode;
             console.log(this.multi.mode);
         },
+        /**
+         * этот раздел с keyCodes можно удалить
+         */
         keyCodes:{
             qwerty:{
                 mass:[113,119,101,114,116,121,117,105,111,112],
@@ -614,6 +621,9 @@ app.factory('myFactory', function(){
             type:"Агр. лимит",
             hand: false,
         },
+        /**
+         * ручной ввод агрегатного лимита
+         */
         changeAlimit(){
             let a_limit=this.a_limit;
             if(a_limit.type=="Агр. лимит"){
@@ -628,6 +638,9 @@ app.factory('myFactory', function(){
                 if(!a_limit.hand) a_limit.value=a_limit.max_limit;
             }
         },
+        /**
+         * применение агрегатного лимита
+         */
         applyAlimit:function(){
             let a_limit=this.a_limit;
             if(a_limit.value<a_limit.max_limit && a_limit.type=="Агр. лимит"){
@@ -658,6 +671,9 @@ app.factory('myFactory', function(){
                 }
             }
         },
+        /**
+         * все что касается этапов платежей
+         */
         payment:{
             val:0,
             hand:false,
@@ -670,17 +686,32 @@ app.factory('myFactory', function(){
                 }
                 else this.mode="ON";
             },
+            /**
+             * функция создает массив из этапов платежей, необходимо для дальнейшего управления финансами полиса
+             * @param {number} price 
+             */
             makeArray(price){
+                const getCurrentDate=(date)=>{
+                    let day=date.getDay();
+                    let month=date.getMonth()+1;
+                    let year=date.getFullYear();
+                    if(day<10) day=`0${day}`;
+                    if(month<10) month=`0${month}`;
+                    return `${day}.${month}.${year}`
+                }
                 let array=[];
-                let payment=price / this.val;
+                let payment=addSpaces(Math.round(price / this.val));
                 for(let i=0; i<this.val; i++){
                     let date=new Date();
-                    date.setMonth(date.getMonth() + i * (12/this.val))
+                    
+                    date.setMonth(date.getMonth() + i * (12/this.val));
+                    date=getCurrentDate(date);
                     array.push({
                         price: payment,
                         date,
-                        debt: "",
-                        debtDate: ""
+                        debt: payment,
+                        debtDate: date,
+                        payments: []
                     })
                 }
                 this.array=array;
@@ -729,7 +760,14 @@ app.factory('myFactory', function(){
         },
         parks: [],
         parkTemplate:[],
-        choosePark:function (array, park, index, oldPark) {
+        /**
+         * функция распределения процессов по паркам
+         * @param {array} array массив процессов
+         * @param {park} park если данный агрумент есть - значит процессы нужно вставить именно в этот парк
+         * @param {number} index если index получен, то процессы нужно вставить после данного номера в парке
+         * @param {park} oldPark
+         */
+        choosePark(array, park, index, oldPark) {
             for(let j=0;j<array.length; j++){
                 let process=array[j];
                 if(process.constructor.name=="Multi"){
@@ -789,6 +827,11 @@ app.factory('myFactory', function(){
                 }
             }
         },
+        /**
+         * функция меняет коэффициент фактической премии
+         * @param {boolean} mode фактическая премия либо есть либо нет
+         * 
+         */
         checkPracticalPriceKoef: function(mode){
             let myFactory=this;
             if(mode){
@@ -807,7 +850,10 @@ app.factory('myFactory', function(){
                 })
             }
         },
-        calculateParksAmount: function(){
+        /**
+         * функция считает количество траков по всем паркам
+         */
+        calculateParksAmount(){
             let sum=0;
             this.parks.forEach(function(park){
                 sum+=park.calculateAmount();
@@ -815,7 +861,10 @@ app.factory('myFactory', function(){
             totalAmount=sum;
             this.totalAmount=totalAmount;
         },
-        findMaxLimit: function(){
+        /**
+         * функция ищет максимальный лимит по случаю
+         */
+        findMaxLimit(){
             let max=0;
             this.parks.forEach(function(park){
                 max=Math.max(park.findMaxLimit(), max);
@@ -823,7 +872,7 @@ app.factory('myFactory', function(){
             this.a_limit.max_limit=max;
             //if(!this.a_limit.hand) this.a_limit.value=max;
         },
-        makePackage: function(){//ебучие пакеты
+        makePackage(){//ебучие пакеты
             let array=[];
             let obj={};
             obj.packName=this.process.risk;
@@ -867,7 +916,12 @@ app.factory('myFactory', function(){
             });
             return multi;
         },
-        makeMulti: function (bindMulti) {
+        /**
+         * @function функция для создания мультиузлов
+         * @param {array} bindMulti массив с процессами, для которым мы создаем мультиузел 
+         * @return {object} возвращает массив с процессами
+         */
+        makeMulti(bindMulti) {
             if(this.multi.arrays.risk.length==0){
                 this.multi.arrays.risk.push(this.process.risk);
             }
@@ -952,7 +1006,12 @@ app.factory('myFactory', function(){
             }
             return array;
         },
-        addNewProcess: function(mode, multiChanging){
+        /**
+         * @function функция добавления нового процесса/процессов
+         * @param {string} mode режим
+         * @param {array} multiChanging массив с процессами для мультиузла
+         */
+        addNewProcess(mode, multiChanging){
             //если мульти
             if(mode=="changing"){
                 let park=this.process.park;
@@ -994,6 +1053,9 @@ app.factory('myFactory', function(){
             this.cleanProcess();
 
         },
+        /**
+         * функция получения итоговой премии
+         */
         getTotal: function(){
             let sum=0;
             this.parks.forEach(function (park) {
@@ -1001,7 +1063,10 @@ app.factory('myFactory', function(){
             });
             return sum;
         },
-        cleanUpProcessesInParks: function(){
+        /**
+         * функция для очистки мусора
+         */
+        cleanUpProcessesInParks(){
             let mass=[];
             let myFactory=this;
             this.parks.forEach(function (park,i) {
@@ -1027,7 +1092,10 @@ app.factory('myFactory', function(){
             })
 
         },
-        finalCalc: function(){
+        /**
+         * основная функция для расчета, в которую входят все остальные 
+         */
+        finalCalc(){
             this.parkTemplate=[];
 
             //**************************при загрузке расчета из БД**************************

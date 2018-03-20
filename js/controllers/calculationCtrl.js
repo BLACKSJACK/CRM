@@ -4,7 +4,6 @@
 
 "use strict";
 app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, $filter, $timeout, $location){
-    console.log(this);
     this.span=1;
     this.myFactory=myFactory;
     let scope=this;
@@ -32,7 +31,7 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         scope.myFactory.keyCodes.qwerty.length=scope.currObj.filter(function (obj) {
             return obj["name"]!=undefined;
         }).length;
-        scope.navStyle="width:"+100/scope.currObj.length+"%;";
+        scope.navStyle="width:" + 100 / scope.currObj.length + "%;";
 
         scope.config="HIP.json";
 
@@ -49,6 +48,12 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
 
         }
     );
+    /**
+     * меняем в парке значение для всех строк
+     * @param {any} value значение, либо string либо number на которое нужно поменять
+     * @param {string} key параметр, который нужно поменять
+     * @param {park} park в каком парке нужно поменять
+     */
     this.setParamToAllProcess=function(value,key,park){
         park.processes.forEach(function (process) {
             process[key]=value;
@@ -61,12 +66,27 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         });
         myFactory.finalCalc();
     };
+    /**
+     * это вспомогательная функция для angularJS
+     * @param {*} obj ez
+     * @param {*} key ez
+     */
     this.deleteProperty=function(obj, key){
         delete obj[key];
     };
+    /**
+     * функция генерации уникального id для поля процесса в матрице
+     * @param {process} process 
+     * @param {number} index 
+     */
     this.getUniqueId = (process, index) =>{
         return myFactory.parks.indexOf(process.park).toString()+process.park.processes.indexOf(process)+index;
     }
+    /**
+     * handler при нажатии на верхнюю часть каретки
+     * @param {*} value 
+     * @param {*} param 
+     */
     this.clickedOnTopOfDashboard=(value, param)=>{
         const type=value.type;
         switch(type){
@@ -105,7 +125,9 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
                 break;
         }
     };
-
+    /**
+     * для вывода подсказок
+     */
     this.tooltip={
         title:"",
         fadeIn(title){
@@ -139,6 +161,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             delete scope.oldConfig;
         }
     };
+    /**
+     * функция для отображения "ёлочкой" или "лесинкой", чтобы повторяющиеся значения были полупрозначными
+     * @param {object} process 
+     * @param {string} key 
+     */
     this.isRepeated=function(process,key){
         let park=process.park;
         if(myFactory.parks.length==1 && park.processes.length==1 || park.processes.indexOf(process)==0) return false;
@@ -154,6 +181,9 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         return prevProcess[key]===process[key];
 
     };
+    /**
+     * если в режиме мульти ткнули на верхнюю часть каретки
+     */
     this.multiClicked=function(){
 
         if(this.karetka.mode=="making new process"){
@@ -192,61 +222,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         console.log(myFactory.parks);
     };
     //*************//*************//*************
-
-    //*************Обработчик управления с клавиатуры
-    this.addQwertyKey=function(index){
-        return qwerty[index];
-    };
-    this.addNumberKey=function(value, param){
-        if(param.model=='cost'|| param.model=='amount'||param.model=='limit'||param.model=='franchise'){
-            if(param.values.indexOf(value)!=0 && param.values.indexOf(value)!=1) return param.values.indexOf(value)-1;
-        }
-        else return param.values.indexOf(value)+1;
-    };
-    this.keyboard=function($event){
-
-        let key=$event.keyCode;
-        if(key==1081) key=113;
-        else if(key==1094) key=119;
-        else if(key==1091) key=101;
-        else if(key==1082) key=114;
-        else if(key==1077) key=116;
-        else if(key==1085) key=121;
-        else if(key==1075) key=117;
-        else if(key==1096) key=105;
-        else if(key==1097) key=111;
-        else if(key==1079) key=112;
-
-        let keyCodes=myFactory.keyCodes;
-        if(scope.myFactory.foc){
-            if(keyCodes.number.mass.indexOf(key)!=-1 && keyCodes.number.mass.indexOf(key)<keyCodes.number.length){
-                let param=scope.currObj[this.myFactory.document.currParam];
-                let value;
-                if(param.model=='cost'|| param.model=='amount'||param.model=='limit'||param.model=='franchise'){
-                    value=param.values[keyCodes.number.mass.indexOf(key)+2];
-                }
-                else value=param.values[keyCodes.number.mass.indexOf(key)];
-                if(value.type=='relocate_here') scope.relocateHere(value.urlTo);
-                else if(value.type=='relocatePage') scope.relocatePage(value.urlTo);
-                else if(value.type=='reloadDashboard') scope.reloadDashboard(value.json,value.matrix);
-                else if(value.type=='text' || value.type=='currency' || value.type=='amount' || value.type=='risk') scope.karetka.clicked(param,value);
-
-                //else if(param.values[keyCodes.number.mass.indexOf(key)])
-            }
-            else if(keyCodes.qwerty.mass.indexOf(key)!=-1 && keyCodes.qwerty.mass.indexOf(key)<keyCodes.qwerty.length){
-                this.selectParam(keyCodes.qwerty.mass.indexOf(key));
-
-            }
-            else if(keyCodes.tab.mass.indexOf(key)!=-1){
-
-            }
-        }
-    };
-    //*************//*************//*************
-
-
-
-
     let timer;
     this.Confirm=function(){
         if(myFactory.makingPolis){
@@ -652,7 +627,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         else return value/24+" тягачей";
     };
     this.matrix={
-        copyMulti: function (multi) {
+        /**
+         * копируем мультиузел
+         * @param {multi} multi мульти который надо скопировать
+         */
+        copyMulti(multi) {
             scope.clean();
             console.log(multi);
             let array=[];
@@ -677,7 +656,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
 
 
         },
-        deleteMulti: function(multi){
+        /**
+         * удаляем мультиузел
+         * @param {multi} multi 
+         */
+        deleteMulti(multi){
             scope.clean();
             let park=multi.processes[0].park;
             multi.processes.forEach(function (process) {
@@ -700,7 +683,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             scope.clean();
             console.log(myFactory.parks, myFactory.multi.multies);
         },
-        copyPark:function (oldPark) {
+        /**
+         * функция копирования парка
+         * @param {park} oldPark  старый парк, который будем копировать
+         */
+        copyPark(oldPark) {
             scope.clean();
             let obj=oldPark.copyPark();
             let {mass, park}=obj;
@@ -720,7 +707,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             });
             myFactory.finalCalc();
         },
-        deletePark:function (park) {
+        /**
+         * удаляем парк
+         * @param {park} park 
+         */
+        deletePark(park) {
             scope.clean();
             park.processes.forEach(process=>{
                 if(process.multi && process.multi!="deleted") deepRemoveMulti(process.multi);
@@ -728,7 +719,12 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             myFactory.parks.splice(myFactory.parks.indexOf(park),1);
             myFactory.finalCalc();
         },
-        loadProcess: function (process, prop) {
+        /**
+         * функция загрузки процесса из матрицы в каретку
+         * @param {process} process процесс
+         * @param {string} prop значение процесса
+         */
+        loadProcess(process, prop) {
             myFactory.multi.multies.forEach(function (multi) {
                 delete multi.changing;
             });
@@ -756,7 +752,7 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
                         for(let i=0;i<karetkaParam.values.length;i++){
                             if(karetkaParam.values[i].name=="input"){
                                 if(key=='amount' && scope.myFactory.amountType=="Тягачей"){
-                                    karetkaParam.selected=process[key]/TRACTOR;
+                                    karetkaParam.selected=process[key] / TRACTOR;
                                 }
                                 else karetkaParam.selected=process[key];
                             }
@@ -782,7 +778,12 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
                 }
             }
         },
-        loadMulti:function(process, key){
+        /**
+         * функция загрузки мультиузла в каретку
+         * @param {process} process сам мультиузел
+         * @param {string} key параметр мультиузла который мы загружаем
+         */
+        loadMulti(process, key){
             scope.selectParam(transportProp.indexOf(key));
             let multi=process.multi;
 
@@ -822,7 +823,12 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
 
 
         },
-        loadPark: function (park, key) {
+        /**
+         * загружаем свернутый парк в каретку
+         * @param {*} park 
+         * @param {*} key 
+         */
+        loadPark(park, key) {
             console.log(scope.currObj);
             scope.clean();
             scope.selectParam(transportProp.indexOf(key));
@@ -1135,6 +1141,9 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             }
         },
     };
+    /**
+     * сохраняем расчет в БД
+     */
     this.saveCalculation=function () {
         if(this.nameOfCalculation=="" || this.nameOfCalculation===undefined) return false;
         let parks=[];
@@ -1198,94 +1207,88 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         if(multi.parent) deepRemoveMulti(multi.parent);
         myFactory.multi.multies.splice(myFactory.multi.multies.indexOf(multi), 1);
     }
-    this.makePolisProject=function(){
-
-    }
-    
-
-
-    myFactory.parks=[];
-    myFactory.parks.push(new Park(new Process({
-        cost:2000000,
-        amount:72,
-        wrapping:"Автовоз",
-        risk:"Базовые риски",
-        limit:2000000,
-        basePrice:26290.529691321786,
-        baseRate:0.018257312285640127,   
-        franchise:0,
-        riskPrice:29287.591314347355,
-        riskRate:0.020338605079407886,
-        totalPrice:29287.591314347355,
-        turnover:144000000,
-        cars: ["А123ОО", "О123АА", "О123АО"]
+    // myFactory.parks=[];
+    // myFactory.parks.push(new Park(new Process({
+    //     cost:2000000,
+    //     amount:72,
+    //     wrapping:"Автовоз",
+    //     risk:"Базовые риски",
+    //     limit:2000000,
+    //     basePrice:26290.529691321786,
+    //     baseRate:0.018257312285640127,   
+    //     franchise:0,
+    //     riskPrice:29287.591314347355,
+    //     riskRate:0.020338605079407886,
+    //     totalPrice:29287.591314347355,
+    //     turnover:144000000,
+    //     cars: ["А123ОО", "О123АА", "О123АО"]
         
-    })));
-    myFactory.parks[0].cars=[
-        {
-            number: "А123ОО"
-        },
-        {
-            number: "О123АА"
-        },
-        {
-            number: "О123АО"
-        }
-    ];
-    let processes=[
-        {
-            cost:10000000,
-            amount:72,
-            wrapping:"Автовоз",
-            risk:"Таможенные платежи",
-            limit:10000000,
-            basePrice:26290.529691321786,
-            baseRate:0.018257312285640127,   
-            franchise:0,
-            riskPrice:29287.591314347355,
-            riskRate:0.020338605079407886,
-            totalPrice:29287.591314347355,
-            turnover:144000000,
-            cars: ["А123ОО", "О123АА", "О123АО"]
+    // })));
+    // myFactory.parks[0].cars=[
+    //     {
+    //         number: "А123ОО"
+    //     },
+    //     {
+    //         number: "О123АА"
+    //     },
+    //     {
+    //         number: "О123АО"
+    //     }
+    // ];
+    // let processes=[
+    //     {
+    //         cost:10000000,
+    //         amount:72,
+    //         wrapping:"Автовоз",
+    //         risk:"Таможенные платежи",
+    //         limit:10000000,
+    //         basePrice:26290.529691321786,
+    //         baseRate:0.018257312285640127,   
+    //         franchise:0,
+    //         riskPrice:29287.591314347355,
+    //         riskRate:0.020338605079407886,
+    //         totalPrice:29287.591314347355,
+    //         turnover:144000000,
+    //         cars: ["А123ОО", "О123АА", "О123АО"]
             
-        },
-        {
-            cost:2000000,
-            amount:48,
-            wrapping:"Автовоз",
-            risk:"Повреждение контейнера",
-            limit:2000000,
-            basePrice:26290.529691321786,
-            baseRate:0.018257312285640127,
-            franchise:0,
-            riskPrice:29287.591314347355,
-            riskRate:0.020338605079407886,
-            totalPrice:29287.591314347355,
-            turnover:144000000,
-            cars: ["А123ОО", "О123АА"]
-        },
-        {
-            cost:2000000,
-            amount:48,
-            wrapping:"Автовоз",
-            risk:"Стихийные бедствия",
-            limit:2000000,
-            basePrice:26290.529691321786,
-            baseRate:0.018257312285640127,           
-            franchise:0,
-            riskPrice:29287.591314347355,
-            riskRate:0.020338605079407886,
-            totalPrice:29287.591314347355,
-            turnover:144000000,
-            cars: ["А123ОО",  "О123АО"]
-        }
-    ];
-    myFactory.choosePark(
-        processes.map((process)=>
-            new Process(process)
-        )
-    )
+    //     },
+    //     {
+    //         cost:2000000,
+    //         amount:48,
+    //         wrapping:"Автовоз",
+    //         risk:"Повреждение контейнера",
+    //         limit:2000000,
+    //         basePrice:26290.529691321786,
+    //         baseRate:0.018257312285640127,
+    //         franchise:0,
+    //         riskPrice:29287.591314347355,
+    //         riskRate:0.020338605079407886,
+    //         totalPrice:29287.591314347355,
+    //         turnover:144000000,
+    //         cars: ["А123ОО", "О123АА"]
+    //     },
+    //     {
+    //         cost:2000000,
+    //         amount:48,
+    //         wrapping:"Автовоз",
+    //         risk:"Стихийные бедствия",
+    //         limit:2000000,
+    //         basePrice:26290.529691321786,
+    //         baseRate:0.018257312285640127,           
+    //         franchise:0,
+    //         riskPrice:29287.591314347355,
+    //         riskRate:0.020338605079407886,
+    //         totalPrice:29287.591314347355,
+    //         turnover:144000000,
+    //         cars: ["А123ОО",  "О123АО"]
+    //     }
+    // ];
+    // myFactory.choosePark(
+    //     processes.map((process)=>
+    //         new Process(process)
+    //     )
+    // )
     
-    setTimeout(myFactory.finalCalc.bind(myFactory), 1000);
+    // setTimeout(myFactory.finalCalc.bind(myFactory), 1000);
     
 });

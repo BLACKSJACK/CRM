@@ -1,8 +1,12 @@
 /**
  * Created by RoGGeR on 14.06.17.
  */
-app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout){
+app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout, $location){
     let scope=this;
+    /**
+     * удаляем расчет из БД
+     * @param {object} row строка которую надо удалить из БД
+     */
     this.deleteCalculation=function(row){
         let id=row.id;
         $rootScope.search_result.splice($rootScope.search_result.indexOf(row), 1);
@@ -15,9 +19,19 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout){
             console.log(response)
         });
     };
+    /**
+     * Загружаем расчет из БД
+     * здесь надо добавить, что расчеты загружаются по разному, в зависимости от того 
+     * в какой период времени они сделаны. Происходит это из-за того что в какой-то момент
+     * времени структура сохраненных расчетов была видоизменена
+     * @param {number} id 
+     */
     this.loadCalculation= function(id){ //нажимаем на строку расчета в результате поиска
         $timeout(function () {
             console.log(id);
+            if($location.path!=="/calculation"){
+                $location.path('/calculation');
+            }
             let data ={};
             data.type="load_calculation";
             data.id=id;
@@ -311,7 +325,7 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout){
             },function error(response){
                 console.log(response)
             });
-        }, 200);
+        }, 0);
 
 
 
