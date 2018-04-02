@@ -61,7 +61,8 @@
         "name":"Юр. лицо",
         "urlTo":"company",
         "type":"relocatePage",
-        "json":"new_company.json"
+        "json":"new_company.json",
+        "able":"none"
       },
       {
         "name":"Контакт",
@@ -104,7 +105,8 @@
         "type":"text",
         "able":"none"
       }
-    ]
+    ],
+    "able":"none"
   },
   {
     "name":"Дневник",

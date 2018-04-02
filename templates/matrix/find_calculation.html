@@ -8,6 +8,5 @@
     <td class="properties" ng-click="matrixCtrl.loadCalculation(row.id);">{{row.a_limit | currency:'RUB '}}</td>
     <td class="properties" ng-click="matrixCtrl.loadCalculation(row.id);" ng-if="row.fact_premia===undefined">{{row.total_price | currency:'RUB '}}</td>
     <td class="properties red"  ng-click="matrixCtrl.loadCalculation(row.id);" ng-if="row.fact_premia!==undefined">{{row.fact_premia | currency:'RUB '}}</td>
-    <td class="properties" ng-click="matrixCtrl.loadCalculation(row.id);">{{dashboard.pipeAmount(row.amount)}}</td>
     <td class="properties" ng-click="matrixCtrl.loadCalculation(row.id);">{{row.date}}</td>
 </tr>

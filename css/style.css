@@ -102,7 +102,7 @@ div.mi_slider{
         width:1150px;
     }
     div.matrix_container, .clientCard{
-        width:1340px;
+
         font-size: 12pt;
         height:560px
     }
@@ -153,7 +153,7 @@ div.mi_slider{
     }
 
     div.matrix_container, .clientCard{
-        width:1000px;
+
         font-size: 12pt;
         height:500px;
     }
@@ -234,7 +234,6 @@ div#tooltip_box>table>tbody>tr>td:not(.not_hover):hover, #pseudoDashboard>div:ho
     color: rgb(0, 111, 167)!important;
 }
 .matrix.bottom{
-    border: 12px solid rgb(146, 167, 205);
     table-layout: fixed;
     bottom: 0px;
     position: fixed;
