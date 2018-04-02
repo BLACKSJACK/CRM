@@ -87,7 +87,6 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,myFactory){
         else return false;
     };
     this.search = function( values , type) {
-        console.log(values);
         let data={};
         if(type=="Компания"){
             data.type="find_company";
@@ -130,7 +129,6 @@ app.controller('searchCtrl', function($rootScope,$http,$q,$location,myFactory){
 
                     });
                 }   
-                console.log($rootScope.search_result);
             },function error (response){
                 console.log(response);
             }

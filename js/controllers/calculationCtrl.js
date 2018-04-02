@@ -189,8 +189,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
         if(this.karetka.mode=="making new process"){
             myFactory.multiChangeMode();
             if(!myFactory.multi.mode && scope.selectNextParam()){//здесь мы имеем уже заполненный процесс, остается только добавить его в массив процессов и посчитать
-                console.log(myFactory.multi);
-                console.log(myFactory.process);
                 myFactory.addNewProcess();
                 myFactory.finalCalc();
                 scope.clean();
@@ -219,7 +217,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
                 else myFactory.multiChangeMode();
             }
         }
-        console.log(myFactory.parks);
     };
     //*************//*************//*************
     let timer;
@@ -328,18 +325,11 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             scope.config=string;
 
             if(typeof type !="undefined") scope.myFactory.matrixType=type;
-            console.log(myFactory.parks);
             },function error (response){
                 console.log(response);
-
             }
         );
-
     };
-    
-    
-    
-
     this.relocatePage=function(value){//переход на другую страницу(как в случае с калькулятором который не написан)
         $location.path(`/${value}`);
 
@@ -352,7 +342,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             }
         }
     };
-
     this.currentUl=function(index){//функция проверки для анимации и переключения между ul
         if(index===scope.myFactory.document.currParam) return true;
     };
@@ -362,7 +351,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
     this.currentProcess={};
     this.selectParam=function (index) { // нажатии на nav
         if(myFactory.parkTemplate.length>0) myFactory.parkTemplate=[];
-
         if(this.currObj[index] && this.currObj[index].name===undefined){
             let url=this.currObj[index].url;
             this.currObj.forEach(function (params, i) {
@@ -378,8 +366,6 @@ app.controller('calculationCtrl',function($rootScope,$http,$cookies, myFactory, 
             this.myFactory.keyCodes.number.length=this.currObj[this.myFactory.document.currParam].values.length+1;
             if(this.karetka.mode=="listener") this.karetka.mode="making new process";
         }
-
-
     };
     this.selectNextParam=function(){
         let i=0;

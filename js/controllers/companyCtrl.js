@@ -21,7 +21,6 @@ app.controller("companyCtrl", function(myFactory,$scope, $http, $location, $time
             scope.myFactory.newClientCard={};
             Object.assign(scope.myFactory.newClientCard,$scope.clientCard);
         }
-        console.log(myFactory);
     });
     if(!myFactory.loadCompany){
         $http.post("new_company.json").then(function success (response) {

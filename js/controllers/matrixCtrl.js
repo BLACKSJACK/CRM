@@ -14,7 +14,7 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout, $lo
         data.type="delete_calculation";
         data.id=id;
         $http.post("search.php", data).then(function success(response){
-            console.log(response);
+            console.log(response, "success");
         },function error(response){
             console.log(response)
         });
@@ -43,9 +43,6 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout, $lo
                 myFactory.parks=[];
                 let mass=JSON.parse(response.data.processes);
                 if(response.data.user_name==123){
-                    console.log("new");
-                    console.log(mass);
-
                     mass.forEach(function (park) {
                         let multi=[];
                         let array=[];//создаем массив из процессов new Process
@@ -58,9 +55,9 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout, $lo
                             if(process.multi!==undefined && multi.indexOf(process.multi)==-1) multi.push(process.multi);
                         });
                         let newPark=new Park(array[0]);//создаем парк с помощью первого процесса new Park
-
+                        
                         if(array.length>1) array.splice(0,1);//choosePark()
-                        myFactory.choosePark(array, newPark, 0);
+                        myFactory.choosePark(array, newPark, 0); 
 
                         for(let key in park){//копируем все свойства парка в созданный парк
                             if(key!="processes") newPark[key]=park[key];
@@ -126,7 +123,6 @@ app.controller('matrixCtrl', function($rootScope,$http, myFactory, $timeout, $lo
                         myFactory.checkPracticalPriceKoef(true);
                         myFactory.bottom.priceMode="practicalPrice";
                         myFactory.finalCalc();
-                        console.log(myFactory.totalPrice);
                     }
                     //лимиты/платежи/хуета остальная
                 }

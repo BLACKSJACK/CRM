@@ -12,36 +12,7 @@ app.config(function($routeProvider){//с помощью .config мы опред�
 
     $routeProvider
         .when('/',{
-            templateUrl: 'login.html'
-        })
-        .when('/login',{
-            resolve:{
-                "check": function($location,$cookies,$rootScope,$http){
-                    const cookies=$cookies.getAll();
-                    if($rootScope.loggedIn) $location.path('/dashboard');
-                    else if(cookies.hasOwnProperty("login") && cookies.hasOwnProperty("pwd")){
-                        let data={};
-                        data.login=cookies.login;
-                        data.pwd=cookies.pwd;
-                        $http.post("authorization.php", data).then(function success (response) {
-                            if (response.data['loggin'] === true) {
-                                $rootScope.loggedIn = true;
-                                $location.path('/dashboard');
-                                $rootScope.name = response.data['name'];
-                                $cookies.put('loggedIn', response.data['loggin']);
-                                $cookies.put('username', response.data['name']);
-                                $cookies.put('login', response.data['login']);
-                                $cookies.put('pwd', response.data['pwd']);
-                                console.log($cookies);
-                            }
-                        },function error (response){
-                            console.log(response);
-                        });
-                    }
-                    else $location.path('/login');
-                }
-            },
-            templateUrl: 'login.html'
+            templateUrl: 'dashboard.html',
         })
         .when('/dashboard',{
             resolve:{
