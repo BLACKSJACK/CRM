@@ -359,7 +359,7 @@ app.directive('currencyInput', function ($filter, myFactory) {
                     }
                 }
                 else{
-                    if($scope.dashboard.karetka.mode=="listener") $scope.dashboard.karetka.mode="making new process";
+                    if($scope.calculation.karetka.mode=="listener") $scope.calculation.karetka.mode="making new process";
                     console.log(myFactory.process);
                     if(key==13){
                         let val=$element.val().replace(/[\s\,]/g, '')*1;
@@ -386,11 +386,11 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             if($attrs['param']=="amount" && myFactory.amountType=="Тягачей") myFactory.process[$attrs['param']]=val*24;
                             else myFactory.process[$attrs['param']]=val;
                         }
-                        if($scope.dashboard.karetka.mode=="making new process"){
+                        if($scope.calculation.karetka.mode=="making new process"){
                             let i=0;
                             for(let key in myFactory.process){
                                 if(myFactory.process[key]===""){
-                                    $scope.dashboard.selectParam(i);
+                                    $scope.calculation.selectParam(i);
                                     let target = $event.target;
                                     target.blur();
                                     document.querySelector(".dashboard_container").focus();
@@ -405,8 +405,8 @@ app.directive('currencyInput', function ($filter, myFactory) {
                             myFactory.finalCalc();
                             $scope.$apply()
                         }
-                        if($scope.dashboard.karetka.mode=="changing process") delete myFactory.process.changing;
-                        $scope.dashboard.clean();
+                        if($scope.calculation.karetka.mode=="changing process") delete myFactory.process.changing;
+                        $scope.calculation.clean();
                         let target = $event.target;
                         target.blur();
                     }
