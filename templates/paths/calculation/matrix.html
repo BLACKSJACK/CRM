@@ -50,7 +50,10 @@
                      ng-click="process.multi.parent.close(calculation.myFactory.multi.multies, true); calculation.clean()"
                      ng-if="process.multi.showRows==key && process.multi.parent!==undefined"
                      ng-mouseenter="process.multi.unselectable=true" ng-mouseleave="calculation.deleteProperty(process.multi, 'unselectable')">&#9650</div>
-
+                <div class="copyDown"
+                     ng-click="calculation.setParamToAllProcess(value, key, process.park)"
+                     ng-if="process.multi.showRows==key && process.park.processes.length>1 && key!='risk' && key!='wrapping'"
+                     ng-mouseenter="process.multi.unselectable=true" ng-mouseleave="calculation.deleteProperty(process.multi, 'unselectable')">&#9660</div>
 
             </td>
 
